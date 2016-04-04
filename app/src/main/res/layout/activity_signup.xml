@@ -65,6 +65,9 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <!-- Ingreso de Sexo de la persona -->
+
+
         <!-- Ingreso de contrasena -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
