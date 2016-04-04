@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Nombre de usuario" />
+                android:hint="@string/hint_inputname" />
         </android.support.design.widget.TextInputLayout>
 
         <!--  Ingreso de contrasena-->
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Contrase\u0148a"/>
+                android:hint="@string/hint_password"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Boton de Login-->
@@ -52,14 +52,14 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Entrar"/>
+            android:text="@string/buttontxt_entrar"/>
 
         <!-- Boton de Registro-->
         <TextView android:id="@+id/link_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="No tenés cuenta? Registrate acá"
+            android:text="@string/buttontxt_registrar"
             android:gravity="center"
             android:textSize="16dip"/>
 

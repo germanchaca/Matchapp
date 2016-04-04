@@ -9,15 +9,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.DialogFragment;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import fiuba.matchapp.utils.DatePickerFragment;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
     @Bind(R.id.input_name) EditText _nameText;
     @Bind(R.id.input_email) EditText _emailText;
+    @Bind(R.id.input_date) EditText _dateText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_signup) Button _signupButton;
     @Bind(R.id.link_login) TextView _loginLink;
@@ -42,6 +45,12 @@ public class SignupActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.setEditText(_dateText);
+        newFragment.show(getFragmentManager(), "datePicker");
     }
 
     public void signup() {

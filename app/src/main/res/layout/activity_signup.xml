@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapWords"
-                android:hint="Nombre" />
+                android:hint="@string/hint_inputname" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Ingreso de email -->
@@ -42,7 +42,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:hint="@string/hint_email" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- Ingreso de fecha nacimiento -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:onClick="showDatePickerDialog">
+
+            <EditText android:id="@+id/input_date"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="textEmailAddress"
+                      android:hint="@string/hint_fecha_nac"
+                      android:focusable="false"
+                      android:focusableInTouchMode="false"
+                      android:onClick="showDatePickerDialog"
+                      />
+
         </android.support.design.widget.TextInputLayout>
 
         <!-- Ingreso de contrasena -->
@@ -55,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Contrase\u0148a"/>
+                android:hint="@string/hint_password"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Boton de registro -->
@@ -66,13 +86,13 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Crear cuenta"/>
+            android:text="@string/buttontxt_crear_cuenta"/>
 
         <TextView android:id="@+id/link_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Ya tenés cuenta? Entrar"
+            android:text="@string/buttontxt_login"
             android:gravity="center"
             android:textSize="16dip"/>
 
