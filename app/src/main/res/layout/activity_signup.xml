@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true">
@@ -66,6 +67,22 @@
         </android.support.design.widget.TextInputLayout>
 
         <!-- Ingreso de Sexo de la persona -->
+        <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+               android:id="@+id/sex_spinner"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="8dp"
+               android:layout_marginLeft="3dp"
+               android:layout_marginRight="3dp"
+               android:hint="Sexo"
+               app:met_floatingLabel="normal"
+               app:met_primaryColor="@color/white"
+               app:met_baseColor="@color/white"
+               app:met_textColor="@color/white"
+               app:met_underlineColor="@color/white"
+               met_floatingLabelTextColor="@color/white"
+
+            />
 
 
         <!-- Ingreso de contrasena -->
