@@ -11,6 +11,8 @@
     <string name="buttontxt_registrar">No tenés cuenta? Registrate acá</string>
     <string name="buttontxt_login">Ya tenés cuenta? Entrar</string>
 
+    <string name="dialog_close_button">OK</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>
