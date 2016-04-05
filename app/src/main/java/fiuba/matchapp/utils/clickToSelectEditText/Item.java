@@ -2,13 +2,13 @@ package fiuba.matchapp.utils.clickToSelectEditText;
 
 public class Item implements Listable {
 
-    String label;
+    String mylabel;
 
     public Item(String label){
-        label = label;
+        mylabel = label;
     }
     @Override
     public String getLabel(){
-        return label;
+        return mylabel;
     }
 }

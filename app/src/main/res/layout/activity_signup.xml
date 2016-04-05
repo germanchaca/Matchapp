@@ -67,22 +67,6 @@
         </android.support.design.widget.TextInputLayout>
 
         <!-- Ingreso de Sexo de la persona -->
-        <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-               android:id="@+id/sex_spinner"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="8dp"
-               android:layout_marginLeft="3dp"
-               android:layout_marginRight="3dp"
-               android:hint="Sexo"
-               app:met_floatingLabel="normal"
-               app:met_primaryColor="@color/white"
-               app:met_baseColor="@color/white"
-               app:met_textColor="@color/white"
-               app:met_underlineColor="@color/white"
-               met_floatingLabelTextColor="@color/white"
-
-            />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

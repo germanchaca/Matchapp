@@ -15,20 +15,25 @@ import android.app.DialogFragment;
 
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import fiuba.matchapp.utils.DatePickerFragment;
+import fiuba.matchapp.utils.clickToSelectEditText.ClickToSelectEditText;
+import fiuba.matchapp.utils.clickToSelectEditText.Item;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
-
     @Bind(R.id.input_name) EditText _nameText;
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_date) EditText _dateText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_signup) Button _signupButton;
     @Bind(R.id.link_login) TextView _loginLink;
- //   @Bind(R.id.sex_spinner) Spinner _sexSpinner;
+    @Bind(R.id.sex_input) ClickToSelectEditText<Item> _sex_input;
+
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,12 +56,15 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,
-               R.array.sex_array, android.R.layout.simple_spinner_item);
+        ArrayList<Item> lstSexos = new ArrayList<Item>();
 
-        MaterialBetterSpinner _sexSpinner = (MaterialBetterSpinner) findViewById(R.id.sex_spinner);
-        _sexSpinner.setAdapter(arrayAdapter);
+        String[] sexos = getResources().getStringArray(R.array.sex_array);
+
+        for (int i = 0; i < sexos.length ; i++){
+            Item iSexo = new Item(sexos[i]);
+            lstSexos.add(iSexo);
+        }
+        _sex_input.setItems(lstSexos);
     }
 
     public void showDatePickerDialog(View v) {

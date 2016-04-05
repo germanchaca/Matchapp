@@ -71,7 +71,7 @@ public class ClickToSelectEditText<T extends Listable> extends EditText {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.AppTheme_Dark_Dialog);
                 builder.setTitle(mHint);
                 builder.setItems(mListableItems, new DialogInterface.OnClickListener() {
                     @Override
