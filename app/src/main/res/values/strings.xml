@@ -14,5 +14,32 @@
     <string name="dialog_close_button">OK</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+
+    <!-- LoginActivity-->
+    <string name="running_auth">Autenticando...</string>
+
+    <!-- Validaciones de LoginActivity -->
+    <string name="invalid_username_empty">Ingrese su email</string>
+    <string name="invalid_mail_invalid">Ingrese un email válido</string>
+    <string name="invalid_name_empty">Ingrese su nombre</string>
+    <string name="invalid_password_empty">Ingrese su contrse\u0148a</string>
+    <string name="invalid_password_format">Entre 4 y 10 caracteres alfanuméricos</string>
+    <string name="invalid_auth">No se pudo iniciar sesión, verifique los datos intresados</string>
+
+    <!-- SignUpActivity -->
+    <string name="creating_account">Creando cuenta...</string>
+    <string name="signup_failed">No se pudo completar el registro</string>
+
+    <string name="hint_campo_texto_nombre">Primer nombre</string>
+    <string name="hint_campo_texto_apellido">Primer apellido</string>
+    <string name="hint_campo_texto_telefono">Teléfono</string>
+    <string name="hint_campo_texto_correo">Correo</string>
+
+    <!-- Textos de menu items -->
+    <string name="icon_game">Buscar candidatos</string>
+    <string name="icon_matchs">Mis matchs encontrados</string>
+    <string name="icon_chat">Mis chats abiertos</string>
+    <string name="action_profile">Mi perfil</string>
+    <string name="action_logout">Cerrar sesión</string>
+
 </resources>

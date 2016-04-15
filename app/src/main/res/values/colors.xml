@@ -5,7 +5,7 @@
   <color name="primary_darker">#CC1D1D</color>
   <color name="accent">#FFFFFF</color>
 
-  <color name="black">#000000</color>
+  <color name="black">#ffffff</color>
   <color name="jet">#222222</color>
   <color name="oil">#333333</color>
   <color name="monsoon">#777777</color>
@@ -14,4 +14,9 @@
   <color name="base">#AAAAAA</color>
   <color name="iron">#CCCCCC</color>
   <color name="white">#FFFFFF</color>
+
+  <color name="bg_bubble_self">#E1E1E1</color>
+  <color name="list_divider">#dedede</color>
+  <color name="rippleColor">#993498db</color>
+  <color name="white_transparent">#77ffffff</color>
 </resources>

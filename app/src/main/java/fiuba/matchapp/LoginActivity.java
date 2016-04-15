@@ -12,23 +12,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.ButterKnife;
-import butterknife.Bind;
-
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    @Bind(R.id.input_email) EditText _emailText;
-    @Bind(R.id.input_password) EditText _passwordText;
-    @Bind(R.id.btn_login) Button _loginButton;
-    @Bind(R.id.link_signup) TextView _signupLink;
+    EditText _userNameText;
+    EditText _passwordText;
+    Button _loginButton;
+    TextView _signupLink;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
+
+        _userNameText = (EditText) findViewById(R.id.input_username);
+        _passwordText = (EditText) findViewById(R.id.input_password);
+        _loginButton = (Button) findViewById(R.id.btn_login);
+        _signupLink  = (TextView) findViewById(R.id.link_signup);
         
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -50,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        Log.d(TAG, "Login");
+        Log.d(TAG, "Intentando Loguear");
 
         if (!validate()) {
             onLoginFailed();
@@ -62,10 +63,10 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Autenticando...");
+        progressDialog.setMessage(getResources().getString(R.string.running_auth));
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
+        String email = _userNameText.getText().toString();
         String password = _passwordText.getText().toString();
 
         // TODO: Implementar la lógica de autenticación acá, notar que el handler 3000 milisegundos pero es sólo para mostrar la pantallita del ProgressDialog
@@ -104,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.invalid_auth), Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
@@ -112,18 +113,18 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = _emailText.getText().toString();
+        String email = _userNameText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+        if (email.isEmpty()) {
+            _userNameText.setError(getResources().getString(R.string.invalid_username_empty));
             valid = false;
         } else {
-            _emailText.setError(null);
+            _userNameText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty()) {
+            _passwordText.setError(getResources().getString(R.string.invalid_password_empty));
             valid = false;
         } else {
             _passwordText.setError(null);
