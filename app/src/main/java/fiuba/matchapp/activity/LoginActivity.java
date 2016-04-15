@@ -1,4 +1,4 @@
-package fiuba.matchapp;
+package fiuba.matchapp.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import fiuba.matchapp.R;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -44,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), fiuba.matchapp.SignupActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
@@ -74,8 +76,9 @@ public class LoginActivity extends AppCompatActivity {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        onLoginSuccess();
+                        //mandar data de volley
                         // onLoginFailed();
+                        onLoginSuccess();
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -85,9 +88,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implementar la lógica de loggeo exitoso acá
-                // Por default terminamos la activity
+                //Aca va la logica cuando vuelve del registro exitoso!!!!!!
+                onLoginSuccess();
                 this.finish();
             }
         }
@@ -100,7 +102,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
+        launchMainActivity();
         _loginButton.setEnabled(true);
+    }
+
+    private void launchMainActivity() {
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(intent);
         finish();
     }
 

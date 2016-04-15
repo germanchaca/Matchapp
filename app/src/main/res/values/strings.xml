@@ -42,4 +42,7 @@
     <string name="action_profile">Mi perfil</string>
     <string name="action_logout">Cerrar sesión</string>
 
+    <!-- Conversaciones abiertas -->
+    <string name="label_yesterday">Ayer</string>
+
 </resources>

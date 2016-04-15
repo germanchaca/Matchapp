@@ -1,0 +1,14 @@
+<!--this fragment layout is using from Tab1
+it contains rippleBackgroundAnimation Layout
+and CardStack-->
+<FrameLayout
+    android:id="@+id/frame_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/background_ripple_layout"/>
+
+
+</FrameLayout>

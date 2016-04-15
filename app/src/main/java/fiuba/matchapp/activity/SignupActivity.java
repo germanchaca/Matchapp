@@ -1,4 +1,4 @@
-package fiuba.matchapp;
+package fiuba.matchapp.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import fiuba.matchapp.R;
 import fiuba.matchapp.utils.DatePickerFragment;
 import fiuba.matchapp.utils.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.utils.clickToSelectEditText.Item;
