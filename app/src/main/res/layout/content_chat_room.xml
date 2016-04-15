@@ -41,9 +41,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:text="SEND"
+                android:text="@string/send"
                 android:textSize="16dp"
-                android:textColor="@color/primary" />
+                android:textColor="@color/accent" />
 
     </LinearLayout>
 

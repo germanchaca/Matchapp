@@ -45,4 +45,7 @@
     <!-- Conversaciones abiertas -->
     <string name="label_yesterday">Ayer</string>
 
+    <!-- Activity ChatRoom -->
+    <string name="send">Enviar</string>
+
 </resources>
