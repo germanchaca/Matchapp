@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
        // if (MyApplication.getInstance().getPrefManager().getUser() == null) {
-            //launchLoginActivity();
+            launchLoginActivity();
         //}
 
         if (savedInstanceState == null) {
