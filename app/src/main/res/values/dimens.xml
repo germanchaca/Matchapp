@@ -6,4 +6,11 @@
     //sets some default properties for rippleBackgroundAnimation
     <dimen name="rippleStrokeWidth">2dp</dimen>
     <dimen name="rippleRadius">64dp</dimen>
+
+    <!-- Content Swipe Deck-->
+    <dimen name="swipe_horizontal_margin">0dp</dimen>
+
+    <!-- Candidate card-->
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_top_shadow_margin_bottom">18dp</dimen>
 </resources>

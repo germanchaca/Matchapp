@@ -7,29 +7,40 @@
     android:id="@+id/swipeLayout"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatButton
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="swipe left" />
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:text="add card" />
-    <android.support.v7.widget.AppCompatButton
+        android:layout_gravity="bottom|left"
+        android:layout_margin="8dp"
+        swipedeck:fabSize="normal"
+        swipedeck:borderWidth="0dp"
+        swipedeck:backgroundTint="@color/iron"
+        android:tint="@color/white"
+        android:src="@drawable/ic_clear_white_48dp"
+        swipedeck:rippleColor="@color/accentSecondary"
+        android:elevation="4dp"/>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:text="swipe right" />
+        android:layout_margin="8dp"
+        swipedeck:fabSize="normal"
+        swipedeck:borderWidth="0dp"
+        swipedeck:backgroundTint="@color/iron"
+        android:src="@drawable/ic_favorite_white_48dp"
+        swipedeck:rippleColor="@color/accentThird"
+        android:tint="@color/white"
+        android:elevation="4dp"/>
 
     <fiuba.cardstack.SwipeDeck
         android:id="@+id/swipe_deck"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/swipe_horizontal_margin"
         swipedeck:card_spacing="10dp"
         swipedeck:max_visible="3"
         swipedeck:render_above="false"

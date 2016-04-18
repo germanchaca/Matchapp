@@ -2,6 +2,7 @@ package fiuba.matchapp.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +23,8 @@ public class Connect extends Fragment {
     private SwipeDeckAdapter adapter;
     private ArrayList<String> testData;
 
-    Button btnSwipeLeft;
-    Button btnSwipeRight;
-    Button btnAddCandidate;
+    FloatingActionButton btnSwipeLeft;
+    FloatingActionButton btnSwipeRight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +101,7 @@ public class Connect extends Fragment {
         cardStack.setLeftImage(R.id.left_image);
         cardStack.setRightImage(R.id.right_image);
 
-        btnSwipeLeft = (Button) view.findViewById(R.id.button);
+        btnSwipeLeft = (FloatingActionButton) view.findViewById(R.id.button);
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +111,7 @@ public class Connect extends Fragment {
             }
         });
 
-        btnSwipeRight= (Button) view.findViewById(R.id.button2);
+        btnSwipeRight= (FloatingActionButton) view.findViewById(R.id.button2);
 
         btnSwipeRight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,25 +119,18 @@ public class Connect extends Fragment {
                 cardStack.swipeTopCardRight(180);
             }
         });
-
-        btnAddCandidate = (Button) view.findViewById(R.id.button3);
-        btnAddCandidate.setVisibility(View.GONE);
-        btnAddCandidate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                testData.add("a sample string.");
-                adapter.notifyDataSetChanged();
-            }
-        });
     }
 
+    private void addCandidate(String candidate){
+        testData.add(candidate);
+        adapter.notifyDataSetChanged();
+    }
     private void startAnimation() {
         //if it's not running
         if (!rippleBackground1.isRippleAnimationRunning()) {
             rippleBackground1.setVisibility(View.VISIBLE);
             btnSwipeLeft.setVisibility(View.GONE);
             btnSwipeRight.setVisibility(View.GONE);
-            btnAddCandidate.setVisibility(View.GONE);
             rippleBackground1.startRippleAnimation();
         }
     }
@@ -148,7 +141,6 @@ public class Connect extends Fragment {
             rippleBackground1.setVisibility(View.GONE);
             btnSwipeLeft.setVisibility(View.VISIBLE);
             btnSwipeRight.setVisibility(View.VISIBLE);
-            btnAddCandidate.setVisibility(View.VISIBLE);
         }
 
     }
