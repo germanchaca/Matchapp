@@ -47,5 +47,6 @@
 
     <!-- Activity ChatRoom -->
     <string name="send">Enviar</string>
+    <string name="enter_message">Ingrese mensaje...</string>
 
 </resources>

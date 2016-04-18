@@ -8,6 +8,8 @@ and CardStack-->
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/content_swipe_deck"/>
+
     <include layout="@layout/background_ripple_layout"/>
 
 
