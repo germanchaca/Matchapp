@@ -39,7 +39,7 @@
     <string name="icon_game">Buscar candidatos</string>
     <string name="icon_matchs">Mis matchs encontrados</string>
     <string name="icon_chat">Mis chats abiertos</string>
-    <string name="action_profile">Mi perfil</string>
+    <string name="action_profile">Editar perfil</string>
     <string name="action_logout">Cerrar sesión</string>
 
     <!-- Conversaciones abiertas -->
@@ -56,4 +56,17 @@
     <string name="profile_common_interests">Intereses en común</string>
     <string name="profile_more_interests">También le gusta</string>
 
+    <!--Activity editable profile -->
+    <string name="edit_profile_birthdate">Fecha de nacimiento</string>
+    <string name="edit_profile_alias">Apodo</string>
+
+    <string name="edit_profile_mail">Email de la cuenta</string>
+    <string name="edit_profile_change_password">Cambiar contrase\u0148a</string>
+    <string name="edit_profile_delete_account">Borrar cuenta</string>
+
+    <string name="edit_profile_take_picture">Tomar foto</string>
+    <string name="edit_profile_choose_picture">Elegir de galería</string>
+    <string name="edit_profile_cancel">Cancelar</string>
+    <string name="edit_profile_action_select_picture">Seleccionar foto</string>
+    <string name="edit_profile_title_select_picture">Cambiar foto de perfil</string>
 </resources>

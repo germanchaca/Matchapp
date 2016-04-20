@@ -13,4 +13,6 @@
     <!-- Candidate card-->
     <dimen name="card_margin">8dp</dimen>
 
+    <dimen name="appbarlayout_height">418dp</dimen>
+
 </resources>

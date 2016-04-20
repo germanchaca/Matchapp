@@ -28,7 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                return true;
+            break;
         }
         return super.onOptionsItemSelected(item);
     }

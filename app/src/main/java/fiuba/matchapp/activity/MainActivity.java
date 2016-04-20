@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import fiuba.matchapp.R;
 import fiuba.matchapp.fragment.Connect;
 import fiuba.matchapp.fragment.OpenChatsFragment;
@@ -66,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
         switch ( id) {
 
             case R.id.action_logout:
+                break;
+
+            case R.id.action_profile:
+
+                Intent intent = new Intent(context, EditableProfileActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.icon_game:
