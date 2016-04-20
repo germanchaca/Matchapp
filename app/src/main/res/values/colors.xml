@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="primary">#00bcd4</color>
-  <color name="primary_dark">#00acc1</color>
-  <color name="primary_darker">#0097a7</color>
+  <color name="primary_dark">#0097a7</color>
+  <color name="primary_darker">#00838f</color>
+  <color name="toolbar_icon">@color/white</color>
 
   <color name="accent">#ffa726</color>
   <color name="accentSecondary">#F06292</color>
   <color name="accentThird">#66bb6a</color>
   <color name="accentFourth">#039be5</color>
 
-  <color name="black">#ffffff</color>
   <color name="jet">#222222</color>
   <color name="oil">#333333</color>
   <color name="monsoon">#777777</color>
@@ -18,7 +18,13 @@
   <color name="base">#AAAAAA</color>
   <color name="iron">#CCCCCC</color>
   <color name="white">#FFFFFF</color>
+  <color name= "beige">#dedede</color>
 
+  <color name="black_smooth">#212121</color>
+  <color name="gray">#727272</color>
+  <color name="profile_text_content">@color/black_smooth</color>
+  <color name="profile_text_title">@color/gray</color>
+  <color name="details_icon">@color/primary</color>
   <color name="bg_bubble_self">#E1E1E1</color>
   <color name="list_divider">#dedede</color>
   <color name="rippleColor">#993498db</color>

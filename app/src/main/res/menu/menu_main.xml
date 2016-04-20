@@ -4,7 +4,7 @@
       tools:context=".activity.MainActivity">
     <item
         android:id="@+id/icon_game"
-        android:icon="@drawable/ic_action_icon_sidebar_flirtmatch"
+        android:icon="@drawable/ic_content_copy_24dp"
         android:title="@string/icon_game"
         app:showAsAction="always" />
 
@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/icon_chats"
-        android:icon="@drawable/ic_action_icon_sidebar_chats"
+        android:icon="@drawable/ic_forum_24dp"
         android:title="@string/icon_chat"
         app:showAsAction="always" />
 

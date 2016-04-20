@@ -9,8 +9,8 @@
 
     <!-- Content Swipe Deck-->
     <dimen name="swipe_horizontal_margin">0dp</dimen>
-
+    <dimen name="card_top_shadow_margin_bottom">2dp</dimen>
     <!-- Candidate card-->
     <dimen name="card_margin">8dp</dimen>
-    <dimen name="card_top_shadow_margin_bottom">18dp</dimen>
+
 </resources>

@@ -10,8 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +33,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     private ChatRoomThreadAdapter mAdapter;
     private ArrayList<Message> messageArrayList;
     private EditText inputMessage;
-    private Button btnSend;
+    private ImageButton btnSend;
     private CircularImageView circleProfileImg;
 
     @Override
@@ -48,7 +48,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         circleProfileImg = (CircularImageView) findViewById(R.id.profile_img_toolbar);
 
         inputMessage = (EditText) findViewById(R.id.message);
-        btnSend = (Button) findViewById(R.id.btn_send);
+        btnSend = (ImageButton) findViewById(R.id.btn_send);
 
         Intent intent = getIntent();
         chatRoomId = intent.getStringExtra("chat_room_id");

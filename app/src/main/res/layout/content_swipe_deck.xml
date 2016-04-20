@@ -18,7 +18,7 @@
         swipedeck:borderWidth="0dp"
         swipedeck:backgroundTint="@color/iron"
         android:tint="@color/white"
-        android:src="@drawable/ic_clear_white_48dp"
+        android:src="@drawable/ic_clear_24dp"
         swipedeck:rippleColor="@color/accentSecondary"
         android:elevation="4dp"/>
 
@@ -31,7 +31,7 @@
         swipedeck:fabSize="normal"
         swipedeck:borderWidth="0dp"
         swipedeck:backgroundTint="@color/iron"
-        android:src="@drawable/ic_favorite_white_48dp"
+        android:src="@drawable/ic_favorite_24dp"
         swipedeck:rippleColor="@color/accentThird"
         android:tint="@color/white"
         android:elevation="4dp"/>

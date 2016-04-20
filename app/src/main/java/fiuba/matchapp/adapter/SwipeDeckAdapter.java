@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.activity.ProfileActivity;
 
 /**
  * Created by german on 4/17/2016.
@@ -62,8 +63,8 @@ public class SwipeDeckAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Log.i("Layer type: ", Integer.toString(v.getLayerType()));
                 Log.i("Hwardware Accel type:", Integer.toString(View.LAYER_TYPE_HARDWARE));
-                //Intent i = new Intent(v.getContext(), BlankActivity.class);
-                //v.getContext().startActivity(i);
+                Intent i = new Intent(v.getContext(), ProfileActivity.class);
+                v.getContext().startActivity(i);
             }
         });
         return v;

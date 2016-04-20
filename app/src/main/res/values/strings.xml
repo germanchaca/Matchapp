@@ -49,4 +49,11 @@
     <string name="send">Enviar</string>
     <string name="enter_message">Ingrese mensaje...</string>
 
+    <!-- Activity profile -->
+    <string name="probile_name">Nombre</string>
+    <string name="profile_age">Edad</string>
+    <string name="profile_location">Ubicación</string>
+    <string name="profile_common_interests">Intereses en común</string>
+    <string name="profile_more_interests">También le gusta</string>
+
 </resources>
