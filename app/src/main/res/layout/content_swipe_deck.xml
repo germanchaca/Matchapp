@@ -16,10 +16,9 @@
         android:layout_margin="8dp"
         swipedeck:fabSize="normal"
         swipedeck:borderWidth="0dp"
-        swipedeck:backgroundTint="@color/iron"
-        android:tint="@color/white"
+        swipedeck:backgroundTint="@color/primary_dark"
         android:src="@drawable/ic_clear_24dp"
-        swipedeck:rippleColor="@color/accentSecondary"
+        swipedeck:rippleColor="@color/red"
         android:elevation="4dp"/>
 
     <android.support.design.widget.FloatingActionButton
@@ -30,10 +29,9 @@
         android:layout_margin="8dp"
         swipedeck:fabSize="normal"
         swipedeck:borderWidth="0dp"
-        swipedeck:backgroundTint="@color/iron"
+        swipedeck:backgroundTint="@color/primary_dark"
         android:src="@drawable/ic_favorite_24dp"
         swipedeck:rippleColor="@color/accentThird"
-        android:tint="@color/white"
         android:elevation="4dp"/>
 
     <fiuba.cardstack.SwipeDeck

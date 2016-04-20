@@ -53,7 +53,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/icName"
                 android:layout_toRightOf="@id/icName"
-                android:text="Camila Bruno"
+                android:text="Kevin Otero"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content" />
 
@@ -73,8 +73,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:src="@drawable/ic_person_24dp"
-                android:visibility="invisible"/>
+                android:src="@drawable/ic_content_paste_24dp"/>
 
             <TextView
                 android:id="@+id/txtAgeLabel"
@@ -98,7 +97,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/icEdad"
                 android:layout_toRightOf="@id/icEdad"
-                android:text="24"
+                android:text="34"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content" />
 
