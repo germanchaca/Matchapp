@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.google.gms.google-services'
+//Server API KEY AIzaSyAYrHnfzOKfO4y1FxSUK5V-7tuQM4BqnE4
+//Sender ID: 202037738713
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -22,6 +24,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile "com.google.android.gms:play-services:8.3.0"
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'

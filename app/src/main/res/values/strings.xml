@@ -69,4 +69,7 @@
     <string name="edit_profile_cancel">Cancelar</string>
     <string name="edit_profile_action_select_picture">Seleccionar foto</string>
     <string name="edit_profile_title_select_picture">Cambiar foto de perfil</string>
+
+    <!-- check for Google Play Service -->
+    <string name="check_google_play_service_error">El dispositivo no es soportado. Google Play Services no está instalado!</string>
 </resources>
