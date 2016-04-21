@@ -72,4 +72,7 @@
 
     <!-- check for Google Play Service -->
     <string name="check_google_play_service_error">El dispositivo no es soportado. Google Play Services no está instalado!</string>
+
+    <!--GSMIntentService-->
+    <string name="gsmintentservice_error_server_app_send_registrationgsm">Unable to send gcm registration id to our sever.</string>
 </resources>
