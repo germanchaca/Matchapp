@@ -33,6 +33,20 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.kbeanie:image-chooser-library:1.5.8@aar'
 
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
+    //https://github.com/amlcurran/ShowcaseView
+    compile 'com.github.davidpizarro:autolabelui:1.0.1'
+    //https://github.com/DavidPizarro/AutoLabelUI
+
+    compile 'com.github.paolorotolo:appintro:3.4.0'
+    //https://github.com/PaoloRotolo/AppIntro
+
+    compile 'com.theartofdev.edmodo:android-image-cropper:1.2.+'
+    //https://github.com/ArthurHub/Android-Image-Cropper
+    compile 'com.github.xiprox.errorview:library:2.+'
+    //https://github.com/xiprox/ErrorView
+
+    //https://developers.google.com/cloud-messaging/android/client#get-config
     compile project(':cardstack')
 
 }
