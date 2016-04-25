@@ -3,9 +3,11 @@
   <color name="primary">#00bcd4</color>
   <color name="primary_dark">#0097a7</color>
   <color name="primary_darker">#00838f</color>
+  <color name="primary_light">#B2EBF2</color>
+
   <color name="toolbar_icon">@color/white</color>
 
-  <color name="accent">#ffa726</color>
+  <color name="accent">#ff9100</color>
   <color name="accentSecondary">#F06292</color>
   <color name="accentThird">#66bb6a</color>
   <color name="accentFourth">#039be5</color>
