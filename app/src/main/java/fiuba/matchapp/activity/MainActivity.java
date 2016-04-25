@@ -19,9 +19,12 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.Config;
+import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.fragment.Connect;
 import fiuba.matchapp.fragment.OpenChatsFragment;
 import fiuba.matchapp.gcm.GcmIntentService;
+import fiuba.matchapp.gcm.NotificationUtils;
+import fiuba.matchapp.model.Message;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
 
     public static Context context;
 
@@ -46,9 +48,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // if (MyApplication.getInstance().getPrefManager().getUser() == null) {
-        //launchLoginActivity();
-        //}
+        if (MyApplication.getInstance().getPrefManager().getUser() == null) {
+            launchLoginActivity();
+        }
+
+        /**
+         * Broadcast receiver calls in two scenarios
+         * 1. gcm registration is completed
+         * 2. when new push notification is received
+         * */
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -60,18 +68,13 @@ public class MainActivity extends AppCompatActivity {
                     // now subscribe to `global` topic to receive app wide notifications
                     String token = intent.getStringExtra("token");
 
-                    //Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
-
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
-                    // gcm registration id is stored in our server's MySQL
 
-                    //Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
-
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                }else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
-
-                    //Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+                    handlePushNotification(intent);
                 }
+
             }
         };
 
@@ -101,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
         // by doing this, the activity will be notified each time a new message arrives
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        NotificationUtils.clearNotifications();
     }
 
     @Override
@@ -115,9 +120,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
-
-        //Intent intent = new Intent(this,LoginActivity.class);
-        //startActivity(intent);
     }
 
     @Override
@@ -186,6 +188,16 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+    /**
+     * Handles new push notification
+     */
+    private void handlePushNotification(Intent intent) {
+        int type = intent.getIntExtra("type", -1);
+
+         if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
+            Message message = (Message) intent.getSerializableExtra("message");
+        }
     }
 
 }

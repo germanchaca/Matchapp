@@ -13,6 +13,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.utils.DatePickerFragment;
 import fiuba.matchapp.utils.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.utils.clickToSelectEditText.Item;
@@ -26,6 +28,9 @@ public class SignupActivity extends AppCompatActivity {
     Button _signupButton;
     TextView _loginLink;
     ClickToSelectEditText<Item> _sex_input;
+    String name;
+    String email;
+    String password;
 
     
     @Override
@@ -88,9 +93,9 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage(getResources().getString(R.string.creating_account));
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        name = _nameText.getText().toString();
+        email = _emailText.getText().toString();
+        password = _passwordText.getText().toString();
 
         // TODO: Implementar la logica de registro aca
 
@@ -106,6 +111,10 @@ public class SignupActivity extends AppCompatActivity {
 
 
     public void onSignupSuccess() {
+
+        User user = new User("0", name, email);
+        MyApplication.getInstance().getPrefManager().storeUser(user);
+
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
         finish();

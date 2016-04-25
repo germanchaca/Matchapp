@@ -6,21 +6,18 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,17 +47,7 @@ public class GcmIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         String key = intent.getStringExtra(KEY);
         switch (key) {
-            case SUBSCRIBE:
-                // subscribe to a topic
-                String topic = intent.getStringExtra(TOPIC);
-                subscribeToTopic(topic);
-                break;
-            case UNSUBSCRIBE:
-                String topic1 = intent.getStringExtra(TOPIC);
-                unsubscribeFromTopic(topic1);
-                break;
             default:
-                // if key is not specified, register with GCM
                 registerGCM();
         }
 
@@ -93,47 +80,6 @@ public class GcmIntentService extends IntentService {
         Intent registrationComplete = new Intent(Config.REGISTRATION_COMPLETE);
         registrationComplete.putExtra("token", token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
-    }
-
-    /**
-     * Subscribe to a topic
-     */
-    public void subscribeToTopic(String topic) {
-        GcmPubSub pubSub = GcmPubSub.getInstance(getApplicationContext());
-        InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
-        String token = null;
-        try {
-            token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            if (token != null) {
-                pubSub.subscribe(token, "/topics/" + topic, null);
-                Log.e(TAG, "Subscribed to topic: " + topic);
-            } else {
-                Log.e(TAG, "error: gcm registration id is null");
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void unsubscribeFromTopic(String topic) {
-        GcmPubSub pubSub = GcmPubSub.getInstance(getApplicationContext());
-        InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
-        String token = null;
-        try {
-            token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            if (token != null) {
-                pubSub.unsubscribe(token, "");
-                Log.e(TAG, "Unsubscribed from topic: " + topic);
-            } else {
-                Log.e(TAG, "error: gcm registration id is null");
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Topic unsubscribe error. Topic: " + topic + ", error: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void sendRegistrationToServer(final String token) {

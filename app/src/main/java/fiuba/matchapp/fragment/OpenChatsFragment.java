@@ -127,5 +127,47 @@ public class OpenChatsFragment extends Fragment {
 
         chatRoomArrayList.add(cr3);
 
+        /*StringRequest strReq = new StringRequest(Request.Method.GET,
+                RestAPIContract.CHAT_ROOMS, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.e(TAG, "response: " + response);
+
+                try {
+                    JSONObject obj = new JSONObject(response);
+
+                    if (obj.getBoolean("error") == false) {
+                        JSONArray chatRoomsArray = obj.getJSONArray("chat_rooms");
+                        for (int i = 0; i < chatRoomsArray.length(); i++) {
+                            JSONObject chatRoomsObj = (JSONObject) chatRoomsArray.get(i);
+                            ChatRoom cr = new ChatRoom();
+                            cr.setId(chatRoomsObj.getString("chat_room_id"));
+                            cr.setName(chatRoomsObj.getString("name"));
+                            cr.setLastMessage("");
+                            cr.setUnreadCount(0);
+                            cr.setTimestamp(chatRoomsObj.getString("created_at"));
+
+                            chatRoomArrayList.add(cr);
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "json parsing error: " + e.getMessage());
+                }
+
+                mAdapter.notifyDataSetChanged();
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+            }
+        });
+        MyApplication.getInstance().addToRequestQueue(strReq);*/
     }
 }
