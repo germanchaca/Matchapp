@@ -1,14 +1,17 @@
 <resources>
     <string name="app_name">MatchApp</string>
+    <string name="fb_app_id"></string>
 
     <string name="hint_inputname">Nombre de usuario</string>
     <string name="hint_password">Contrase\u0148a</string>
-    <string name="hint_email">Email</string>
+    <string name="hint_email">E-mail</string>
     <string name="hint_fecha_nac">Fecha de nacimiento</string>
 
     <string name="buttontxt_entrar">Entrar</string>
     <string name="buttontxt_crear_cuenta">Crear cuenta</string>
-    <string name="buttontxt_registrar">No tenés cuenta? Registrate acá</string>
+    <string name="buttontxt_registrar">Registrarse</string>
+    <string name="buttontxt_forgot_password">¿Olvidaste tu contrase\u0148a? Haz click AQUI</string>
+    <string name="buttontxt_fb_login">INICIAR SESIÓN CON FACEBOOK</string>
     <string name="buttontxt_login">Ya tenés cuenta? Entrar</string>
 
     <string name="dialog_close_button">OK</string>

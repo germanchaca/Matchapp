@@ -4,14 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
-
 import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import fiuba.matchapp.R;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
@@ -30,7 +27,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog( getActivity(),this, year, month, day);
         datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
         return datePickerDialog;
     }

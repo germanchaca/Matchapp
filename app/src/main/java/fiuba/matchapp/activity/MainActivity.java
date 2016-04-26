@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
 
             case R.id.action_logout:
+                MyApplication.getInstance().logout();
                 break;
 
             case R.id.action_profile:

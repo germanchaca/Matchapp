@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:datePickerDialogTheme">@style/Dialog.Theme</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
@@ -18,12 +19,13 @@
         <item name="android:windowBackground">@color/primary</item>
 
         <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/primary_dark</item>
+        <item name="colorControlActivated">@color/white</item>
         <item name="colorControlHighlight">@color/white</item>
         <item name="android:textColorHint">@color/white</item>
 
         <item name="colorButtonNormal">@color/primary_dark</item>
         <item name="android:colorButtonNormal">@color/primary_dark</item>
+        <item name="android:datePickerDialogTheme">@style/Dialog.Theme</item>
 
     </style>
 
@@ -35,7 +37,7 @@
 
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/white</item>
-        <item name="android:textColorPrimary">@color/iron</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="android:background">@color/primary</item>
     </style>
 
@@ -60,4 +62,11 @@
         <item name="android:textSize">18dp</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+    </style>
+
 </resources>

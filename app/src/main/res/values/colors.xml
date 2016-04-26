@@ -32,4 +32,6 @@
   <color name="list_divider">#dedede</color>
   <color name="rippleColor">#993498db</color>
   <color name="white_transparent">#77ffffff</color>
+  <color name="fb">#1976d2</color>
+  <color name="login_icon">@color/white</color>
 </resources>
