@@ -21,16 +21,22 @@ import fiuba.matchapp.utils.clickToSelectEditText.Item;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
-    EditText _nameText;
-    EditText _emailText;
-    EditText _dateText;
-    EditText _passwordText;
-    Button _signupButton;
-    TextView _loginLink;
-    ClickToSelectEditText<Item> _sex_input;
-    String name;
-    String email;
-    String password;
+
+    private EditText _nameText;
+    private EditText _emailText;
+    private EditText _dateText;
+    private EditText _passwordText;
+    private Button _signupButton;
+    private TextView _loginLink;
+
+    private ClickToSelectEditText<Item> _sex_input;
+    private String userName;
+    private String email;
+    private String password;
+    private String gender;
+    private String birthday;
+    private String fbImageUrl;
+    private Boolean hasFbId; //para subir las fotos correspondientes
 
     
     @Override
@@ -46,6 +52,7 @@ public class SignupActivity extends AppCompatActivity {
         _loginLink = (TextView) findViewById(R.id.link_login);
         _sex_input = (ClickToSelectEditText<Item>) findViewById(R.id.sex_input);
 
+
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+
         ArrayList<Item> lstSexos = new ArrayList<Item>();
 
         String[] sexos = getResources().getStringArray(R.array.sex_array);
@@ -69,8 +77,34 @@ public class SignupActivity extends AppCompatActivity {
             lstSexos.add(iSexo);
         }
         _sex_input.setItems(lstSexos);
+        hasFbId = false;
+        inicializarConCuentaFacebook();
+
+
     }
 
+    public void showForgotPasswordDialog(){
+
+    }
+
+    public void inicializarConCuentaFacebook(){
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            userName = extras.getString("userName");
+            email = extras.getString("email");
+            gender = extras.getString("gender");
+            birthday = extras.getString("birthday");
+            String fbId = extras.getString("id");
+            fbImageUrl = "http://graph.facebook.com/" + fbId + "/picture?type=large";
+
+            _dateText.setText(birthday);
+            _emailText.setText(email);
+            _nameText.setText(userName);
+            _sex_input.setText(gender);
+
+            hasFbId = true;
+        }
+    }
     public void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.setEditText(_dateText);
@@ -93,9 +127,13 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage(getResources().getString(R.string.creating_account));
         progressDialog.show();
 
-        name = _nameText.getText().toString();
+        userName = _nameText.getText().toString();
         email = _emailText.getText().toString();
+        birthday = _dateText.getText().toString();
+        gender = _sex_input.getText().toString();
         password = _passwordText.getText().toString();
+        //aca tambien mandar el fbImageUrl al server
+
 
         // TODO: Implementar la logica de registro aca
 
@@ -112,7 +150,7 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupSuccess() {
 
-        User user = new User("0", name, email);
+        User user = new User("0", userName, email);
         MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _signupButton.setEnabled(true);

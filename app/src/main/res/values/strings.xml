@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">MatchApp</string>
-    <string name="fb_app_id"></string>
+    <string name="fb_app_id">699659833473903</string>
 
-    <string name="hint_inputname">Nombre de usuario</string>
+    <string name="hint_inputname">Nombre completo</string>
     <string name="hint_password">Contrase\u0148a</string>
     <string name="hint_email">E-mail</string>
     <string name="hint_fecha_nac">Fecha de nacimiento</string>

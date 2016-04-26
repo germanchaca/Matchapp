@@ -3,7 +3,6 @@ package fiuba.matchapp.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,19 +10,28 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends FacebookLoginActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    EditText _userNameText;
-    EditText _passwordText;
-    Button _loginButton;
-    TextView _signupLink;
-    
+    private EditText _userNameText;
+    private EditText _passwordText;
+    private Button _loginButton;
+    private Button loginWithFacebook;
+    private TextView _signupLink;
+    private TextView _link_forgot_password;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +40,16 @@ public class LoginActivity extends AppCompatActivity {
         _userNameText = (EditText) findViewById(R.id.input_username);
         _passwordText = (EditText) findViewById(R.id.input_password);
         _loginButton = (Button) findViewById(R.id.btn_login);
-        _signupLink  = (TextView) findViewById(R.id.link_signup);
+        _signupLink = (TextView) findViewById(R.id.link_signup);
+        loginWithFacebook = (Button) findViewById(R.id.btn_fb_login);
+        _link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
+
+        _link_forgot_password.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showForgotPasswordDialog();
+            }
+        });
 
         /**
          * Check for login session. It user is already logged in
@@ -60,8 +77,56 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
+
+        loginWithFacebook.setOnClickListener(new FacebookLogInButtonListener());
+    }
+    @Override
+    protected void onFacebookLoggedIn(LoginResult loginResult) {
+        System.out.println("loginSuccess");
+        GraphRequest request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object,
+                                            GraphResponse response) {
+                        Log.v("LoginActivity", response.toString());
+                        try {
+                            String id = object.getString("id");
+                            String firstName = object.getString("first_name");
+                            String lastName = object.getString("last_name");
+                            String email = object.getString("email");
+                            String gender = object.getString("gender");
+                            String birthday = object.getString("birthday");
+
+                            Intent i = new Intent(LoginActivity.this, SignupActivity.class);
+
+                            String userName = new StringBuilder(firstName).append(" ").append(lastName).toString();
+                            String[] sexos = getResources().getStringArray(R.array.sex_array);
+                            if (gender == "male"){
+                                gender = sexos[0];
+                            }else {
+                                gender = sexos[1];
+                            }
+                            i.putExtra("id",id);
+                            i.putExtra("userName", userName);
+                            i.putExtra("email", email);
+                            i.putExtra("gender", gender);
+                            i.putExtra("birthday", birthday);
+                            startActivity(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, first_name,last_name,email,gender, birthday");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
+    public void showForgotPasswordDialog(){
+
+    }
     public void login() {
         Log.d(TAG, "Intentando Loguear");
 
@@ -171,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void launchMainActivity() {
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
     }
