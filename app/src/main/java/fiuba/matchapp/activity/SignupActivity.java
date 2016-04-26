@@ -67,7 +67,6 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-
         ArrayList<Item> lstSexos = new ArrayList<Item>();
 
         String[] sexos = getResources().getStringArray(R.array.sex_array);
@@ -83,9 +82,6 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    public void showForgotPasswordDialog(){
-
-    }
 
     public void inicializarConCuentaFacebook(){
         Bundle extras = getIntent().getExtras();

@@ -13,6 +13,10 @@
     <string name="buttontxt_forgot_password">¿Olvidaste tu contrase\u0148a? Haz click AQUI</string>
     <string name="buttontxt_fb_login">INICIAR SESIÓN CON FACEBOOK</string>
     <string name="buttontxt_login">Ya tenés cuenta? Entrar</string>
+    <string name="dialog_forgot_password">Recuperación de contrase\u0148a</string>
+    <string name="dialog_forgot_password_hint">Ingrese E-mail de cuenta</string>
+    <string name="dialog_forgot_password_ok">Continuar</string>
+    <string name="dialog_forgot_password_cancel">Cancelar</string>
 
     <string name="dialog_close_button">OK</string>
 

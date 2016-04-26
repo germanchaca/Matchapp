@@ -1,8 +1,11 @@
 package fiuba.matchapp.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -125,6 +128,33 @@ public class LoginActivity extends FacebookLoginActivity {
     }
 
     public void showForgotPasswordDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dark_Dialog);
+        builder.setTitle(getResources().getString(R.string.dialog_forgot_password));
+        builder.setIcon(R.drawable.ic_https_24dp_whitw);
+
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input.setHint(R.string.dialog_forgot_password_hint);
+
+        builder.setView(input);
+
+        builder.setPositiveButton(getResources().getString(R.string.dialog_forgot_password_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String emailToSendPassword = input.getText().toString();
+                //TODO: enviar esto al servidor para que le mande la contraseña al mail
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.dialog_forgot_password_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
 
     }
     public void login() {
