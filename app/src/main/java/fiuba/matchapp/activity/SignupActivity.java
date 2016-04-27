@@ -1,6 +1,7 @@
 package fiuba.matchapp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -146,11 +147,14 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupSuccess() {
 
-        User user = new User("0", userName, email);
+        User user = new User("0", userName, email,birthday,gender);
         MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
+
+        Intent intent = new Intent(this, Intro.class);
+        startActivity(intent);
         finish();
     }
 

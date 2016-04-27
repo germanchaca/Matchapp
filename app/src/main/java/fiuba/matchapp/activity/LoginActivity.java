@@ -258,7 +258,7 @@ public class LoginActivity extends FacebookLoginActivity {
     }
 
     public void onLoginSuccess() {
-        User user = new User("0", "german", "germanchaca@gmail.com");
+        User user = new User("0", "german", "germanchaca@gmail.com", null,null);
         MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _loginButton.setEnabled(true);

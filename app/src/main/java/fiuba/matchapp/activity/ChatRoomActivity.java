@@ -245,7 +245,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         String userId = "1";
         String userName = "camila";
-        User user = new User(userId, userName, null);
+        User user = MyApplication.getInstance().getPrefManager().getUser();
 
         Message message = new Message();
         message.setId(commentId);
