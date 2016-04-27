@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="categories">
+        <item>music</item>
+        <item>sport</item>
+        <item>outdoors</item>
+        <item>travel</item>
+        <item>food</item>
+    </string-array>
+
+    <string-array name="category_names">
+        <item>¿Cuál es tu estilo de música favorito?</item>
+        <item>¿Cuál es tu deporte favorito?</item>
+        <item>¿Qué actividades practicás al aire libre?</item>
+        <item>¿A donde te gusta o gustaría viajar? </item>
+        <item>¿Cuál es tu comida favorita?</item>
+    </string-array>
+
+    <string-array name="music">
+        <item>Música clásica</item>
+        <item>Rock internacional</item>
+        <item>Rock Nacional</item>
+        <item>Pop</item>
+
+    </string-array>
+    <string-array name="sport">
+        <item>Tenis</item>
+        <item>Fútbol</item>
+        <item>Running</item>
+        <item>Rugby</item>
+    </string-array>
+    <string-array name="outdoors">
+        <item>Viajes de aventura</item>
+        <item>Andar en bici</item>
+        <item>Camping</item>
+        <item>Pesca</item>
+    </string-array>
+    <string-array name="travel">
+        <item>Mar del plata</item>
+        <item>Sierra de la Ventana</item>
+        <item>New York</item>
+        <item>Cataratas del Iguazú</item>
+    </string-array>
+
+    <string-array name="food">
+        <item>Milanesa con papa fritas</item>
+        <item>Fideos</item>
+        <item>Ravioles</item>
+    </string-array>
+</resources>

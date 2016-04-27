@@ -83,5 +83,6 @@
     <!-- IntroActivity -->
     <string name="intro_location_title">Tenemos en cuenta tu ubicación</string>
     <string name="intro_location_description">Queremos darte los mejores candidatos, y lo mejor no puede estar muy lejos tuyo!</string>
-
+    <string name="intro_interests_subtitle">Seleccioná al menos uno que te interese para ayudarnos a encontrar los mejores candidatos</string>
+    <string name="intro_error_empty_interest">Debe seleccionar al menos una opción</string>
 </resources>

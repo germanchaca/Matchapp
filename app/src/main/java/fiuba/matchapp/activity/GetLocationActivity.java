@@ -44,6 +44,7 @@ public abstract class GetLocationActivity extends AppCompatActivity implements G
             MyApplication.getInstance().getPrefManager().storeUser(user);
 
             Log.e("IntroActivity", mLatitudeText + " " + mLongitudeText );
+            //TODO: mandar estos datos al server (si no hay conexión no importa)
         }
         //TODO: el server va a tener que darse cuenta si no le setie nunca el long o latitud e interanmente no lo tenga en cuenta
     }
