@@ -46,6 +46,7 @@ public class GcmIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         String key = intent.getStringExtra(KEY);
+        if(key==null) return;
         switch (key) {
             default:
                 registerGCM();
