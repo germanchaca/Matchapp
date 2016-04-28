@@ -3,26 +3,39 @@ package fiuba.matchapp.model;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    String id, name, email, birthday, genre, fbId, latitude, longitude;
+    String id, name, alias, email, birthday, genre, fbId, latitude, longitude;
+
     public User() {
     }
 
-    public User(String id, String name, String email, String birthday, String genre ) {
+    public User(String id, String name, String email, String birthday, String genre) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.birthday = birthday;
         this.genre = genre;
+        this.alias = name;
     }
-    public User(String id, String name, String email, String birthday, String genre,String fbId ) {
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public User(String id, String name, String email, String birthday, String genre, String fbId) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.birthday = birthday;
         this.genre = genre;
+        this.alias = name;
         this.fbId = fbId;
     }
-    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude ) {
+
+    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -30,9 +43,22 @@ public class User implements Serializable {
         this.genre = genre;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.alias = name;
     }
 
-    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude,String fbId ) {
+    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude, String fbId, String alias) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+        this.genre = genre;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.alias = alias;
+        this.fbId = fbId;
+    }
+
+    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude, String fbId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -43,16 +69,17 @@ public class User implements Serializable {
         this.fbId = fbId;
     }
 
-    public String getFbProfileImageUrl(){
-        if(this.hasFbId()){
+    public String getFbProfileImageUrl() {
+        if (this.hasFbId()) {
             return "http://graph.facebook.com/" + fbId + "/picture?type=large";
         }
         return "";
     }
 
-    public boolean hasFbId(){
-        return (this.fbId != null );
+    public boolean hasFbId() {
+        return (this.fbId != null);
     }
+
     public String getLongitude() {
         return longitude;
     }

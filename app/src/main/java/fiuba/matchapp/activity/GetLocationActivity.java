@@ -30,12 +30,12 @@ public abstract class GetLocationActivity extends AppCompatActivity implements G
         ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION,REQUEST_LOCATION);
 
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        disconnect();
         if (mLastLocation != null) {
             String mLatitudeText = String.valueOf(mLastLocation.getLatitude());
             String mLongitudeText = String.valueOf(mLastLocation.getLongitude());
             Toast.makeText(getBaseContext(), mLatitudeText + " " + mLongitudeText, Toast.LENGTH_LONG).show();
 
-            disconnect();
             User user = MyApplication.getInstance().getPrefManager().getUser();
             user.setLatitude(mLatitudeText);
             user.setLongitude(mLongitudeText);

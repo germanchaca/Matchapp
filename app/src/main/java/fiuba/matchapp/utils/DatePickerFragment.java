@@ -6,15 +6,16 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    EditText _dateText;
+    TextView _dateText;
 
-    public void setEditText(EditText _dateText){
+    public void setEditText(TextView _dateText){
         this._dateText = _dateText;
     }
 

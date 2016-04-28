@@ -202,4 +202,10 @@ public class MainActivity extends GetLocationActivity {
             Message message = (Message) intent.getSerializableExtra("message");
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.connect();
+        super.onStart();
+    }
 }

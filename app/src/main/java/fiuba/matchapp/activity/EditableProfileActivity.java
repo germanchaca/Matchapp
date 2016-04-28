@@ -2,6 +2,7 @@ package fiuba.matchapp.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,8 +15,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -27,6 +33,9 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.User;
+import fiuba.matchapp.utils.DatePickerFragment;
 
 /**
  * Created by german on 4/19/2016.
@@ -49,6 +58,13 @@ public class EditableProfileActivity extends AppCompatActivity implements ImageC
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static String[] PERMISSIONS_CAMERA = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private RelativeLayout layoutEditName;
+    private EditText txtName;
+    private User user;
+    private RelativeLayout layoutEditAlias;
+    private EditText txtAlias;
+    private RelativeLayout layoutEditDate;
+    private TextView txtDate;
 
 
     @Override
@@ -57,10 +73,9 @@ public class EditableProfileActivity extends AppCompatActivity implements ImageC
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_editable_profile);
+        user = MyApplication.getInstance().getPrefManager().getUser();
 
-        userImage = (ImageView) findViewById(R.id.user_image);
-        editImage = (FrameLayout) findViewById(R.id.edit_image);
-        fbEditImage = (FloatingActionButton) findViewById(R.id.fb_edit_image);
+        initViews(user);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
@@ -68,8 +83,6 @@ public class EditableProfileActivity extends AppCompatActivity implements ImageC
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbarLayout.setTitle("Camii");
-
-        Picasso.with(this).load(R.drawable.p2).into(userImage);
 
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +99,48 @@ public class EditableProfileActivity extends AppCompatActivity implements ImageC
         });
     }
 
+    private void initViews(User user) {
+        userImage = (ImageView) findViewById(R.id.user_image);
+        editImage = (FrameLayout) findViewById(R.id.edit_image);
+        fbEditImage = (FloatingActionButton) findViewById(R.id.fb_edit_image);
+        txtDate = (TextView) findViewById(R.id.textViewBirthDate);
+
+        layoutEditName = (RelativeLayout) findViewById(R.id.layoutEditName);
+        txtName = (EditText) findViewById(R.id.txtName);
+        txtName.setText(user.getName());
+        layoutEditName.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+               txtName.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(txtName, InputMethod.SHOW_FORCED);
+            }
+        });
+        layoutEditAlias = (RelativeLayout) findViewById(R.id.layoutEditAlias);
+        txtAlias = (EditText) findViewById(R.id.txtAlias);
+        txtAlias.setText(user.getAlias());
+        layoutEditAlias.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                txtAlias.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(txtAlias, InputMethod.SHOW_FORCED);
+            }
+        });
+        layoutEditDate = (RelativeLayout) findViewById(R.id.layoutEditDate);
+        layoutEditDate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                txtDate.requestFocus();
+                showDatePickerDialog(v);
+            }
+        });
+    }
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.setEditText(txtDate);
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
