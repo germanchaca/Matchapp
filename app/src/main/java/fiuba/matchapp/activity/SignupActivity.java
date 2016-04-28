@@ -36,9 +36,8 @@ public class SignupActivity extends AppCompatActivity {
     private String password;
     private String gender;
     private String birthday;
-    private String fbImageUrl;
-    private Boolean hasFbId; //para subir las fotos correspondientes
-
+    private String fbId;
+    private Boolean hasFbId;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,9 +76,7 @@ public class SignupActivity extends AppCompatActivity {
             lstSexos.add(iSexo);
         }
         _sex_input.setItems(lstSexos);
-        hasFbId = false;
         inicializarConCuentaFacebook();
-
 
     }
 
@@ -91,15 +88,15 @@ public class SignupActivity extends AppCompatActivity {
             email = extras.getString("email");
             gender = extras.getString("gender");
             birthday = extras.getString("birthday");
-            String fbId = extras.getString("id");
-            fbImageUrl = "http://graph.facebook.com/" + fbId + "/picture?type=large";
+            fbId = extras.getString("fbId");
 
             _dateText.setText(birthday);
             _emailText.setText(email);
             _nameText.setText(userName);
             _sex_input.setText(gender);
-
             hasFbId = true;
+        }else{
+            hasFbId = false;
         }
     }
     public void showDatePickerDialog(View v) {
@@ -146,8 +143,13 @@ public class SignupActivity extends AppCompatActivity {
 
 
     public void onSignupSuccess() {
+        User user;
 
-        User user = new User("0", userName, email,birthday,gender);
+        if (hasFbId){
+            user = new User("0", userName, email,birthday,gender,fbId);
+        }else{
+            user = new User("0", userName, email,birthday,gender);
+        }
         MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _signupButton.setEnabled(true);
@@ -170,12 +172,27 @@ public class SignupActivity extends AppCompatActivity {
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+        String birthDate = _dateText.getText().toString();
+        String gender = _sex_input.getText().toString();
 
         if (name.isEmpty()) {
             _nameText.setError(getResources().getString(R.string.invalid_name_empty));
             valid = false;
         } else {
             _nameText.setError(null);
+        }
+
+        if (birthDate.isEmpty()) {
+            _dateText.setError(getResources().getString(R.string.invalid_birthdate));
+            valid = false;
+        } else {
+            _dateText.setError(null);
+        }
+        if (gender.isEmpty()) {
+            _sex_input.setError(getResources().getString(R.string.invalid_gender));
+            valid = false;
+        } else {
+            _sex_input.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {

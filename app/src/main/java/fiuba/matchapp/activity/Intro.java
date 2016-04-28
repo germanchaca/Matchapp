@@ -14,7 +14,10 @@ import com.github.paolorotolo.appintro.AppIntroFragment;
 import java.util.List;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.fragment.InterestsRecyclerViewFragment;
+import fiuba.matchapp.fragment.UploadProfilePhotoFragment;
+import fiuba.matchapp.model.User;
 
 /**
  * Created by german on 4/26/2016.
@@ -26,15 +29,6 @@ public class Intro extends AppIntro2 {
 
     @Override
     public void init(Bundle savedInstanceState) {
-
-        // Add your slide's fragments here.
-        // AppIntro will automatically generate the dots indicator and buttons.
-        //addSlide(first_fragment);
-        //addSlide(second_fragment);
-        //addSlide(third_fragment);
-        //addSlide(fourth_fragment);
-        // addSlide(SampleSlide.newInstance(R.layout.your_slide_here));
-
         Resources res = getResources();
 
         addSlide(AppIntroFragment.newInstance(res.getString(R.string.intro_location_title), res.getString(R.string.intro_location_description), R.drawable.ic_place_black_24dp, Color.parseColor("#00bcd4")));
@@ -45,6 +39,11 @@ public class Intro extends AppIntro2 {
         addSlide(InterestsRecyclerViewFragment.newInstance(3));
         addSlide(InterestsRecyclerViewFragment.newInstance(4));
         addSlide(InterestsRecyclerViewFragment.newInstance(5));
+
+        User user = MyApplication.getInstance().getPrefManager().getUser();
+        if( user.hasFbId() == false ){
+            addSlide(new UploadProfilePhotoFragment());
+        }
 
     }
 
@@ -65,14 +64,23 @@ public class Intro extends AppIntro2 {
 
         if( (index > 0) && fragment.isEmpty ) {
             pager.setCurrentItem(pager.getCurrentItem() - 1);
-            Snackbar snackbar = Snackbar.make(backgroundFrame,getResources().getString( R.string.intro_error_empty_interest), Snackbar.LENGTH_LONG);
-            snackbar.show();
+            if (index == 6){
+                Snackbar snackbar = Snackbar.make(backgroundFrame, getResources().getString(R.string.intro_error_empty_photo), Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }else {
+                Snackbar snackbar = Snackbar.make(backgroundFrame, getResources().getString(R.string.intro_error_empty_interest), Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+
         }
     }
 
     @Override
     public void onSlideChanged() {
+        int index = pager.getCurrentItem();
+        if(index == 6){
 
+        }
     }
 
 }

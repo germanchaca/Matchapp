@@ -30,6 +30,8 @@
     <string name="invalid_password_empty">Ingrese su contrse\u0148a</string>
     <string name="invalid_password_format">Entre 4 y 10 caracteres alfanuméricos</string>
     <string name="invalid_auth">No se pudo iniciar sesión, verifique los datos intresados</string>
+    <string name="invalid_birthdate">Ingrese su fecha de nacimiento</string>
+    <string name="invalid_gender">Ingrese su sexo</string>
     <string name="hint_inputname">Nombre completo</string>
 
     <string name="hint_password">Contrase\u0148a</string>
@@ -85,4 +87,5 @@
     <string name="intro_location_description">Queremos darte los mejores candidatos, y lo mejor no puede estar muy lejos tuyo!</string>
     <string name="intro_interests_subtitle">Seleccioná al menos uno que te interese para ayudarnos a encontrar los mejores candidatos</string>
     <string name="intro_error_empty_interest">Debe seleccionar al menos una opción</string>
+    <string name="intro_error_empty_photo">Debe elegir una foto de perfil</string>
 </resources>

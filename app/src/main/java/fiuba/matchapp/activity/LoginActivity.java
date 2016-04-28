@@ -47,7 +47,7 @@ public class LoginActivity extends FacebookLoginActivity {
         loginWithFacebook = (Button) findViewById(R.id.btn_fb_login);
         _link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
 
-        _link_forgot_password.setOnClickListener(new View.OnClickListener(){
+        _link_forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showForgotPasswordDialog();
@@ -83,8 +83,10 @@ public class LoginActivity extends FacebookLoginActivity {
 
         loginWithFacebook.setOnClickListener(new FacebookLogInButtonListener());
     }
+
     @Override
     protected void onFacebookLoggedIn(LoginResult loginResult) {
+
         System.out.println("loginSuccess");
         GraphRequest request = GraphRequest.newMeRequest(
                 loginResult.getAccessToken(),
@@ -93,41 +95,58 @@ public class LoginActivity extends FacebookLoginActivity {
                     public void onCompleted(JSONObject object,
                                             GraphResponse response) {
                         Log.v("LoginActivity", response.toString());
+                        Intent i = new Intent(LoginActivity.this, SignupActivity.class);
                         try {
                             String id = object.getString("id");
-                            String firstName = object.getString("first_name");
-                            String lastName = object.getString("last_name");
-                            String email = object.getString("email");
-                            String gender = object.getString("gender");
-                            String birthday = object.getString("birthday");
-
-                            Intent i = new Intent(LoginActivity.this, SignupActivity.class);
-
-                            String userName = new StringBuilder(firstName).append(" ").append(lastName).toString();
-                            String[] sexos = getResources().getStringArray(R.array.sex_array);
-                            if (gender == "male"){
-                                gender = sexos[0];
-                            }else {
-                                gender = sexos[1];
-                            }
-                            i.putExtra("id",id);
-                            i.putExtra("userName", userName);
-                            i.putExtra("email", email);
-                            i.putExtra("gender", gender);
-                            i.putExtra("birthday", birthday);
-                            startActivity(i);
+                            i.putExtra("fbId", id);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        try {
+                            String firstName = object.getString("first_name");
+                            String lastName = object.getString("last_name");
+                            String userName = new StringBuilder(firstName).append(" ").append(lastName).toString();
+                            i.putExtra("userName", userName);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            String email = object.getString("email");
+                            i.putExtra("email", email);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            String gender = object.getString("gender");
+                            String[] sexos = getResources().getStringArray(R.array.sex_array);
+                            if (gender.contentEquals("male")) {
+                                gender = sexos[0];
+                            } else {
+                                gender = sexos[1];
+                            }
+                            i.putExtra("gender", gender);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            String birthday = object.getString("birthday");
+                            i.putExtra("birthday", birthday);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(i);
                     }
                 });
+
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name,last_name,email,gender, birthday");
+        parameters.putString("fields", "id,first_name,last_name,email,birthday,gender");
         request.setParameters(parameters);
         request.executeAsync();
     }
 
-    public void showForgotPasswordDialog(){
+    public void showForgotPasswordDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dark_Dialog);
         builder.setTitle(getResources().getString(R.string.dialog_forgot_password));
@@ -157,6 +176,7 @@ public class LoginActivity extends FacebookLoginActivity {
         builder.show();
 
     }
+
     public void login() {
         Log.d(TAG, "Intentando Loguear");
 
@@ -258,7 +278,7 @@ public class LoginActivity extends FacebookLoginActivity {
     }
 
     public void onLoginSuccess() {
-        User user = new User("0", "german", "germanchaca@gmail.com", null,null);
+        User user = new User("0", "german", "germanchaca@gmail.com", null, null);
         MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _loginButton.setEnabled(true);

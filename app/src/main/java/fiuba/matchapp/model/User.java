@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     String id, name, email, birthday, genre, fbId, latitude, longitude;
-
     public User() {
     }
 
@@ -14,6 +13,14 @@ public class User implements Serializable {
         this.email = email;
         this.birthday = birthday;
         this.genre = genre;
+    }
+    public User(String id, String name, String email, String birthday, String genre,String fbId ) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+        this.genre = genre;
+        this.fbId = fbId;
     }
     public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude ) {
         this.id = id;
@@ -25,6 +32,27 @@ public class User implements Serializable {
         this.latitude = latitude;
     }
 
+    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude,String fbId ) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+        this.genre = genre;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.fbId = fbId;
+    }
+
+    public String getFbProfileImageUrl(){
+        if(this.hasFbId()){
+            return "http://graph.facebook.com/" + fbId + "/picture?type=large";
+        }
+        return "";
+    }
+
+    public boolean hasFbId(){
+        return (this.fbId != null );
+    }
     public String getLongitude() {
         return longitude;
     }
