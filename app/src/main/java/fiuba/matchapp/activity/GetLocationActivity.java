@@ -15,9 +15,6 @@ import com.google.android.gms.location.LocationServices;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 
-/**
- * Created by german on 4/26/2016.
- */
 public abstract class GetLocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_LOCATION= 1;
@@ -38,6 +35,7 @@ public abstract class GetLocationActivity extends AppCompatActivity implements G
             String mLongitudeText = String.valueOf(mLastLocation.getLongitude());
             Toast.makeText(getBaseContext(), mLatitudeText + " " + mLongitudeText, Toast.LENGTH_LONG).show();
 
+            disconnect();
             User user = MyApplication.getInstance().getPrefManager().getUser();
             user.setLatitude(mLatitudeText);
             user.setLongitude(mLongitudeText);
@@ -67,15 +65,13 @@ public abstract class GetLocationActivity extends AppCompatActivity implements G
                 .addApi(LocationServices.API)
                 .build();
     }
-    @Override
-    protected void onStart() {
+
+    protected void connect(){
         mGoogleApiClient.connect();
-        super.onStart();
+    }
+    protected void disconnect(){
+        mGoogleApiClient.disconnect();
     }
 
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
+
 }
