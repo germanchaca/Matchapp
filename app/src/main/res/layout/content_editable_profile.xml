@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                                            xmlns:tools="http://schemas.android.com/tools"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_marginTop="@dimen/activity_horizontal_margin"
-                                            android:padding="@dimen/activity_horizontal_margin"
-                                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                                            tools:context=".activity.EditableProfileActivity"
-                                            tools:showIn="@layout/activity_editable_profile">
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:padding="@dimen/activity_horizontal_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.EditableProfileActivity"
+    tools:showIn="@layout/activity_editable_profile">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/layoutEditName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -65,13 +68,13 @@
                 android:layout_toEndOf="@id/icName"
                 android:layout_toRightOf="@id/icName"
                 android:background="@null"
-                android:text="Kevin Otero"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content"/>
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layoutEditAlias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -121,13 +124,13 @@
                 android:layout_toEndOf="@id/icAlias"
                 android:layout_toRightOf="@id/icAlias"
                 android:background="@null"
-                android:text="Kevv"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content"/>
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layoutEditDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -166,7 +169,7 @@
                 android:textColor="@color/profile_text_title"/>
 
             <TextView
-                android:id="@+id/txtBirthDate"
+                android:id="@+id/textViewBirthDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtAgeLabel"
@@ -267,18 +270,21 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:src="@drawable/ic_mode_edit_24dp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/txtEditMailLabel"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="32dp"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toRightOf="@id/icMail"
+                android:background="@null"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/edit_profile_mail"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_title"/>
+
             <EditText
                 android:id="@+id/txtEditMail"
                 android:layout_width="match_parent"
