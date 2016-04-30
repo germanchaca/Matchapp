@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "202037738713",
+    "project_id": "matchapp-63f4b"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202037738713:android:8596f598f596a3ea",
+        "android_client_info": {
+          "package_name": "fiuba.matchapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZciJkMLfooDH45LxVjoVyYJ9J-AdABqk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
