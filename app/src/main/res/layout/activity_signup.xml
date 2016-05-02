@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <fiuba.matchapp.utils.clickToSelectEditText.ClickToSelectEditText
+            <fiuba.matchapp.view.clickToSelectEditText.ClickToSelectEditText
                 android:id="@+id/sex_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

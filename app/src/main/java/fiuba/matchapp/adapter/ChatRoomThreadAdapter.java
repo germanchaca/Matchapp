@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import fiuba.matchapp.R;
-import fiuba.matchapp.helper.DateHelper;
+import fiuba.matchapp.model.DateHelper;
 import fiuba.matchapp.model.Message;
 
 /**

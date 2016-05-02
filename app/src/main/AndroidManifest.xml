@@ -14,7 +14,7 @@
     <!-- START Added for GCM -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <permission
-        android:name="fiuba.matchapp.gcm.permission.C2D_MESSAGE"
+        android:name="fiuba.matchapp.networking.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="fiuba.matchapp.gcm.permission.C2D_MESSAGE" />
@@ -39,7 +39,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.LaunchActivity"
+            android:name=".view.activity.LaunchActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,7 +48,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -60,25 +60,25 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".view.activity.LoginActivity"
             android:theme="@style/AppTheme.Dark"/>
         <activity
-            android:name=".activity.SignupActivity"
+            android:name=".view.activity.SignupActivity"
             android:theme="@style/AppTheme.Dark"/>
         <activity
-            android:name=".activity.ChatRoomActivity"
+            android:name=".view.activity.ChatRoomActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.ProfileActivity"
+            android:name=".view.activity.ProfileActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.EditableProfileActivity"
+            android:name=".view.activity.EditableProfileActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.Intro"
+            android:name=".view.activity.Intro"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <!-- START Added for GCM -->
@@ -106,7 +106,7 @@
         </receiver>
 
         <service
-            android:name=".gcm.MyGcmPushReceiver"
+            android:name=".networking.gcm.MyGcmPushReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -114,7 +114,7 @@
         </service>
 
         <service
-            android:name=".gcm.GcmIntentService"
+            android:name=".networking.gcm.GcmIntentService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />

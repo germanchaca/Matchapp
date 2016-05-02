@@ -1,8 +1,11 @@
 package fiuba.matchapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class User implements Serializable,Parcelable {
     String id, name, alias, email, birthday, genre, fbId, latitude, longitude;
 
     public User() {
@@ -16,6 +19,30 @@ public class User implements Serializable {
         this.genre = genre;
         this.alias = name;
     }
+
+    protected User(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        alias = in.readString();
+        email = in.readString();
+        birthday = in.readString();
+        genre = in.readString();
+        fbId = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getAlias() {
         return alias;
@@ -77,7 +104,8 @@ public class User implements Serializable {
     }
 
     public boolean hasFbId() {
-        return (this.fbId != null);
+
+        return fbId != null && !fbId.isEmpty();
     }
 
     public String getLongitude() {
@@ -142,5 +170,23 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.alias);
+        dest.writeString(this.email);
+        dest.writeString(this.birthday);
+        dest.writeString(this.genre);
+        dest.writeString(this.fbId);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
     }
 }
