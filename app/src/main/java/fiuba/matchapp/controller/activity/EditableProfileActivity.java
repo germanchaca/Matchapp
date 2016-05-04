@@ -49,7 +49,11 @@ import fiuba.matchapp.model.User;
  * Set user date en el DatePickerDialog si existiera, como metodo aparte para que no joda al signUp
  * 4.Editar intereses
  * 5.Volley request
- * en el cargando poner showProgressDialog
+ *
+ *
+ * Aclaraciones:
+ * _en el cargando poner showProgressDialog
+ * _ el server debe mandar error si le manda contraseña no valida
  */
 public class EditableProfileActivity extends GetLocationActivity implements ImageChooserListener {
 
