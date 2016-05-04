@@ -2,6 +2,7 @@ package fiuba.matchapp.controller.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,12 +13,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -40,19 +39,17 @@ import java.io.File;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
+import fiuba.matchapp.model.User;
 
 /**
  * Created by german on 4/19/2016.
  * TODO: 1.Guardar user en pref en commit changes
- * 2.Borrar Cuenta
+ * guardar foto en base64
  * Set user date en el DatePickerDialog si existiera, como metodo aparte para que no joda al signUp
- * 3.Cambiar password (requestFocus)
  * 4.Editar intereses
  * 5.Volley request
- * 6.Cargando hasta que sube imagen
- * 7.Cargando hasta que sube lo demas
+ * en el cargando poner showProgressDialog
  */
 public class EditableProfileActivity extends GetLocationActivity implements ImageChooserListener {
 
@@ -89,6 +86,9 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private FloatingActionButton btnCommitChanges;
     private LinearLayout parentLinearLayout;
     private ImageView icEditMail;
+    private RelativeLayout layoutChangePassword;
+    private RelativeLayout layoutDeleteAccount;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -135,6 +135,8 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         layoutEditMail = (RelativeLayout) findViewById(R.id.layoutEditMail);
         txtEmail = (EditText) findViewById(R.id.txtEditMail);
         icEditMail = (ImageView) findViewById(R.id.icEditMail);
+        layoutChangePassword = (RelativeLayout) findViewById(R.id.ChangePassword);
+        layoutDeleteAccount = (RelativeLayout) findViewById(R.id.DeleteAccount);
 
         initBtnCommitChanges();
         initEditName(user);
@@ -144,6 +146,96 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         initEditMail(user);
         initTootlBar();
         initEditPhotoIcons();
+        initChangePassword();
+        initDeleteAccount();
+    }
+
+    private void initDeleteAccount() {
+        layoutDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentLinearLayout.requestFocus();
+                MyApplication.getInstance().deletteAccount();
+            }
+        });
+    }
+
+    private void initChangePassword() {
+        layoutChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentLinearLayout.requestFocus();
+                showChangePasswordDialog();
+            }
+        });
+    }
+
+    private void showChangePasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.edit_profile_dialog_change_password_title));
+        builder.setIcon(R.drawable.ic_https_24dp);
+
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input.setHint(R.string.edit_profile_dialog_change_password_hint);
+
+        builder.setView(input);
+
+        builder.setPositiveButton(getResources().getString(R.string.edit_profile_dialog_change_password_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newPassword = input.getText().toString();
+                //TODO: enviar esto al servidor
+                showProgressDialog();
+
+                //esto en realidad es cuando responde el server
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                //mandar data de volley
+                                // onLoginFailed();
+                                hideProgressDialog();
+                                //mostrarError si server devuelve error
+                            }
+                        }, 1000);
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.edit_profile_dialog_change_password_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void onServerConnectionFailedBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.edit_profile_alert_dialog_connection_failed));
+        builder.setPositiveButton(getResources().getString(R.string.alert_dialog_continue_editing_discard), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                onBackPressed();
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.alert_dialog_continue_editing_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        builder.show();
+    }
+
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getResources().getString(R.string.edit_profile_uploading_data_to_server));
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        progressDialog.dismiss();
     }
 
     private void initEditMail(User user) {
@@ -153,7 +245,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     validateMail();
-                }else {
+                } else {
                     showBtnCommitChanges();
                 }
             }
@@ -179,7 +271,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 showBtnCommitChanges();
             }
         });
-}
+    }
 
     private void initBtnCommitChanges() {
         btnCommitChanges.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +289,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     validateName();
-                }else {
+                } else {
                     showBtnCommitChanges();
                 }
             }
@@ -220,7 +312,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     validateAlias();
-                }else {
+                } else {
                     showBtnCommitChanges();
                 }
             }
@@ -292,15 +384,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         }
     }
 
-    public void showRefreshingLocationLoading() {
-        RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
-        anim.setInterpolator(new LinearInterpolator());
-        anim.setRepeatCount(Animation.INFINITE);
-        anim.setDuration(700);
-
-        refreshIcon = (ImageView) findViewById(R.id.icRefreshLocation);
-        refreshIcon.startAnimation(anim);
-    }
 
     public void stopRefreshingLocationLoading() {
         if (refreshIcon != null) {
@@ -309,7 +392,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     }
 
     public void refreshLocation() {
-        showRefreshingLocationLoading();
         this.initUserLastLocation();
         super.connect();
     }
@@ -358,20 +440,21 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             //TODO mandar datos al server
             //TODO Cargando
             onBackPressed();
+            // si no hay conexion onServerConnectionFailedBackPressed();
         } else {
-            AlertDialog.Builder builder =   new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.alert_dialog_continue_editing));
             builder.setPositiveButton(getResources().getString(R.string.alert_dialog_continue_editing_discard), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            onBackPressed();
-                        }
-                    });
+                public void onClick(DialogInterface dialog, int which) {
+                    onBackPressed();
+                }
+            });
             builder.setNegativeButton(getResources().getString(R.string.alert_dialog_continue_editing_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    });
-            builder.show() ;
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
+            });
+            builder.show();
         }
 
 
