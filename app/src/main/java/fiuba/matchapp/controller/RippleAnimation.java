@@ -1,4 +1,4 @@
-package fiuba.matchapp.view;
+package fiuba.matchapp.controller;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

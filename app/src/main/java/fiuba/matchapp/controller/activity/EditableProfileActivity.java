@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,17 +41,18 @@ import java.io.File;
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.view.fragment.DatePickerFragment;
+import fiuba.matchapp.controller.fragment.DatePickerFragment;
 
 /**
  * Created by german on 4/19/2016.
  * TODO: 1.Guardar user en pref en commit changes
- *       2.Borrar Cuenta
- *       3.Cambiar password
- *       4.Editar intereses
- *       5.Volley request
- *       6.Cargando hasta que sube imagen
- *       7.Cargando hasta que sube lo demas
+ * 2.Borrar Cuenta
+ * Set user date en el DatePickerDialog si existiera, como metodo aparte para que no joda al signUp
+ * 3.Cambiar password (requestFocus)
+ * 4.Editar intereses
+ * 5.Volley request
+ * 6.Cargando hasta que sube imagen
+ * 7.Cargando hasta que sube lo demas
  */
 public class EditableProfileActivity extends GetLocationActivity implements ImageChooserListener {
 
@@ -85,6 +87,8 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private boolean hasMailError = false;
     private boolean isUploadingImage = false;
     private FloatingActionButton btnCommitChanges;
+    private LinearLayout parentLinearLayout;
+    private ImageView icEditMail;
 
 
     @Override
@@ -94,17 +98,11 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
         setContentView(R.layout.activity_editable_profile);
         user = MyApplication.getInstance().getPrefManager().getUser();
-
         initViews(user);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        setSupportActionBar(toolbar);
+    }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbarLayout.setTitle(getResources().getString(R.string.edit_profile_toolbar_label));
-        toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-
+    private void initEditPhotoIcons() {
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,26 +119,86 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     }
 
     private void initViews(User user) {
+        parentLinearLayout = (LinearLayout) findViewById(R.id.parentLayout);
         btnCommitChanges = (FloatingActionButton) findViewById(R.id.confirmChanges);
-        btnCommitChanges.setOnClickListener(new View.OnClickListener(){
+        editImage = (FrameLayout) findViewById(R.id.edit_image);
+        userImage = (ImageView) findViewById(R.id.user_image);
+        fbEditImage = (FloatingActionButton) findViewById(R.id.fb_edit_image);
+        txtDate = (TextView) findViewById(R.id.textViewBirthDate);
+        layoutEditName = (RelativeLayout) findViewById(R.id.layoutEditName);
+        txtName = (EditText) findViewById(R.id.txtName);
+        layoutEditAlias = (RelativeLayout) findViewById(R.id.layoutEditAlias);
+        txtAlias = (EditText) findViewById(R.id.txtAlias);
+        layoutEditDate = (RelativeLayout) findViewById(R.id.layoutEditDate);
+        layoutRefreshLocation = (RelativeLayout) findViewById(R.id.layoutRefreshAddress);
+        txtEditAddress = (TextView) findViewById(R.id.txtLocation);
+        layoutEditMail = (RelativeLayout) findViewById(R.id.layoutEditMail);
+        txtEmail = (EditText) findViewById(R.id.txtEditMail);
+        icEditMail = (ImageView) findViewById(R.id.icEditMail);
+
+        initBtnCommitChanges();
+        initEditName(user);
+        initEditAlias(user);
+        initEditDate(user);
+        initEditAddress(user);
+        initEditMail(user);
+        initTootlBar();
+        initEditPhotoIcons();
+    }
+
+    private void initEditMail(User user) {
+        txtEmail.setText(user.getEmail());
+        txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validateMail();
+                }else {
+                    showBtnCommitChanges();
+                }
+            }
+        });
+        layoutEditMail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtEmail.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(txtEmail, InputMethod.SHOW_FORCED);
+                showBtnCommitChanges();
+            }
+        });
+    }
+
+    private void initEditAddress(User user) {
+        txtEditAddress.setText(user.getParsedAddress());
+        layoutRefreshLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentLinearLayout.requestFocus();
+                refreshLocation();
+                showBtnCommitChanges();
+            }
+        });
+}
+
+    private void initBtnCommitChanges() {
+        btnCommitChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 commitChanges();
             }
         });
-        userImage = (ImageView) findViewById(R.id.user_image);
-        editImage = (FrameLayout) findViewById(R.id.edit_image);
-        fbEditImage = (FloatingActionButton) findViewById(R.id.fb_edit_image);
-        txtDate = (TextView) findViewById(R.id.textViewBirthDate);
+    }
 
-        layoutEditName = (RelativeLayout) findViewById(R.id.layoutEditName);
-        txtName = (EditText) findViewById(R.id.txtName);
+    private void initEditName(User user) {
         txtName.setText(user.getName());
         txtName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     validateName();
+                }else {
+                    showBtnCommitChanges();
                 }
             }
         });
@@ -150,17 +208,20 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 txtName.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(txtName, InputMethod.SHOW_FORCED);
-                btnCommitChanges.setVisibility(View.VISIBLE);
+                showBtnCommitChanges();
             }
         });
-        layoutEditAlias = (RelativeLayout) findViewById(R.id.layoutEditAlias);
-        txtAlias = (EditText) findViewById(R.id.txtAlias);
+    }
+
+    private void initEditAlias(User user) {
         txtAlias.setText(user.getAlias());
         txtAlias.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     validateAlias();
+                }else {
+                    showBtnCommitChanges();
                 }
             }
         });
@@ -170,95 +231,72 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 txtAlias.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(txtAlias, InputMethod.SHOW_FORCED);
-                btnCommitChanges.setVisibility(View.VISIBLE);
+                showBtnCommitChanges();
             }
         });
-        layoutEditDate = (RelativeLayout) findViewById(R.id.layoutEditDate);
+    }
+
+    private void initEditDate(User user) {
         txtDate.setText(user.getBirthday());
         layoutEditDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txtDate.requestFocus();
+                parentLinearLayout.requestFocus();
                 showDatePickerDialog(v);
-                btnCommitChanges.setVisibility(View.VISIBLE);
-            }
-        });
-
-        layoutRefreshLocation = (RelativeLayout) findViewById(R.id.layoutRefreshAddress);
-        txtEditAddress = (TextView) findViewById(R.id.txtLocation);
-        txtEditAddress.setText(user.getParsedAddress());
-        txtEditAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    validateMail();
-                }
-            }
-        });
-        layoutRefreshLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtEditAddress.requestFocus();
-                refreshLocation();
-                btnCommitChanges.setVisibility(View.VISIBLE);
-            }
-        });
-        layoutEditMail = (RelativeLayout) findViewById(R.id.layoutEditMail);
-        txtEmail = (EditText) findViewById(R.id.txtEditMail);
-        txtEmail.setText(user.getEmail());
-        layoutEditMail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtEmail.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(txtEmail, InputMethod.SHOW_FORCED);
-                btnCommitChanges.setVisibility(View.VISIBLE);
+                showBtnCommitChanges();
             }
         });
     }
+
+    private void initTootlBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbarLayout.setTitle(getResources().getString(R.string.edit_profile_toolbar_label));
+        toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+    }
     //Para ser llamado por el icono de concretar
 
-    private boolean validateAlias() {
+    private void validateAlias() {
         String alias = txtAlias.getText().toString();
         if (alias.isEmpty()) {
             txtAlias.setText(user.getAlias());
         }
-        return true;
     }
 
-    private boolean validateName() {
+    private void validateName() {
         String name = txtName.getText().toString();
         if (name.isEmpty()) {
             txtName.setText(user.getName());
         }
-        return true;
     }
 
-    public boolean validateMail() {
-
-        this.hasMailError = false;
+    public void validateMail() {
         String mail = txtEmail.getText().toString();
 
         if (mail.isEmpty()) {
             txtEmail.setText(user.getEmail());
-
+            this.icEditMail.setVisibility(View.VISIBLE);
+            this.hasMailError = false;
         } else {
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
                 txtEmail.setError(getResources().getString(R.string.invalid_mail_invalid));
+                this.icEditMail.setVisibility(View.GONE);
                 this.hasMailError = true;
             } else {
                 txtEmail.setError(null);
+                this.icEditMail.setVisibility(View.VISIBLE);
+                this.hasMailError = false;
             }
         }
-
-        return true;
     }
 
     public void showRefreshingLocationLoading() {
         RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
         anim.setInterpolator(new LinearInterpolator());
         anim.setRepeatCount(Animation.INFINITE);
-        anim.setDuration(100);
+        anim.setDuration(700);
 
         refreshIcon = (ImageView) findViewById(R.id.icRefreshLocation);
         refreshIcon.startAnimation(anim);
@@ -315,34 +353,35 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         return super.onOptionsItemSelected(item);
     }
 
-    private void commitChanges(){
+    private void commitChanges() {
         if (validate()) {
             //TODO mandar datos al server
             //TODO Cargando
             onBackPressed();
         } else {
-            new AlertDialog.Builder(getApplicationContext())
-                    .setMessage(getResources().getString(R.string.alert_dialog_continue_editing))
-                    .setPositiveButton(getResources().getString(R.string.alert_dialog_continue_editing_discard), new DialogInterface.OnClickListener() {
+            AlertDialog.Builder builder =   new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.alert_dialog_continue_editing));
+            builder.setPositiveButton(getResources().getString(R.string.alert_dialog_continue_editing_discard), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             onBackPressed();
                         }
-                    })
-                    .setNegativeButton(getResources().getString(R.string.alert_dialog_continue_editing_cancel), new DialogInterface.OnClickListener() {
+                    });
+            builder.setNegativeButton(getResources().getString(R.string.alert_dialog_continue_editing_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // do nothing
                         }
-                    })
-                    .show();
+                    });
+            builder.show() ;
         }
 
 
     }
+
     private boolean validate() {
+        validateName();
         validateAlias();
         validateMail();
-        validateName();
-        return !isUploadingImage && !hasMailError;
+        return (!isUploadingImage && !hasMailError);
     }
 
     private void chooseImage() {
@@ -409,12 +448,17 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                     isUploadingImage = true;
                     //TODO mandar al server y mostrar cargando
                     isUploadingImage = false;
+                    showBtnCommitChanges();
                 } else {
                     Log.i(TAG, "Chosen Image: Is null");
                 }
             }
 
         });
+    }
+
+    private void showBtnCommitChanges() {
+        btnCommitChanges.setVisibility(View.VISIBLE);
     }
 
     @Override

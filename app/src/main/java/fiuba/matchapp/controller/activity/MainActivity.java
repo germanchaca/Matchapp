@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
@@ -23,8 +23,8 @@ import fiuba.matchapp.model.Message;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.GcmIntentService;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
-import fiuba.matchapp.view.fragment.Connect;
-import fiuba.matchapp.view.fragment.OpenChatsFragment;
+import fiuba.matchapp.controller.fragment.Connect;
+import fiuba.matchapp.controller.fragment.OpenChatsFragment;
 
 public class MainActivity extends GetLocationActivity {
 
@@ -207,7 +207,7 @@ public class MainActivity extends GetLocationActivity {
 
     @Override
     protected void onStart() {
-        super.connect();
+
         super.onStart();
     }
 }

@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.fragment;
+package fiuba.matchapp.controller.fragment;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import fiuba.matchapp.R;
-import fiuba.matchapp.view.activity.ChatRoomActivity;
+import fiuba.matchapp.controller.activity.ChatRoomActivity;
 import fiuba.matchapp.adapter.ChatRoomsAdapter;
-import fiuba.matchapp.view.SimpleDividerItemDecoration;
+import fiuba.matchapp.controller.SimpleDividerItemDecoration;
 import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.model.Message;
 

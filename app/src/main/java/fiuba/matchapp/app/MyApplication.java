@@ -8,7 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-import fiuba.matchapp.view.activity.LoginActivity;
+import fiuba.matchapp.controller.activity.LoginActivity;
 
 /**
  * Created by german on 4/21/2016.

@@ -13,7 +13,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fiuba.matchapp.view.activity.MainActivity;
+import fiuba.matchapp.controller.activity.MainActivity;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;

@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.clickToSelectEditText;
+package fiuba.matchapp.controller.clickToSelectEditText;
 
 import android.annotation.TargetApi;
 import android.content.Context;

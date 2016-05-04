@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import fiuba.matchapp.R;
-import fiuba.matchapp.view.activity.ProfileActivity;
+import fiuba.matchapp.controller.activity.ProfileActivity;
 
 /**
  * Created by german on 4/17/2016.

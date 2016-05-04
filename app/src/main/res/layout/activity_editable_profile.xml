@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true" android:id="@+id/coodinator"
-    tools:context=".view.activity.EditableProfileActivity"
+    tools:context=".controller.activity.EditableProfileActivity"
     >
 
     <android.support.design.widget.AppBarLayout

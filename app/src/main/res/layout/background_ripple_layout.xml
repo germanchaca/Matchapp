@@ -1,6 +1,6 @@
 <!--this layout contains ripple background animation and Imageview
 In ripple animation tag we have set some properties -->
-<fiuba.matchapp.view.RippleAnimation
+<fiuba.matchapp.controller.RippleAnimation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content"
@@ -22,4 +22,4 @@ In ripple animation tag we have set some properties -->
         android:src="@drawable/phone2" />
 
 
-</fiuba.matchapp.view.RippleAnimation>
+</fiuba.matchapp.controller.RippleAnimation>

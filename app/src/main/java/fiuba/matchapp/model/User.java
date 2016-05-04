@@ -12,19 +12,19 @@ import java.util.Locale;
 
 import fiuba.matchapp.app.MyApplication;
 
-public class User implements Serializable,Parcelable {
+public class User implements Serializable, Parcelable {
     String id, name, alias, email, birthday, genre, fbId, latitude, longitude;
 
     public User() {
     }
 
-    public User(String id, String name, String email, String birthday, String genre) {
+    public User(String id, String name,String alias, String email, String birthday, String genre) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.birthday = birthday;
         this.genre = genre;
-        this.alias = name;
+        this.alias = alias;
     }
 
     protected User(Parcel in) {
@@ -59,50 +59,6 @@ public class User implements Serializable,Parcelable {
         this.alias = alias;
     }
 
-    public User(String id, String name, String email, String birthday, String genre, String fbId) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.birthday = birthday;
-        this.genre = genre;
-        this.alias = name;
-        this.fbId = fbId;
-    }
-
-    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.birthday = birthday;
-        this.genre = genre;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.alias = name;
-    }
-
-    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude, String fbId, String alias) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.birthday = birthday;
-        this.genre = genre;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.alias = alias;
-        this.fbId = fbId;
-    }
-
-    public User(String id, String name, String email, String birthday, String genre, String longitude, String latitude, String fbId) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.birthday = birthday;
-        this.genre = genre;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.fbId = fbId;
-    }
-
     public String getFbProfileImageUrl() {
         if (this.hasFbId()) {
             return "http://graph.facebook.com/" + fbId + "/picture?type=large";
@@ -113,10 +69,12 @@ public class User implements Serializable,Parcelable {
     public boolean hasFbId() {
         return fbId != null && !fbId.isEmpty();
     }
-    public boolean hasLatitude(){
+
+    public boolean hasLatitude() {
         return latitude != null && !latitude.isEmpty();
     }
-    public boolean hasLongitude(){
+
+    public boolean hasLongitude() {
         return longitude != null && !longitude.isEmpty();
     }
 
@@ -203,8 +161,8 @@ public class User implements Serializable,Parcelable {
     }
 
     public String getParsedAddress() {
-        String parsedAddress="";
-        if(!hasLatitude() ||  !hasLongitude()){
+        String parsedAddress = "";
+        if (!hasLatitude() || !hasLongitude()) {
             return parsedAddress;
         }
         Geocoder geocoder;

@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -278,7 +278,7 @@ public class LoginActivity extends FacebookLoginActivity {
     }
 
     public void onLoginSuccess() {
-        User user = new User("0", "german", "germanchaca@gmail.com", null, null);
+        User user = new User("0", "german","ger", "germanchaca@gmail.com", "10/10/1994", "Hombre");
         MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _loginButton.setEnabled(true);

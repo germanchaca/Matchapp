@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.fragment;
+package fiuba.matchapp.controller.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import fiuba.cardstack.SwipeDeck;
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.SwipeDeckAdapter;
-import fiuba.matchapp.view.RippleAnimation;
+import fiuba.matchapp.controller.RippleAnimation;
 
 public class Connect extends Fragment {
     private static final String TAG = "Connect_fragment";

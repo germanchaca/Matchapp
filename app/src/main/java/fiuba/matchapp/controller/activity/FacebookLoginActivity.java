@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.content.Context;
 import android.content.Intent;

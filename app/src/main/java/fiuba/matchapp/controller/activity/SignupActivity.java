@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.view.fragment.DatePickerFragment;
-import fiuba.matchapp.view.clickToSelectEditText.ClickToSelectEditText;
-import fiuba.matchapp.view.clickToSelectEditText.Item;
+import fiuba.matchapp.controller.fragment.DatePickerFragment;
+import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
+import fiuba.matchapp.controller.clickToSelectEditText.Item;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
@@ -144,11 +144,9 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupSuccess() {
         User user;
-
+        user = new User("0", userName, userName, email,birthday,gender);
         if (hasFbId){
-            user = new User("0", userName, email,birthday,gender,fbId);
-        }else{
-            user = new User("0", userName, email,birthday,gender);
+            user.setFbId(this.fbId);
         }
         MyApplication.getInstance().getPrefManager().storeUser(user);
 

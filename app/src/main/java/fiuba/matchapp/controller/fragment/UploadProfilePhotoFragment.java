@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.fragment;
+package fiuba.matchapp.controller.fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;

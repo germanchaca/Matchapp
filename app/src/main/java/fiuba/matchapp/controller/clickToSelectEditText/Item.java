@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.clickToSelectEditText;
+package fiuba.matchapp.controller.clickToSelectEditText;
 
 public class Item implements Listable {
 

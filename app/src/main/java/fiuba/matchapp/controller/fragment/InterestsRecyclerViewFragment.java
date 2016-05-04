@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.fragment;
+package fiuba.matchapp.controller.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;

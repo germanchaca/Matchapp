@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,8 +15,8 @@ import java.util.List;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.view.fragment.InterestsRecyclerViewFragment;
-import fiuba.matchapp.view.fragment.UploadProfilePhotoFragment;
+import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
+import fiuba.matchapp.controller.fragment.UploadProfilePhotoFragment;
 import fiuba.matchapp.model.User;
 
 /**

@@ -1,4 +1,4 @@
-package fiuba.matchapp.view.activity;
+package fiuba.matchapp.controller.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
