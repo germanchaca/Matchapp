@@ -27,6 +27,7 @@
     <string name="invalid_username_empty">Ingrese su email</string>
     <string name="invalid_mail_invalid">Ingrese un email válido</string>
     <string name="invalid_name_empty">Ingrese su nombre</string>
+    <string name="invalid_alias_empty">Ingrese su nombre</string>
     <string name="invalid_password_empty">Ingrese su contrse\u0148a</string>
     <string name="invalid_password_format">Entre 4 y 10 caracteres alfanuméricos</string>
     <string name="invalid_auth">No se pudo iniciar sesión, verifique los datos intresados</string>
@@ -37,7 +38,9 @@
     <string name="hint_password">Contrase\u0148a</string>
     <string name="hint_email">E-mail</string>
     <string name="hint_fecha_nac">Fecha de nacimiento</string>
-
+    <string name="alert_dialog_continue_editing">Desea descartar cambios?</string>
+    <string name="alert_dialog_continue_editing_discard">Descartar</string>
+    <string name="alert_dialog_continue_editing_cancel">Cancelar</string>
     <!-- SignUpActivity -->
     <string name="creating_account">Creando cuenta...</string>
     <string name="signup_failed">No se pudo completar el registro</string>
@@ -81,11 +84,12 @@
     <string name="edit_profile_cancel">Cancelar</string>
     <string name="edit_profile_action_select_picture">Seleccionar foto</string>
     <string name="edit_profile_title_select_picture">Cambiar foto de perfil</string>
-
+    <string name="error_location_refresh_failed">No se puede acceder a su ubicación actual, verifique tener habilitada la ubicación de su dispositivo</string>
     <!-- IntroActivity -->
     <string name="intro_location_title">Tenemos en cuenta tu ubicación</string>
     <string name="intro_location_description">Queremos darte los mejores candidatos, y lo mejor no puede estar muy lejos tuyo!</string>
     <string name="intro_interests_subtitle">Seleccioná al menos uno que te interese para ayudarnos a encontrar los mejores candidatos</string>
     <string name="intro_error_empty_interest">Debe seleccionar al menos una opción</string>
     <string name="intro_error_empty_photo">Debe elegir una foto de perfil</string>
+    <string name="edit_profile_toolbar_label">Editar perfil</string>
 </resources>

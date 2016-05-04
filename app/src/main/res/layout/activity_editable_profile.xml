@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="true" android:id="@+id/coodinator"
     tools:context=".view.activity.EditableProfileActivity"
     >
 
@@ -65,6 +65,17 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|right|end"
         />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/confirmChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_done_black_24dp"
+        android:visibility="gone"
+        app:layout_anchor="@id/coodinator"
+        app:backgroundTint="@color/primary"
+        app:layout_anchorGravity="bottom|end" />
 
 
 </android.support.design.widget.CoordinatorLayout>
