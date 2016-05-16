@@ -1,12 +1,16 @@
 package fiuba.matchapp.controller.activity;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+
+import android.app.FragmentManager;
+
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,20 +27,22 @@ import fiuba.matchapp.model.Message;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.GcmIntentService;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
-import fiuba.matchapp.controller.fragment.Connect;
+import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.controller.fragment.OpenChatsFragment;
 
 public class MainActivity extends GetLocationActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
     private String TAG_OPENCHATS_FRAGMENT = OpenChatsFragment.class.getSimpleName();
-    private String TAG_CONNECT = Connect.class.getSimpleName();
+    private String TAG_CONNECT = fiuba.matchapp.controller.fragment.fragmentPlayMatching.class.getSimpleName();
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     public static Context context;
     private ViewDataBinding binding;
+    private OpenChatsFragment fragmentChats;
+    private fiuba.matchapp.controller.fragment.fragmentPlayMatching fragmentPlayMatching;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,9 @@ public class MainActivity extends GetLocationActivity {
         if (MyApplication.getInstance().getPrefManager().getUser() == null) {
             launchLoginActivity();
         }else{
+            fragmentChats = new OpenChatsFragment();
+            fragmentPlayMatching = new fragmentPlayMatching();
+            setCurrentTabFragment(1);
             super.initUserLastLocation();
         }
 
@@ -83,15 +92,6 @@ public class MainActivity extends GetLocationActivity {
 
         if (checkPlayServices()) {
             registerGCM();
-        }
-
-
-        if (savedInstanceState == null) {
-            // During initial setup, plug in the openChats fragment.
-            OpenChatsFragment openChatsFragment = new OpenChatsFragment();
-            openChatsFragment.setArguments(getIntent().getExtras());
-
-            getFragmentManager().beginTransaction().add(R.id.contentFragment, openChatsFragment, TAG_OPENCHATS_FRAGMENT).addToBackStack(TAG_OPENCHATS_FRAGMENT).commit();
         }
     }
 
@@ -148,23 +148,11 @@ public class MainActivity extends GetLocationActivity {
                 break;
 
             case R.id.icon_game:
-
-                Fragment fragmentGame = getFragmentManager().findFragmentByTag(TAG_CONNECT);
-                if (fragmentGame == null) {
-                    fragmentGame = new Connect();
-                }
-                getFragmentManager().beginTransaction().replace(R.id.contentFragment, fragmentGame, TAG_CONNECT).addToBackStack(TAG_CONNECT).commit();
-
+                setCurrentTabFragment(0);
                 break;
 
             case R.id.icon_chats:
-
-                Fragment fragmentChats = getFragmentManager().findFragmentByTag(TAG_OPENCHATS_FRAGMENT);
-                if (fragmentChats == null) {
-                    fragmentChats = new OpenChatsFragment();
-                }
-                getFragmentManager().beginTransaction().replace(R.id.contentFragment, fragmentChats, TAG_OPENCHATS_FRAGMENT).addToBackStack(TAG_OPENCHATS_FRAGMENT).commit();
-
+                setCurrentTabFragment(1);
                 break;
         }
 
@@ -210,4 +198,24 @@ public class MainActivity extends GetLocationActivity {
 
         super.onStart();
     }
-}
+
+    private void setCurrentTabFragment(int tabPosition)
+    {
+        switch (tabPosition)
+        {
+            case 0 :
+                replaceFragment(fragmentPlayMatching);
+                break;
+            case 1 :
+                replaceFragment(fragmentChats);
+                break;
+            }
+        }
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.replace(R.id.contentFragment, fragment);
+
+         ft.commit();
+        }}

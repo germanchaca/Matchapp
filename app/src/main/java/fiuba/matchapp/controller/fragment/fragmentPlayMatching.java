@@ -16,7 +16,7 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.SwipeDeckAdapter;
 import fiuba.matchapp.controller.RippleAnimation;
 
-public class Connect extends Fragment {
+public class fragmentPlayMatching extends Fragment {
     private static final String TAG = "Connect_fragment";
     RippleAnimation rippleBackground1;
     private SwipeDeck cardStack;
