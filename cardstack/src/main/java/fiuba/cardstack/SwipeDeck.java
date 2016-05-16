@@ -414,6 +414,7 @@ public class SwipeDeck extends FrameLayout {
 
             int positionInAdapter = nextAdapterCard - getChildCount();
             removeTopCard();
+
             if (eventCallback != null) eventCallback.cardSwipedLeft(positionInAdapter);
             addNextCard();
         }

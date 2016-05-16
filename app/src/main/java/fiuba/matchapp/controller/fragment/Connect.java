@@ -107,7 +107,6 @@ public class Connect extends Fragment {
             @Override
             public void onClick(View v) {
                 cardStack.swipeTopCardLeft(180);
-
             }
         });
 
