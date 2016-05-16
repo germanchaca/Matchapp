@@ -31,7 +31,7 @@
   <color name="bg_bubble_self">#E1E1E1</color>
   <color name="list_divider">#dedede</color>
   <color name="rippleColor">#993498db</color>
-  <color name="white_transparent">#77ffffff</color>
+  <color name="white_transparent">#AAffffff</color>
   <color name="fb">#1976d2</color>
   <color name="login_icon">@color/white</color>
   <color name="intro_icon">@color/white</color>

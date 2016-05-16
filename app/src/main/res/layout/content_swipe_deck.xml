@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fiuba.cardstack.SwipeFrameLayout
+    android:id="@+id/swipeLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/swipeLayout"
     android:orientation="vertical">
 
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="8dp"
-        swipedeck:fabSize="normal"
-        swipedeck:borderWidth="0dp"
-        swipedeck:backgroundTint="@color/primary_dark"
-        android:src="@drawable/ic_clear_24dp"
-        swipedeck:rippleColor="@color/red"
-        android:elevation="4dp"/>
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginRight="54dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/rounded_button"
+        android:drawableTop="@drawable/ic_clear_24dp"
+        android:paddingTop="6dp"
+        />
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="8dp"
-        swipedeck:fabSize="normal"
-        swipedeck:borderWidth="0dp"
-        swipedeck:backgroundTint="@color/primary_dark"
-        android:src="@drawable/ic_favorite_24dp"
-        swipedeck:rippleColor="@color/accentThird"
-        android:elevation="4dp"/>
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginLeft="54dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/rounded_button"
+        android:drawableTop="@drawable/ic_done_black_24dp_primary"
+        android:paddingTop="6dp"/>
+
 
     <fiuba.cardstack.SwipeDeck
         android:id="@+id/swipe_deck"
@@ -41,9 +39,9 @@
         android:layout_margin="@dimen/swipe_horizontal_margin"
         swipedeck:card_spacing="10dp"
         swipedeck:max_visible="3"
+        swipedeck:opacity_end="0.2"
         swipedeck:render_above="false"
-        swipedeck:rotation_degrees="15"
-        swipedeck:opacity_end="0.2"/>
+        swipedeck:rotation_degrees="15"/>
 
 </fiuba.cardstack.SwipeFrameLayout>
 

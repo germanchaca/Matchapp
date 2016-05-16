@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -22,8 +23,8 @@ public class Connect extends Fragment {
     private SwipeDeckAdapter adapter;
     private ArrayList<String> testData;
 
-    FloatingActionButton btnSwipeLeft;
-    FloatingActionButton btnSwipeRight;
+    Button btnSwipeLeft;
+    Button btnSwipeRight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class Connect extends Fragment {
         cardStack.setLeftImage(R.id.left_image);
         cardStack.setRightImage(R.id.right_image);
 
-        btnSwipeLeft = (FloatingActionButton) view.findViewById(R.id.button);
+        btnSwipeLeft = (Button) view.findViewById(R.id.button);
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +111,7 @@ public class Connect extends Fragment {
             }
         });
 
-        btnSwipeRight= (FloatingActionButton) view.findViewById(R.id.button2);
+        btnSwipeRight= (Button) view.findViewById(R.id.button2);
 
         btnSwipeRight.setOnClickListener(new View.OnClickListener() {
             @Override
