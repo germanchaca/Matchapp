@@ -29,24 +29,23 @@
 
                 <ImageView
                     android:id="@+id/right_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="left"
-                    android:layout_margin="48dp"
-                    android:src="@drawable/like"/>
+                    android:layout_margin="72dp"
+                    android:src="@drawable/ic_favorite_big"/>
                 <ImageView
                     android:id="@+id/left_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
-                    android:layout_margin="48dp"
-                    android:src="@drawable/nope"
+                    android:layout_margin="72dp"
+                    android:src="@drawable/ic_close_black_24dp"
                     android:layout_gravity="right"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/top_shadow"
                     android:paddingBottom="@dimen/card_top_shadow_margin_bottom"
                     >
                     <TextView
@@ -63,7 +62,7 @@
                         android:layout_below="@id/sample_text"
                         android:gravity="center_horizontal"
                         style="@style/swipeTitle.sub"
-                        android:text="Buenos Aires (6.0km)"/>
+                        android:text="Buenos Aires - 72%"/>
                 </RelativeLayout>
 
             </FrameLayout>
