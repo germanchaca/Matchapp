@@ -73,9 +73,8 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_done_black_24dp"
         android:visibility="gone"
-        app:layout_anchor="@id/coodinator"
         app:backgroundTint="@color/primary"
-        app:layout_anchorGravity="bottom|end" />
+        android:layout_gravity="end|bottom" />
 
 
 </android.support.design.widget.CoordinatorLayout>
