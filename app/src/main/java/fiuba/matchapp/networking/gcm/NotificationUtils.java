@@ -40,8 +40,6 @@ public class NotificationUtils {
 
     private Context mContext;
 
-    public NotificationUtils() {
-    }
 
     public NotificationUtils(Context mContext) {
         this.mContext = mContext;
