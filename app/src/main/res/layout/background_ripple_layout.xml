@@ -21,5 +21,14 @@ In ripple animation tag we have set some properties -->
         android:layout_centerInParent="true"
         android:src="@drawable/phone2" />
 
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/ripple_subtitle"
+        android:layout_marginTop="156dp"
+        android:text="Buscando candidatos..."/>
+
 
 </fiuba.matchapp.controller.RippleAnimation>

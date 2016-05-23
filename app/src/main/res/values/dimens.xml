@@ -16,6 +16,7 @@
     <dimen name="appbarlayout_height">418dp</dimen>
     <dimen name="edittext_drawable_pad">16dp</dimen>
 
+    <dimen name="ripple_subtitle">24dp</dimen>
     <!-- NewMatch -->
     <dimen name="title">32dp</dimen>
     <dimen name="sub_title">18dp</dimen>
