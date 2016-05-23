@@ -98,4 +98,8 @@
     <string name="intro_error_empty_photo">Debe elegir una foto de perfil</string>
     <string name="edit_profile_toolbar_label">Editar perfil</string>
 
+    <!-- UploadImageFragment -->
+    <string name="sending_image_server">Guardando imagen...</string>
+    <string name="connection_problem">Problemas de conexión, por favor verifique tener acceso a internet</string>
+    <string name="connection_problem_ok">Ok</string>
 </resources>

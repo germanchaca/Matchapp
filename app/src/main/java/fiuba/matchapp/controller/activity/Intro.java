@@ -65,6 +65,7 @@ public class Intro extends AppIntro2 {
         if( (index > 0) && fragment.isEmpty ) {
             pager.setCurrentItem(pager.getCurrentItem() - 1);
             if (index == 6){
+
                 Snackbar snackbar = Snackbar.make(backgroundFrame, getResources().getString(R.string.intro_error_empty_photo), Snackbar.LENGTH_LONG);
                 snackbar.show();
             }else {

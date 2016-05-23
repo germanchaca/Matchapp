@@ -2,9 +2,12 @@ package fiuba.matchapp.controller.fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +21,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ChosenImages;
@@ -25,9 +33,18 @@ import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.utils.ImageBase64;
 
 /**
  * Created by german on 4/28/2016.
@@ -40,13 +57,11 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
     FloatingActionButton fbEditImage;
 
     public Boolean isEmpty;
-    private int					chooserType;
-    private ImageChooserManager	imageChooserManager;
-    private String				filePath;
+    private int chooserType;
+    private ImageChooserManager imageChooserManager;
+    private String filePath;
 
     private String originalFilePath;
-    private String thumbnailFilePath;
-    private String thumbnailSmallFilePath;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 
@@ -82,13 +97,14 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                 selectImage(v.getContext());
             }
         });
-        ;
+
+
         return view;
     }
 
 
     private void chooseImage() {
-        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
         chooserType = ChooserType.REQUEST_PICK_PICTURE;
         imageChooserManager = new ImageChooserManager(this,
                 ChooserType.REQUEST_PICK_PICTURE, true);
@@ -142,13 +158,16 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             public void run() {
 
                 originalFilePath = image.getFilePathOriginal();
-                thumbnailFilePath = image.getFileThumbnail();
-                thumbnailSmallFilePath = image.getFileThumbnailSmall();
 
                 if (image != null) {
-                    loadImage(userImage, image.getFilePathOriginal(),getActivity());
+                    loadImage(userImage, image.getFilePathOriginal(), getActivity());
+
+                    Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
+                    String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+
+                    //sendEncodedImageToServer(encodedImage);
                     isEmpty = false;
-                    //TODO: mandarle la foto al server en base64
+
                 } else {
                     Log.i(TAG, "Chosen Image: Is null");
                 }
@@ -188,6 +207,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         imageChooserManager.setImageChooserListener(this);
         imageChooserManager.reinitialize(filePath);
     }
+
     private void selectImage(final Context context) {
         final CharSequence[] items = {getResources().getString(R.string.edit_profile_take_picture), getResources().getString(R.string.edit_profile_choose_picture),
                 getResources().getString(R.string.edit_profile_cancel)};
@@ -210,4 +230,90 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         });
         builder.show();
     }
+
+    private void sendEncodedImageToServer(final String encodedImage) {
+        // checking for valid login session
+        User user = MyApplication.getInstance().getPrefManager().getUser();
+        if (user == null) {
+            return;
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(this.getContext(), R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getResources().getString(R.string.sending_image_server));
+        progressDialog.show();
+
+        String endPoint = RestAPIContract.PUT_USER(user.getId());
+
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                endPoint, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "response: " + response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+
+                    // check for error
+                    if (obj.getBoolean("error") == false) {
+                        onImageSuccesfullyUploaded(encodedImage);
+                        return;
+                    } else {
+                        displayAlertDialog();
+                        Log.d(TAG, getResources().getString(R.string.connection_problem));
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "json parsing error: " + e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("photo_profile", encodedImage);
+                Log.e(TAG, "params: " + params.toString());
+                return params;
+            }
+        };
+        //Adding request to request queue
+        MyApplication.getInstance().addToRequestQueue(strReq);
+
+        return;
+
+    }
+
+    private void onImageSuccesfullyUploaded(String encodedImage) {
+        //Store user photo on SharedPreferences
+        User user = MyApplication.getInstance().getPrefManager().getUser();
+        user.setPhotoProfile(encodedImage);
+        MyApplication.getInstance().getPrefManager().storeUser(user);
+
+        isEmpty = false;
+    }
+
+    public void displayAlertDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setMessage(getResources().getString(R.string.connection_problem));
+        alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userImage.setImageDrawable(getResources().getDrawable(R.drawable.empty_profile_phd_350x350));//setea de nuevo el default
+                isEmpty = true;
+                dialog.dismiss();
+
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
 }
+

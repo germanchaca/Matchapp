@@ -47,15 +47,14 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
         if (user == null) {
             return;
         }
-        String endPoint = RestAPIContract.USER.replace("_ID_", user.getId());
+        String endPoint = RestAPIContract.PUT_USER(user.getId());
 
-        //se hace la modificación del registration gsm Id en el app server
         StringRequest strReq = new StringRequest(Request.Method.PUT,
                 endPoint, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                Log.e(TAG, "response: " + response);
+                Log.d(TAG, "response: " + response);
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -63,14 +62,14 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
                     // check for error
                     if (obj.getBoolean("error") == false) {
                         // broadcasting token sent to server
-                        Intent registrationComplete = new Intent(Config.SENT_TOKEN_TO_SERVER);
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(registrationComplete);
+                        //Intent registrationComplete = new Intent(Config.SENT_TOKEN_TO_SERVER);
+                        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(registrationComplete);
                     } else {
-                        Log.e(TAG, getResources().getString(R.string.gsmintentservice_error_server_app_send_registrationgsm) );
+                        Log.d(TAG, getResources().getString(R.string.gsmintentservice_error_server_app_send_registrationgsm) );
                     }
 
                 } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
+                    Log.d(TAG, "json parsing error: " + e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -78,7 +77,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
-                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+                Log.d(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
             }
         }) {
 
@@ -86,7 +85,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("gcm_registration_id", token);
-                Log.e(TAG, "params: " + params.toString());
+                Log.d(TAG, "params: " + params.toString());
                 return params;
             }
         };

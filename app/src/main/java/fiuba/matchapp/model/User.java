@@ -13,12 +13,21 @@ import java.util.Locale;
 import fiuba.matchapp.app.MyApplication;
 
 public class User implements Serializable, Parcelable {
-    String id, name, alias, email, birthday, genre, fbId, latitude, longitude;
+    String id;
+    String name;
+    String alias;
+    String email;
+    String birthday;
+    String genre;
+    String fbId;
+    String latitude;
+    String longitude;
+    String photoProfile;
 
     public User() {
     }
 
-    public User(String id, String name,String alias, String email, String birthday, String genre) {
+    public User(String id, String name, String alias, String email, String birthday, String genre) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -142,6 +151,14 @@ public class User implements Serializable, Parcelable {
         this.email = email;
     }
 
+    public String getPhotoProfile() {
+        return photoProfile;
+    }
+
+    public void setPhotoProfile(String photoProfile) {
+        this.photoProfile = photoProfile;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -158,6 +175,7 @@ public class User implements Serializable, Parcelable {
         dest.writeString(this.fbId);
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
+        dest.writeString(this.photoProfile);
     }
 
     public String getParsedAddress() {
