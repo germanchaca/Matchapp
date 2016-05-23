@@ -61,7 +61,7 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
 
         Map<String, String> data = message.getData();
 
-        processDataPayload(data, notificationBody, notificationTitle, notifitacionTimestamp );
+        //processDataPayload(data, notificationBody, notificationTitle, notifitacionTimestamp );
     }
 
     private void processDataPayload( Map<String, String> data, String notificationBody, String notificationTitle, String notifitacionTimestamp ) {

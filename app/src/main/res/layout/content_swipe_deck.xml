@@ -13,10 +13,11 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginRight="54dp"
+        android:layout_marginRight="72dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/rounded_button"
         android:drawableTop="@drawable/ic_clear_24dp"
+        android:elevation="12dp"
         android:paddingTop="6dp"
         />
 
@@ -25,10 +26,11 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginLeft="54dp"
+        android:layout_marginLeft="72dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/rounded_button"
         android:drawableTop="@drawable/ic_done_black_24dp_primary"
+        android:elevation="12dp"
         android:paddingTop="6dp"/>
 
 
@@ -42,6 +44,7 @@
         swipedeck:opacity_end="0.2"
         swipedeck:render_above="false"
         swipedeck:rotation_degrees="15"/>
+
 
 </fiuba.cardstack.SwipeFrameLayout>
 

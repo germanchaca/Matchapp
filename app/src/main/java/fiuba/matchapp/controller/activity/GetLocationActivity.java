@@ -1,10 +1,12 @@
 package fiuba.matchapp.controller.activity;
 
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -15,19 +17,14 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 
 public abstract class GetLocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private static final int REQUEST_LOCATION= 1;
-    private static String[] PERMISSIONS_LOCATION = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
-
     GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
     @Override
     public void onConnected(Bundle bundle) {
-        //Se supone que si ya se tildo como granted no se vuelve a pedir
-        ActivityCompat.requestPermissions(this, PERMISSIONS_LOCATION,REQUEST_LOCATION);
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         disconnect();
@@ -35,17 +32,22 @@ public abstract class GetLocationActivity extends AppCompatActivity implements G
         if (mLastLocation != null) {
             String mLatitudeText = String.valueOf(mLastLocation.getLatitude());
             String mLongitudeText = String.valueOf(mLastLocation.getLongitude());
-            //Toast.makeText(getBaseContext(), mLatitudeText + " " + mLongitudeText, Toast.LENGTH_LONG).show();
+            if ( (TextUtils.isEmpty(mLatitudeText)) && (TextUtils.isEmpty(mLongitudeText)) ){
+                return;
+            }
+            storeInUserPreferences(mLatitudeText, mLongitudeText);
 
-            User user = MyApplication.getInstance().getPrefManager().getUser();
-            user.setLatitude(mLatitudeText);
-            user.setLongitude(mLongitudeText);
-            MyApplication.getInstance().getPrefManager().storeUser(user);
-
-            Log.e("IntroActivity", mLatitudeText + " " + mLongitudeText );
+            Log.d("GetLocatinon: ", mLatitudeText + " " + mLongitudeText );
             //TODO: mandar estos datos al server (si no hay conexión no importa)
         }
         //TODO: el server va a tener que darse cuenta si no le setie nunca el long o latitud e interanmente no lo tenga en cuenta
+    }
+
+    private void storeInUserPreferences(String mLatitudeText, String mLongitudeText) {
+        User user = MyApplication.getInstance().getPrefManager().getUser();
+        user.setLatitude(mLatitudeText);
+        user.setLongitude(mLongitudeText);
+        MyApplication.getInstance().getPrefManager().storeUser(user);
     }
 
     @Override

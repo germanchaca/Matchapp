@@ -28,7 +28,6 @@ import fiuba.matchapp.networking.gcm.NotificationUtils;
 public class MainActivity extends GetLocationActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
-
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -41,55 +40,46 @@ public class MainActivity extends GetLocationActivity {
         super.onCreate(savedInstanceState);
 
         context = this;
-
         setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initToolbar();
 
         if (MyApplication.getInstance().getPrefManager().getUser() == null) {
             launchLoginActivity();
         } else {
-            fragmentChats = new OpenChatsFragment();
-            fragmentPlayMatching = new fragmentPlayMatching();
-            setCurrentTabFragment(1);
-            super.initUserLastLocation();
+            initFragments();
         }
-
-        /**
-         * Broadcast receiver calls when new push notification is received
-         */
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    handlePushNotification(intent);
-                }
-
-            }
-        };
+          //Broadcast receiver calls when new push notification is received
+        initNotificationBroadcastReceiver();
+        initUserLastLocation();
+        connect();//para el
         checkPlayServices();
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initFragments() {
+        fragmentChats = new OpenChatsFragment();
+        fragmentPlayMatching = new fragmentPlayMatching();
+        setCurrentTabFragment(1);
+        super.initUserLastLocation();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Config.PUSH_NOTIFICATION));
-
+        registerNotificationBroadcastReceiver();
         NotificationUtils.clearNotifications();
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        unregisterNotificationBroadcastreceiver();
         super.onPause();
     }
-
 
     private void launchLoginActivity() {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -185,5 +175,26 @@ public class MainActivity extends GetLocationActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initNotificationBroadcastReceiver() {
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    handlePushNotification(intent);
+                }
+
+            }
+        };
+    }
+    private void registerNotificationBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+    }
+
+    private void unregisterNotificationBroadcastreceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 }
