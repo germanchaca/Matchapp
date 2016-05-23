@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "202037738713",
-    "project_id": "matchapp-63f4b"
+    "firebase_url": "https://matchapp-63f4b.firebaseio.com",
+    "project_id": "matchapp-63f4b",
+    "storage_bucket": "matchapp-63f4b.appspot.com"
   },
   "client": [
     {
@@ -11,7 +13,12 @@
           "package_name": "fiuba.matchapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "202037738713-m9jj4det24a9c274spud76en78g81q80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDZciJkMLfooDH45LxVjoVyYJ9J-AdABqk"
@@ -27,6 +34,37 @@
         },
         "ads_service": {
           "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202037738713:android:687d06751d464cd7",
+        "android_client_info": {
+          "package_name": "fiuba.mat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "202037738713-m9jj4det24a9c274spud76en78g81q80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZciJkMLfooDH45LxVjoVyYJ9J-AdABqk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
         }
       }
     }

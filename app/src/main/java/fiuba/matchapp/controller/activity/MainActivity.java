@@ -18,10 +18,13 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.io.Serializable;
+
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.OpenChatsFragment;
 import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
 
@@ -47,12 +50,23 @@ public class MainActivity extends GetLocationActivity {
             launchLoginActivity();
         } else {
             initFragments();
+            launchNewMatchActivity();
         }
           //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();
         initUserLastLocation();
-        connect();//para el
+        connect();//para el getLocationActivity
         checkPlayServices();
+    }
+
+    private void launchNewMatchActivity() {
+        Intent intent = new Intent(MainActivity.this, NewMatchActivity.class);
+
+        Serializable userMatched = new User("2","Camila","alias","email","","");
+
+        intent.putExtra("new_match_user",userMatched);
+        startActivity(intent);
+        finish();
     }
 
     private void initToolbar() {

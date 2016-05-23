@@ -36,4 +36,6 @@
   <color name="fb">#1976d2</color>
   <color name="login_icon">@color/white</color>
   <color name="intro_icon">@color/white</color>
+
+  <color name="traslusentBackground">#7f000000</color>
 </resources>

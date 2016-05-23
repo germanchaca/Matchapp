@@ -102,4 +102,10 @@
     <string name="sending_image_server">Guardando imagen...</string>
     <string name="connection_problem">Problemas de conexión, por favor verifique tener acceso a internet</string>
     <string name="connection_problem_ok">Ok</string>
+
+    <!--NewMatchActivity-->
+    <string name="activity_new_match_title">¡Nuevo match!</string>
+    <string name="activity_new_match_subtitle">también quiere chatear contigo</string>
+    <string name="activity_new_match_btn_chat">Iniciar chat</string>
+    <string name="activity_new_match_title_later">Más adelante</string>
 </resources>

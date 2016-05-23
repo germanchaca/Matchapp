@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity=""
+    android:padding="24dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="16dp">
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/profile_img_left"
+            android:layout_width="124dp"
+            android:layout_height="124dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="90dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/p1"
+            />
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/profile_img_right"
+            android:layout_width="124dp"
+            android:layout_height="124dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="90dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/p2"
+            />
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="92dp"
+            android:layout_height="92dp"
+            android:layout_gravity="center"
+            android:src="@drawable/phone2"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/activity_new_match_title"
+        android:textSize="@dimen/title"/>
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/sub_title"
+        android:layout_marginBottom="48dp"/>
+
+    <Button
+        android:id="@+id/btn_chat"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/activity_new_match_btn_chat"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
+        />
+    >
+
+    <!-- Boton de LoginFacebook-->
+    <Button
+        android:id="@+id/btn_later"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/activity_new_match_title_later"
+        android:backgroundTint="@color/beige"
+        />
+    >
+
+</LinearLayout>
