@@ -65,6 +65,8 @@ public class MainActivity extends GetLocationActivity {
         Serializable userMatched = new User("2","Camila","alias","email","","");
 
         intent.putExtra("new_match_user",userMatched);
+        intent.putExtra("chat_room_id","1");
+
         startActivity(intent);
         finish();
     }
