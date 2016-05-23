@@ -49,6 +49,9 @@ dependencies {
     //https://github.com/DavidPizarro/AutoLabelUI
 
     compile 'com.github.paolorotolo:appintro:3.4.0'
+    compile 'me.gujun.android.taggroup:library:1.4@aar'
+
+    
     //https://github.com/PaoloRotolo/AppIntro
 
     //compile 'com.theartofdev.edmodo:android-image-cropper:1.2.+'

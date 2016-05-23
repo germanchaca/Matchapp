@@ -4,6 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 
 /**
@@ -38,6 +46,7 @@ public class MyPreferenceManager {
     private static final String KEY_USER_LOCATION_LONGITUDE = "location_longitude";
     private static final String KEY_USER_PHOTO_PROFILE = "user_photo_profile" ;
     private static final String KEY_USER_FBID = "user_fbId" ;
+    private static final String KEY_USER_INTERESTS = "user_interests" ;
     ;
 
 
@@ -59,6 +68,10 @@ public class MyPreferenceManager {
         editor.putString(KEY_USER_LOCATION_LATITUDE, user.getLatitude());
         editor.putString(KEY_USER_FBID, user.getFbId());
         editor.putString(KEY_USER_PHOTO_PROFILE, user.getPhotoProfile());
+
+        Gson gson = new Gson();
+        editor.putString(KEY_USER_INTERESTS, gson.toJson(user.getInterests()));
+
         editor.commit();
 
         Log.e(TAG, "Usuario guardado en shared preferences. " + user.getName() + ", " + user.getEmail());
@@ -78,11 +91,17 @@ public class MyPreferenceManager {
             fbId = pref.getString(KEY_USER_FBID, null);
             photoProfile = pref.getString(KEY_USER_PHOTO_PROFILE, null);
 
+            Gson gson = new Gson();
+            String json = pref.getString(KEY_USER_INTERESTS, null);
+            Type type = new TypeToken<ArrayList<Interest>>() {}.getType();
+            ArrayList<Interest> interests = gson.fromJson(json, type);
+
             User user = new User(id,name,alias,email,birthday,gender);
             user.setLatitude(latitude);
             user.setLongitude(longitude);
             user.setFbId(fbId);
             user.setPhotoProfile(photoProfile);
+            user.setInterests(interests);
             return user;
         }
         return null;

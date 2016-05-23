@@ -50,7 +50,7 @@ public class MainActivity extends GetLocationActivity {
             launchLoginActivity();
         } else {
             initFragments();
-            launchNewMatchActivity();
+            //launchNewMatchActivity();
         }
           //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();

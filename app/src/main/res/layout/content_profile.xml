@@ -178,6 +178,23 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_title" />
 
+            <me.gujun.android.taggroup.TagGroup
+                android:id="@+id/tag_group"
+                android:layout_below="@id/tvNumber3"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/icCommonInterests"
+                android:layout_toRightOf="@id/icCommonInterests"
+                style="@style/TagGroup"
+                app:atg_textSize="@dimen/tag_text_size"
+                app:atg_backgroundColor="@color/primary_dark"
+                app:atg_borderColor="@color/primary_dark"
+                app:atg_pressedBackgroundColor="@color/primary_dark"
+                app:atg_textColor="@color/white"
+                app:atg_verticalSpacing="@dimen/tag_vertical_spacing"
+                app:atg_verticalPadding="@dimen/tag_vertical_spacing"/>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -208,6 +225,23 @@
                 android:text="@string/profile_more_interests"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_title" />
+
+            <me.gujun.android.taggroup.TagGroup
+                android:id="@+id/tag_group_more"
+                android:layout_below="@id/labelMoreInterests"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/icMoreInterests"
+                android:layout_toRightOf="@id/icMoreInterests"
+                style="@style/TagGroup"
+                app:atg_textSize="@dimen/tag_text_size"
+                app:atg_backgroundColor="@color/beige"
+                app:atg_borderColor="@color/beige"
+                app:atg_pressedBackgroundColor="@color/primary_dark"
+                app:atg_textColor="@color/white"
+                app:atg_verticalSpacing="@dimen/tag_vertical_spacing"
+                app:atg_verticalPadding="@dimen/tag_vertical_spacing"/>
 
         </RelativeLayout>
 

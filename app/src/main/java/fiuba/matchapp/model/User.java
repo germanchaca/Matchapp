@@ -24,6 +24,8 @@ public class User implements Serializable, Parcelable {
     String longitude;
     String photoProfile;
 
+    List<Interest> interests;
+
     public User() {
     }
 
@@ -154,6 +156,13 @@ public class User implements Serializable, Parcelable {
     public String getPhotoProfile() {
         return photoProfile;
     }
+    public List<Interest> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<Interest> interests) {
+        this.interests = interests;
+    }
 
     public void setPhotoProfile(String photoProfile) {
         this.photoProfile = photoProfile;
@@ -176,6 +185,7 @@ public class User implements Serializable, Parcelable {
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
         dest.writeString(this.photoProfile);
+        dest.writeTypedList(this.interests);
     }
 
     public String getParsedAddress() {
