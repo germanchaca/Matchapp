@@ -34,6 +34,7 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.JsonParser;
 import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.utils.MD5;
 
 public class LoginActivity extends FacebookLoginActivity {
     private static final String TAG = "LoginActivity";
@@ -252,10 +253,19 @@ public class LoginActivity extends FacebookLoginActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("name", "german");
-                params.put("email", email);
+                JSONObject userJson=new JSONObject();
+                try {
+                    userJson.put("email",email);
+                    userJson.put("password", MD5.getHashedPassword(password));
 
-                Log.e(TAG, "params: " + params.toString());
+
+                    params.put("user", userJson.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "params: " + params.toString());
                 return params;
             }
         };
@@ -265,6 +275,7 @@ public class LoginActivity extends FacebookLoginActivity {
 
         //ENDS server auth logic
 
+        /*
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -273,7 +284,7 @@ public class LoginActivity extends FacebookLoginActivity {
                         onLoginSuccess();
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 3000);*/
     }
 
     @Override
@@ -283,8 +294,8 @@ public class LoginActivity extends FacebookLoginActivity {
     }
 
     public void onLoginSuccess() {
-        User user = new User("0", "german","ger", "germanchaca@gmail.com", "10/10/1994", "Hombre");
-        MyApplication.getInstance().getPrefManager().storeUser(user);
+        //User user = new User("0", "german","ger", "germanchaca@gmail.com", "10/10/1994", "Hombre");
+        //MyApplication.getInstance().getPrefManager().storeUser(user);
 
         _loginButton.setEnabled(true);
         launchMainActivity();

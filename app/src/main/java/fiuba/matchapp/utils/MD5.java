@@ -11,7 +11,7 @@ import java.security.MessageDigest;
  */
 public class MD5 {
 
-    public static String md5(String password) {
+    public static String getHashedPassword(String password) {
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
