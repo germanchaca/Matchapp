@@ -29,4 +29,6 @@ public class RestAPIContract {
     public static String PUT_USER(String userId) {
         return GET_USER.replace("_ID_", userId);
     }
+
+
 }

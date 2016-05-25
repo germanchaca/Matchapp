@@ -241,7 +241,7 @@ public class LoginActivity extends FacebookLoginActivity {
                 NetworkResponse networkResponse = error.networkResponse;
                 String errorMessage = null;
                 if(error instanceof NoConnectionError) {
-                    errorMessage = "No internet Access, Check your internet connection.";
+                    errorMessage = getResources().getString(R.string.internet_problem);
                 }else{
                     errorMessage = getResources().getString(R.string.invalid_auth);
                 }
@@ -267,6 +267,12 @@ public class LoginActivity extends FacebookLoginActivity {
 
                 Log.d(TAG, "params: " + params.toString());
                 return params;
+            }
+            @Override
+            public HashMap<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("content-type","application/json");
+                return headers;
             }
         };
 

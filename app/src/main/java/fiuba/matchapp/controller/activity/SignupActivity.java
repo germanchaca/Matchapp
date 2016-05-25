@@ -11,7 +11,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
@@ -19,6 +33,11 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.controller.clickToSelectEditText.Item;
+import fiuba.matchapp.networking.JSONmetadata;
+import fiuba.matchapp.networking.JsonObjectGen;
+import fiuba.matchapp.networking.JsonParser;
+import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.utils.MD5;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
@@ -36,6 +55,7 @@ public class SignupActivity extends AppCompatActivity {
     private String password;
     private String gender;
     private String birthday;
+    private int age;
     private String fbId;
     private Boolean hasFbId;
     
@@ -124,31 +144,99 @@ public class SignupActivity extends AppCompatActivity {
         userName = _nameText.getText().toString();
         email = _emailText.getText().toString();
         birthday = _dateText.getText().toString();
+        age = Integer.parseInt(birthday.replace("/", ""));
         gender = _sex_input.getText().toString();
         password = _passwordText.getText().toString();
         //aca tambien mandar el fbImageUrl al server
 
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                RestAPIContract.POST_USER, new Response.Listener<String>() {
 
-        // TODO: Implementar la logica de registro aca
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "response: " + response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
+                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+                    MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
+                    onSignupSuccess();
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "json parsing error: " + e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = null;
+                if(error instanceof NoConnectionError) {
+                    errorMessage = getResources().getString(R.string.internet_problem);
+                }else{
+                    errorMessage = getResources().getString(R.string.signup_failed);
+                }
+                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+                onSignupFailed(errorMessage);
+                progressDialog.dismiss();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                JSONArray interestsJsonArray = new JSONArray();
+
+                JSONObject locationJson= JsonObjectGen.getJsonObjectFromLocation(0,0);
+
+                JSONObject userJson=new JSONObject();
+                try {
+                    userJson.put("name",userName);
+                    userJson.put("alias",userName);
+                    userJson.put("email",email);
+                    userJson.put("sex",gender);
+                    userJson.put("interests", interestsJsonArray.toString());
+                    userJson.put("photo_profile","");
+                    userJson.put("password", MD5.getHashedPassword(password));
+                    userJson.put("location", locationJson.toString());
+                    userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
+
+                    params.put("user", userJson.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject metadataJson = JSONmetadata.getMetadata(1);
+                params.put("metadata", metadataJson.toString());
+
+                Log.d(TAG, "params: " + params.toString());
+                return params;
+            }
+            @Override
+            public HashMap<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("content-type","application/json");
+                return headers;
+            }
+        };
+
+        MyApplication.getInstance().addToRequestQueue(strReq);
     }
 
 
     public void onSignupSuccess() {
-        User user;
+        /*User user;
         user = new User("0", userName, userName, email,birthday,gender);
         if (hasFbId){
             user.setFbId(this.fbId);
         }
-        MyApplication.getInstance().getPrefManager().storeUser(user);
+        MyApplication.getInstance().getPrefManager().storeUser(user);*/
 
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);

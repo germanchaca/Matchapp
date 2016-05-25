@@ -16,6 +16,7 @@ import fiuba.matchapp.controller.activity.LoginActivity;
 public class MyApplication extends Application {
     public static final String TAG = MyApplication.class
             .getSimpleName();
+    public static final String VERSION ="0.1";
 
     private RequestQueue mRequestQueue;
 
