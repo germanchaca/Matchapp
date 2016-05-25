@@ -109,7 +109,7 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignupFailed(getResources().getString(R.string.signup_failed));
             return;
         }
 
@@ -158,9 +158,8 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getBaseContext(),getResources().getString(R.string.signup_failed), Toast.LENGTH_LONG).show();
-
+    public void onSignupFailed(String errorMessage) {
+        Toast.makeText(getBaseContext(),errorMessage, Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 

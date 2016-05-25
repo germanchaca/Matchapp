@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -257,8 +258,7 @@ public class LoginActivity extends FacebookLoginActivity {
                 try {
                     userJson.put("email",email);
                     userJson.put("password", MD5.getHashedPassword(password));
-
-
+                    userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
                     params.put("user", userJson.toString());
 
                 } catch (JSONException e) {
