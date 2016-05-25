@@ -11,7 +11,7 @@ public class JsonObjectGen {
         JSONObject locationJson=new JSONObject();
         try {
             locationJson.put("latitude",latitude);
-            locationJson.put("latitude",longitude);
+            locationJson.put("longitude",longitude);
         } catch (JSONException e) {
             e.printStackTrace();
         }

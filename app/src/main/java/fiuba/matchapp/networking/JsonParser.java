@@ -30,39 +30,43 @@ public class JsonParser {
         JSONObject userObj = null;
         userObj = getUserJsonObject(response, userObj);
 
-        String user_id = getUserId(userObj);
-        String user_name = getUserName(userObj);
-        String user_alias = getUserAlias(userObj);
-        String user_email = getUserMail(userObj);
-        int user_age = getUser_age(userObj);
-        String user_photo = getUserPhoto(userObj);
-        String user_genre = getUserGenre(userObj);
-        ArrayList<Interest> user_interests = getUserInterests(userObj);
+        if(userObj != null){
+            String user_id = getUserId(userObj);
+            String user_name = getUserName(userObj);
+            String user_alias = getUserAlias(userObj);
+            String user_email = getUserMail(userObj);
+            int user_age = getUser_age(userObj);
+            String user_photo = getUserPhoto(userObj);
+            String user_genre = getUserGenre(userObj);
+            ArrayList<Interest> user_interests = getUserInterests(userObj);
 
-        JSONObject objLocation = null;
-        String user_latitude = null;
-        String user_longitude = null;
-        try {
-            objLocation = userObj.getJSONObject("location");
-            user_latitude = objLocation.getString("latitude");
-            user_longitude = objLocation.getString("longitude");
-        } catch (JSONException e) {
-            e.printStackTrace();
+            JSONObject objLocation = null;
+            String user_latitude = null;
+            String user_longitude = null;
+            try {
+                objLocation = userObj.getJSONObject("location");
+                user_latitude = objLocation.getString("latitude");
+                user_longitude = objLocation.getString("longitude");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            User loggedUser = new User();
+            loggedUser.setId(user_id);
+            loggedUser.setName(user_name);
+            loggedUser.setAlias(user_alias);
+            loggedUser.setEmail(user_email);
+            loggedUser.setPhotoProfile(user_photo);
+            loggedUser.setAge(user_age);
+            loggedUser.setGenre(user_genre);
+            loggedUser.setInterests(user_interests);
+            loggedUser.setLatitude(user_latitude);
+            loggedUser.setLongitude(user_longitude);
+            return loggedUser;
         }
 
-        User loggedUser = new User();
-        loggedUser.setId(user_id);
-        loggedUser.setName(user_name);
-        loggedUser.setAlias(user_alias);
-        loggedUser.setEmail(user_email);
-        loggedUser.setPhotoProfile(user_photo);
-        loggedUser.setAge(user_age);
-        loggedUser.setGenre(user_genre);
-        loggedUser.setInterests(user_interests);
-        loggedUser.setLatitude(user_latitude);
-        loggedUser.setLongitude(user_longitude);
+        return null;
 
-        return loggedUser;
     }
 
     private static ArrayList<Interest> getUserInterests(JSONObject userObj) {

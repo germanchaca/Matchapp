@@ -16,6 +16,7 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -23,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -161,7 +163,9 @@ public class SignupActivity extends AppCompatActivity {
                     User loggedUser = JsonParser.getUserFromJSONresponse(obj);
                     String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
-                    MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+                    if(loggedUser != null){
+                        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+                    }
                     MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
                     onSignupSuccess();
@@ -181,6 +185,7 @@ public class SignupActivity extends AppCompatActivity {
                 }else{
                     errorMessage = getResources().getString(R.string.signup_failed);
                 }
+
                 Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
                 onSignupFailed(errorMessage);
                 progressDialog.dismiss();
@@ -200,10 +205,11 @@ public class SignupActivity extends AppCompatActivity {
                     userJson.put("alias",userName);
                     userJson.put("email",email);
                     userJson.put("sex",gender);
-                    userJson.put("interests", interestsJsonArray.toString());
+                    userJson.put("age",age);
+                    userJson.put("interests", interestsJsonArray);
                     userJson.put("photo_profile","");
                     userJson.put("password", MD5.getHashedPassword(password));
-                    userJson.put("location", locationJson.toString());
+                    userJson.put("location", locationJson);
                     userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
 
                     params.put("user", userJson.toString());
@@ -221,9 +227,11 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public HashMap<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("content-type","application/json");
+                headers.put("content-type","application/json; charset=utf-8");
                 return headers;
             }
+
+
         };
 
         MyApplication.getInstance().addToRequestQueue(strReq);

@@ -12,7 +12,7 @@ public class RestAPIContract {
     private static final String PUT_USER = BASE_URL + "/users/_ID_";
 
     //Alta de usuario
-    public static final String POST_USER = BASE_URL + "/users";
+    public static final String POST_USER = BASE_URL + "/users/";
 
     //Post de Token cada vez que me loggeo
     public static final String LOGIN = BASE_URL + "/token";
