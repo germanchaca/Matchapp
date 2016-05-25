@@ -18,10 +18,20 @@ public class User implements Serializable, Parcelable {
     String alias;
     String email;
     String birthday;
+    int age;
     String genre;
     String fbId;
     String latitude;
     String longitude;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     String photoProfile;
 
     List<Interest> interests;

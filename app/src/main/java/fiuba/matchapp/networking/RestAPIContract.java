@@ -6,7 +6,7 @@ package fiuba.matchapp.networking;
 public class RestAPIContract {
 
     // localhost url -
-    public static final String BASE_URL = "http://localhost:8080/gcm_chat/v1";
+    public static final String BASE_URL = "http://192.168.0.200:8080";
 
     private static final String GET_USER = BASE_URL + "/users/_ID_";
     private static final String PUT_USER = BASE_URL + "/users/_ID_";
@@ -14,7 +14,9 @@ public class RestAPIContract {
     //Alta de usuario
     public static final String POST_USER = BASE_URL + "/users";
 
-    public static final String LOGIN = BASE_URL + "/user/login";
+    //Post de Token cada vez que me loggeo
+    public static final String LOGIN = BASE_URL + "/token";
+
     public static final String CHAT_ROOMS = BASE_URL + "/chat_rooms";
     public static final String CHAT_THREAD = BASE_URL + "/chat_rooms/_ID_";
     public static final String CHAT_ROOM_MESSAGE = BASE_URL + "/chat_rooms/_ID_/message";

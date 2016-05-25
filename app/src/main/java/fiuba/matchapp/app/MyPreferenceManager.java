@@ -47,7 +47,8 @@ public class MyPreferenceManager {
     private static final String KEY_USER_PHOTO_PROFILE = "user_photo_profile" ;
     private static final String KEY_USER_FBID = "user_fbId" ;
     private static final String KEY_USER_INTERESTS = "user_interests" ;
-    ;
+
+    private static final String KEY_APP_SERVER_TOKEN = "token" ;
 
 
     // Constructor
@@ -57,6 +58,14 @@ public class MyPreferenceManager {
         editor = pref.edit();
     }
 
+    public void storeAppServerToken (String token){
+        editor.putString(KEY_APP_SERVER_TOKEN, token);
+        editor.commit();
+    }
+    public String getAppServerToken (){
+        String appServerToken = pref.getString(KEY_APP_SERVER_TOKEN,null);
+        return appServerToken;
+    }
     public void storeUser(User user) {
         editor.putString(KEY_USER_ID, user.getId());
         editor.putString(KEY_USER_NAME, user.getName());
@@ -74,7 +83,7 @@ public class MyPreferenceManager {
 
         editor.commit();
 
-        Log.e(TAG, "Usuario guardado en shared preferences. " + user.getName() + ", " + user.getEmail());
+        Log.d(TAG, "Usuario guardado en shared preferences. " + user.getName() + ", " + user.getEmail());
     }
 
     public User getUser() {

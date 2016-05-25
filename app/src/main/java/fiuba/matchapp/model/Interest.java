@@ -12,6 +12,9 @@ public class Interest implements Serializable,Parcelable {
     String id,category, description;
     private boolean selected;
 
+    public Interest(){
+
+    }
     public Interest(String id, String category, String description) {
         this.id = id;
         this.category = category;
