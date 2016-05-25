@@ -45,6 +45,9 @@ public abstract class GetLocationActivity extends AppCompatActivity implements G
 
     private void storeInUserPreferences(String mLatitudeText, String mLongitudeText) {
         User user = MyApplication.getInstance().getPrefManager().getUser();
+        if(user==null){
+            return;
+        }
         user.setLatitude(mLatitudeText);
         user.setLongitude(mLongitudeText);
         MyApplication.getInstance().getPrefManager().storeUser(user);

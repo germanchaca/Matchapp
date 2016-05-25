@@ -48,6 +48,7 @@ public class MainActivity extends GetLocationActivity {
 
         if (MyApplication.getInstance().getPrefManager().getUser() == null) {
             launchLoginActivity();
+
         } else {
             initFragments();
             //launchNewMatchActivity();
