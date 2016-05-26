@@ -60,12 +60,7 @@ public class LoginActivity extends FacebookLoginActivity {
         loginWithFacebook = (Button) findViewById(R.id.btn_fb_login);
         _link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
 
-        _link_forgot_password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showForgotPasswordDialog();
-            }
-        });
+        initForgotPasswordLinkButton();
 
         /**
          * Check for login session. It user is already logged in
@@ -95,6 +90,15 @@ public class LoginActivity extends FacebookLoginActivity {
         });
 
         loginWithFacebook.setOnClickListener(new FacebookLogInButtonListener());
+    }
+
+    private void initForgotPasswordLinkButton() {
+        _link_forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showForgotPasswordDialog();
+            }
+        });
     }
 
     @Override
@@ -210,6 +214,8 @@ public class LoginActivity extends FacebookLoginActivity {
         final String password = _passwordText.getText().toString();
 
       //START server auth logic
+
+
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 RestAPIContract.LOGIN, new Response.Listener<String>() {

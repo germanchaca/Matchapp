@@ -16,18 +16,15 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.StringRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
@@ -36,7 +33,6 @@ import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.controller.clickToSelectEditText.Item;
 import fiuba.matchapp.networking.BaseRequest;
-import fiuba.matchapp.networking.BaseStringRequest;
 import fiuba.matchapp.networking.JSONmetadata;
 import fiuba.matchapp.networking.JsonObjectGen;
 import fiuba.matchapp.networking.JsonParser;
@@ -55,13 +51,14 @@ public class SignupActivity extends AppCompatActivity {
 
     private ClickToSelectEditText<Item> _sex_input;
     private String userName;
-    private String email;
-    private String password;
-    private String gender;
-    private String birthday;
-    private int age;
+    private String userEmail;
+    private String userPassword;
+    private String userGender;
+    private String userBirthday;
+    private int userAge, year,month,day;
     private String fbId;
     private Boolean hasFbId;
+    private DatePickerFragment dateFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,25 +119,26 @@ public class SignupActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             userName = extras.getString("userName");
-            email = extras.getString("email");
-            gender = extras.getString("gender");
-            birthday = extras.getString("birthday");
+            userEmail = extras.getString("email");
+            userGender = extras.getString("userGender");
+            userBirthday = extras.getString("userBirthday");
             fbId = extras.getString("fbId");
 
-            _dateText.setText(birthday);
-            _emailText.setText(email);
+            _dateText.setText(userBirthday);
+            _emailText.setText(userEmail);
             _nameText.setText(userName);
-            _sex_input.setText(gender);
+            _sex_input.setText(userGender);
             hasFbId = true;
         } else {
             hasFbId = false;
+
         }
     }
 
     public void showDatePickerDialog(View v) {
-        DatePickerFragment newFragment = new DatePickerFragment();
-        newFragment.setEditText(_dateText);
-        newFragment.show(getFragmentManager(), "datePicker");
+        dateFragment = new DatePickerFragment();
+        dateFragment.setEditText(_dateText);
+        dateFragment.show(getFragmentManager(), "datePicker");
     }
 
     public void signup() throws JSONException {
@@ -160,12 +158,11 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.show();
 
         userName = _nameText.getText().toString();
-        email = _emailText.getText().toString();
-        birthday = _dateText.getText().toString();
-        age = Integer.parseInt(birthday.replace("/", ""));
-        gender = _sex_input.getText().toString();
-        password = _passwordText.getText().toString();
-        //aca tambien mandar el fbImageUrl al server
+        userEmail = _emailText.getText().toString();
+        userBirthday = _dateText.getText().toString();
+        userAge = calculateUserAge();
+        userGender = _sex_input.getText().toString();
+        userPassword = MD5.getHashedPassword(_passwordText.getText().toString());
 
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
@@ -175,13 +172,13 @@ public class SignupActivity extends AppCompatActivity {
         JSONObject userJson = new JSONObject();
         userJson.put("name", userName);
         userJson.put("alias", userName);
-        userJson.put("email", email);
-        userJson.put("sex", gender);
-        userJson.put("age", age);
+        userJson.put("email", userEmail);
+        userJson.put("sex", userGender);
+        userJson.put("userAge", userAge);
         JSONArray interestsJsonArray = new JSONArray();
         userJson.put("interests", interestsJsonArray);
         userJson.put("photo_profile", "");
-        userJson.put("password", MD5.getHashedPassword(password));
+        userJson.put("userPassword", userPassword);
         JSONObject locationJson = JsonObjectGen.getJsonObjectFromLocation(0, 0);
         userJson.put("location", locationJson);
         userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
@@ -232,6 +229,21 @@ public class SignupActivity extends AppCompatActivity {
         BaseRequest strReq2 = new BaseRequest(RestAPIContract.POST_USER, params, response, errorListener, Request.Method.POST);
         BaseRequest strReq3 = new BaseRequest(RestAPIContract.POST_USER, params, headers, response, errorListener, Request.Method.POST);
         MyApplication.getInstance().addToRequestQueue(strReq2);
+    }
+
+    private int  calculateUserAge() {
+        final Calendar today = Calendar.getInstance();
+        int currentYear = today.get(Calendar.YEAR);
+
+        int age = currentYear - dateFragment.birthYear;
+
+        if (today.get(Calendar.MONTH) < dateFragment.birthMonth ) {
+            age--;
+        } else if (today.get(Calendar.MONTH) == dateFragment.birthMonth
+                && today.get(Calendar.DAY_OF_MONTH) < dateFragment.birthDay) {
+            age--;
+        }
+        return age;
     }
 
     public void onSignupSuccess() {
@@ -350,11 +362,11 @@ public class SignupActivity extends AppCompatActivity {
                     userJson.put("name",userName);
                     userJson.put("alias",userName);
                     userJson.put("email",email);
-                    userJson.put("sex",gender);
-                    userJson.put("age",age);
+                    userJson.put("sex",userGender);
+                    userJson.put("userAge",userAge);
                     userJson.put("interests", interestsJsonArray);
                     userJson.put("photo_profile","");
-                    userJson.put("password", MD5.getHashedPassword(password));
+                    userJson.put("userPassword", MD5.getHashedPassword(userPassword));
                     userJson.put("location", locationJson);
                     userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
 
@@ -381,7 +393,7 @@ public class SignupActivity extends AppCompatActivity {
         };
     }
     /*User user;
-        user = new User("0", userName, userName, email,birthday,gender);
+        user = new User("0", userName, userName, email,userBirthday,userGender);
         if (hasFbId){
             user.setFbId(this.fbId);
         }

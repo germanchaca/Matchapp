@@ -13,6 +13,7 @@ import java.util.Date;
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     TextView _dateText;
+    public int birthYear,birthMonth,birthDay;
 
     public void setEditText(TextView _dateText){
         this._dateText = _dateText;
@@ -33,7 +34,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
+        birthYear = year;
+        birthMonth = month;
+        birthDay = day;
        this._dateText.setText(new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year) );
     }
+
 
 }
