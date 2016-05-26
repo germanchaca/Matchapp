@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -213,6 +214,11 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
+                int httpStatusCode = networkResponse.statusCode;
+
+                if(httpStatusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+
+                }
                 String errorMessage = null;
                 if (error instanceof NoConnectionError) {
                     errorMessage = getResources().getString(R.string.internet_problem);
