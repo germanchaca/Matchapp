@@ -1,6 +1,7 @@
 package fiuba.matchapp.networking;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ public class JsonParser {
         String appServerToken= null;
         try {
             appServerToken = response.getString("token");
+           // Log.d("JsonParser", "AppServerToken levantado " + appServerToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -31,7 +33,7 @@ public class JsonParser {
         userObj = getUserJsonObject(response, userObj);
 
         if(userObj != null){
-            String user_id = getUserId(userObj);
+            //String user_id = getUserId(userObj);
             String user_name = getUserName(userObj);
             String user_alias = getUserAlias(userObj);
             String user_email = getUserMail(userObj);
@@ -52,7 +54,7 @@ public class JsonParser {
             }
 
             User loggedUser = new User();
-            loggedUser.setId(user_id);
+            //loggedUser.setId(user_id);
             loggedUser.setName(user_name);
             loggedUser.setAlias(user_alias);
             loggedUser.setEmail(user_email);

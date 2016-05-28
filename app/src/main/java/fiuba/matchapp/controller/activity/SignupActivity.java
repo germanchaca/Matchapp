@@ -17,13 +17,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.controller.clickToSelectEditText.Item;
-import fiuba.matchapp.networking.BaseRequest;
 import fiuba.matchapp.networking.BaseStringRequest;
 import fiuba.matchapp.networking.JSONmetadata;
 import fiuba.matchapp.networking.JsonObjectGen;
@@ -206,7 +204,7 @@ public class SignupActivity extends AppCompatActivity {
 
                     if (loggedUser != null) {
                         MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-                    }
+                    }else
                     MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
                     onSignupSuccess();
@@ -217,42 +215,29 @@ public class SignupActivity extends AppCompatActivity {
             }
         };
 
-        Response.Listener<JSONObject> response = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "Server Response: " + response);
-                progressDialog.dismiss();
-                User loggedUser = JsonParser.getUserFromJSONresponse(response);
-                String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(response);
-
-                if (loggedUser != null) {
-                    MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-                }
-                if(appServerToken != null){
-                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
-                }
-                onSignupSuccess();
-            }
-        };
 
         Response.ErrorListener errorListener = new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
-                //int httpStatusCode = networkResponse.statusCode;
 
-                //if(httpStatusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
-
-                //}
-                String errorMessage = null;
+                String errorMessage;
                 if (error instanceof NoConnectionError) {
                     errorMessage = getResources().getString(R.string.internet_problem);
                 } else {
                     errorMessage = getResources().getString(R.string.signup_failed);
                 }
 
-                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+                try{
+                    String response = new String(error.networkResponse.data, "utf-8");
+
+                    Log.e(TAG, "Volley error: " + response + ", code: " + networkResponse);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
                 onSignupFailed(errorMessage);
                 progressDialog.dismiss();
             }
@@ -345,93 +330,3 @@ public class SignupActivity extends AppCompatActivity {
         return valid;
     }
 }
-
-        /* StringRequest strReq = new StringRequest(Request.Method.POST,
-                RestAPIContract.POST_USER, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "response: " + response);
-                progressDialog.dismiss();
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
-                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
-
-                    if(loggedUser != null){
-                        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-                    }
-                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
-
-                    onSignupSuccess();
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                String errorMessage = null;
-                if(error instanceof NoConnectionError) {
-                    errorMessage = getResources().getString(R.string.internet_problem);
-                }else{
-                    errorMessage = getResources().getString(R.string.signup_failed);
-                }
-
-                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
-                onSignupFailed(errorMessage);
-                progressDialog.dismiss();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                JSONArray interestsJsonArray = new JSONArray();
-
-                JSONObject locationJson= JsonObjectGen.getJsonObjectFromLocation(0,0);
-
-                JSONObject userJson=new JSONObject();
-                try {
-                    userJson.put("name",userName);
-                    userJson.put("alias",userName);
-                    userJson.put("email",email);
-                    userJson.put("sex",userGender);
-                    userJson.put("userAge",userAge);
-                    userJson.put("interests", interestsJsonArray);
-                    userJson.put("photo_profile","");
-                    userJson.put("userPassword", MD5.getHashedPassword(userPassword));
-                    userJson.put("location", locationJson);
-                    userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
-
-                    params.put("user", userJson.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                JSONObject metadataJson = JSONmetadata.getMetadata(1);
-                params.put("metadata", metadataJson.toString());
-
-                Log.d(TAG, "params: " + params.toString());
-                return params;
-            }
-            @Override
-            public HashMap<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("content-type","application/json; charset=utf-8");
-                return headers;
-            }
-
-
-        };
-    }
-    /*User user;
-        user = new User("0", userName, userName, email,userBirthday,userGender);
-        if (hasFbId){
-            user.setFbId(this.fbId);
-        }
-        MyApplication.getInstance().getPrefManager().storeUser(user);*/

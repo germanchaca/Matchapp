@@ -61,6 +61,8 @@ public class MyPreferenceManager {
     public void storeAppServerToken (String token){
         editor.putString(KEY_APP_SERVER_TOKEN, token);
         editor.commit();
+        Log.d(TAG, "AppServerToken guardado en shared preferences. " + token);
+
     }
     public String getAppServerToken (){
         String appServerToken = pref.getString(KEY_APP_SERVER_TOKEN,null);

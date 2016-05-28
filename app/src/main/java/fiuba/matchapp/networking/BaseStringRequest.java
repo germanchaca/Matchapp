@@ -49,7 +49,6 @@ public class BaseStringRequest extends Request<String> {
     }
 
 
-
     @Override
     public byte[] getBody() throws AuthFailureError {
         byte[] bodyArray =  this.body.getBytes(Charset.forName("UTF-8"));
