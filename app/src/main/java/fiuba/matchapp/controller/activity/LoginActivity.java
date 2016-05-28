@@ -39,7 +39,6 @@ import fiuba.matchapp.utils.MD5;
 
 public class LoginActivity extends FacebookLoginActivity {
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
 
     private EditText _userNameText;
     private EditText _passwordText;
@@ -58,18 +57,9 @@ public class LoginActivity extends FacebookLoginActivity {
         _loginButton = (Button) findViewById(R.id.btn_login);
         _signupLink = (TextView) findViewById(R.id.link_signup);
         loginWithFacebook = (Button) findViewById(R.id.btn_fb_login);
-        _link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
+        //_link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
 
-        initForgotPasswordLinkButton();
-
-        /**
-         * Check for login session. It user is already logged in
-         * redirect him to main activity
-         * */
-        if (MyApplication.getInstance().getPrefManager().getUser() != null) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }
+        //initForgotPasswordLinkButton();
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -85,7 +75,7 @@ public class LoginActivity extends FacebookLoginActivity {
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivity(intent);
             }
         });
 

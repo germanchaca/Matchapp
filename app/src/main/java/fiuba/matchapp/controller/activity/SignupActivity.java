@@ -214,11 +214,11 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
-                int httpStatusCode = networkResponse.statusCode;
+                //int httpStatusCode = networkResponse.statusCode;
 
-                if(httpStatusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                //if(httpStatusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
 
-                }
+                //}
                 String errorMessage = null;
                 if (error instanceof NoConnectionError) {
                     errorMessage = getResources().getString(R.string.internet_problem);

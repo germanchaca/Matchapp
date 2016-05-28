@@ -10,12 +10,16 @@
     <string name="gsmintentservice_error_server_app_send_registrationgsm">No es posible enviar el id de registro gcm a nuestro servidor.</string>
 
     <!-- LoginActivity-->
-    <string name="buttontxt_entrar">Entrar</string>
+    <string name="buttontxt_entrar">Iniciar sesión</string>
     <string name="buttontxt_crear_cuenta">Crear cuenta</string>
-    <string name="buttontxt_registrar">Registrarse</string>
-    <string name="buttontxt_forgot_password">¿Olvidaste tu contrase\u0148a? Haz click AQUI</string>
+
+    <string name="buttontxt_registrar">Crear una cuenta</string>
+    <string name="buttontxt_forgot_password">No recuerdo mi contrase\u0148a</string>
+
+    <string name="txt_sign_in_using">Iniciar sesión usando</string>
+
     <string name="buttontxt_fb_login">INICIAR SESIÓN CON FACEBOOK</string>
-    <string name="buttontxt_login">Ya tenés cuenta? Entrar</string>
+    <string name="buttontxt_login">Ya tenés cuenta? Iniciar sesión</string>
     <string name="dialog_forgot_password">Recuperación de contrase\u0148a</string>
     <string name="dialog_forgot_password_hint">Ingrese E-mail de cuenta</string>
     <string name="dialog_forgot_password_ok">Continuar</string>
