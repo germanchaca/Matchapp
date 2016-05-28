@@ -20,4 +20,14 @@ public class JSONmetadata {
         }
         return metedataJson;
     }
+    public static JSONObject getMetadata(){
+        JSONObject metedataJson =new JSONObject();
+        try {
+            metedataJson.put("version", MyApplication.VERSION);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return metedataJson;
+    }
 }

@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +35,7 @@ import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.controller.clickToSelectEditText.Item;
 import fiuba.matchapp.networking.BaseRequest;
+import fiuba.matchapp.networking.BaseStringRequest;
 import fiuba.matchapp.networking.JSONmetadata;
 import fiuba.matchapp.networking.JsonObjectGen;
 import fiuba.matchapp.networking.JsonParser;
@@ -166,30 +168,54 @@ public class SignupActivity extends AppCompatActivity {
         userPassword = MD5.getHashedPassword(_passwordText.getText().toString());
 
         HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("content-type", "application/json");
+        headers.put("Content-Type", "application/json; charset=utf-8");
 
-        HashMap<String, String> params = new HashMap<>();
+        JSONObject paramsJson = new JSONObject();
 
         JSONObject userJson = new JSONObject();
         userJson.put("name", userName);
         userJson.put("alias", userName);
         userJson.put("email", userEmail);
         userJson.put("sex", userGender);
-        userJson.put("userAge", userAge);
+        userJson.put("age", userAge);
         JSONArray interestsJsonArray = new JSONArray();
         userJson.put("interests", interestsJsonArray);
         userJson.put("photo_profile", "");
-        userJson.put("userPassword", userPassword);
+        userJson.put("password", userPassword);
         JSONObject locationJson = JsonObjectGen.getJsonObjectFromLocation(0, 0);
         userJson.put("location", locationJson);
         userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
 
-        params.put("user", userJson.toString());
+        paramsJson.put("user",userJson);
+
 
         JSONObject metadataJson = JSONmetadata.getMetadata(1);
-        params.put("metadata", metadataJson.toString());
 
-        Log.d(TAG, "params: " + params.toString());
+        paramsJson.put("metadata", metadataJson);
+
+        Response.Listener<String> stringResponse = new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "response: " + response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
+                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
+
+                    if (loggedUser != null) {
+                        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+                    }
+                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
+                    onSignupSuccess();
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "json parsing error: " + e.getMessage());
+                }
+            }
+        };
 
         Response.Listener<JSONObject> response = new Response.Listener<JSONObject>() {
             @Override
@@ -232,8 +258,13 @@ public class SignupActivity extends AppCompatActivity {
             }
         };
 
-        BaseRequest strReq2 = new BaseRequest(RestAPIContract.POST_USER, params, response, errorListener, Request.Method.POST);
-        BaseRequest strReq3 = new BaseRequest(RestAPIContract.POST_USER, params, headers, response, errorListener, Request.Method.POST);
+        String body =paramsJson.toString();
+
+
+        Log.d(TAG, "Body: " + body);
+
+        BaseStringRequest strReq2 = new BaseStringRequest(RestAPIContract.POST_USER, headers, body ,stringResponse, errorListener, Request.Method.POST);
+
         MyApplication.getInstance().addToRequestQueue(strReq2);
     }
 

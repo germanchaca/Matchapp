@@ -38,6 +38,7 @@ public class BaseStringRequest extends Request<String> {
                              Response.Listener<String> reponseListener, Response.ErrorListener errorListener, int method){
         this(url, params, reponseListener, errorListener, method);
         this.headers = headers;
+        this.params = params;
     }
 
     public BaseStringRequest(String url, HashMap<String, String> headers, String body,
@@ -48,9 +49,6 @@ public class BaseStringRequest extends Request<String> {
     }
 
 
-    protected Map<String, String> getParams() {
-        return params;
-    };
 
     @Override
     public byte[] getBody() throws AuthFailureError {
