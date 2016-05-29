@@ -41,6 +41,7 @@ public class MyPreferenceManager {
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_GENDER = "user_gender" ;
     private static final String KEY_USER_BIRTHDAY = "user_birthday" ;
+    private static final String KEY_USER_AGE = "user_age" ;
 
     private static final String KEY_USER_LOCATION_LATITUDE = "location_latitude";
     private static final String KEY_USER_LOCATION_LONGITUDE = "location_longitude";
@@ -74,10 +75,11 @@ public class MyPreferenceManager {
         editor.putString(KEY_USER_ALIAS,user.getAlias());
         editor.putString(KEY_USER_EMAIL, user.getEmail());
         editor.putString(KEY_USER_GENDER, user.getGenre());
-        editor.putString(KEY_USER_BIRTHDAY, user.getBirthday());
+        //editor.putString(KEY_USER_BIRTHDAY, user.getBirthday());
+        editor.putInt(KEY_USER_AGE, user.getAge());
         editor.putString(KEY_USER_LOCATION_LONGITUDE, user.getLongitude());
         editor.putString(KEY_USER_LOCATION_LATITUDE, user.getLatitude());
-        editor.putString(KEY_USER_FBID, user.getFbId());
+        //editor.putString(KEY_USER_FBID, user.getFbId());
         editor.putString(KEY_USER_PHOTO_PROFILE, user.getPhotoProfile());
 
         Gson gson = new Gson();
@@ -85,21 +87,23 @@ public class MyPreferenceManager {
 
         editor.commit();
 
-        Log.d(TAG, "Usuario guardado en shared preferences. " + user.getName() + ", " + user.getEmail());
+        Log.d(TAG, "Usuario guardado en shared preferences. " + user.getName() + ", " + user.getEmail() + ", "+ user.getAlias()+ ", " + user.getGenre()+ ", " + user.getAge()+ ", "+  user.getLongitude()+ ", " + user.getLatitude() + ", "+ user.getPhotoProfile());
     }
 
     public User getUser() {
         if (pref.getString(KEY_USER_ID, null) != null) {
             String id, name, email,alias, gender, birthday, longitude, latitude,fbId, photoProfile;
+            int age;
             id = pref.getString(KEY_USER_ID, null);
             name = pref.getString(KEY_USER_NAME, null);
             alias = pref.getString(KEY_USER_ALIAS, null);
             email = pref.getString(KEY_USER_EMAIL, null);
             gender = pref.getString(KEY_USER_GENDER, null);
-            birthday = pref.getString(KEY_USER_BIRTHDAY, null);
+            //birthday = pref.getString(KEY_USER_AGE, null);
+            age = pref.getInt(KEY_USER_FBID, 0);
             longitude = pref.getString(KEY_USER_LOCATION_LONGITUDE, null);
             latitude = pref.getString(KEY_USER_LOCATION_LATITUDE, null);
-            fbId = pref.getString(KEY_USER_FBID, null);
+            //fbId = pref.getString(KEY_USER_FBID, null);
             photoProfile = pref.getString(KEY_USER_PHOTO_PROFILE, null);
 
             Gson gson = new Gson();
@@ -107,11 +111,18 @@ public class MyPreferenceManager {
             Type type = new TypeToken<ArrayList<Interest>>() {}.getType();
             ArrayList<Interest> interests = gson.fromJson(json, type);
 
-            User user = new User(id,name,alias,email,birthday,gender);
+            User user = new User();
+            user.setName(name);
+            user.setAge(age);
+            user.setAlias(alias);
+            user.setEmail(email);
+            user.setId(id);
+            user.setGenre(gender);
             user.setLatitude(latitude);
             user.setLongitude(longitude);
-            user.setFbId(fbId);
+            //user.setFbId(fbId);
             user.setPhotoProfile(photoProfile);
+            user.setAge(age);
             user.setInterests(interests);
             return user;
         }

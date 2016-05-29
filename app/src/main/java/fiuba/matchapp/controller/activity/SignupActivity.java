@@ -3,11 +3,13 @@ package fiuba.matchapp.controller.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,7 @@ public class SignupActivity extends AppCompatActivity {
     private String fbId;
     private Boolean hasFbId;
     private DatePickerFragment dateFragment;
+    private LinearLayout parentLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton = (Button) findViewById(R.id.btn_signup);
         _loginLink = (TextView) findViewById(R.id.link_login);
         _sex_input = (ClickToSelectEditText<Item>) findViewById(R.id.sex_input);
+        parentLayout = (LinearLayout) findViewById(R.id.linearLayoutSignUp);
 
         initConfirmSignInButton();
         initLoginLinkButton();
@@ -202,9 +206,7 @@ public class SignupActivity extends AppCompatActivity {
                     User loggedUser = JsonParser.getUserFromJSONresponse(obj);
                     String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
-                    if (loggedUser != null) {
-                        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-                    }else
+                    MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
                     MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
                     onSignupSuccess();
@@ -272,7 +274,6 @@ public class SignupActivity extends AppCompatActivity {
 
 
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
 
         Intent intent = new Intent(this, Intro.class);
         startActivity(intent);
@@ -281,6 +282,7 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupFailed(String errorMessage) {
         Toast.makeText(getBaseContext(), errorMessage, Toast.LENGTH_LONG).show();
+        Snackbar.make(parentLayout,errorMessage,Snackbar.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 

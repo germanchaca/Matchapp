@@ -37,6 +37,8 @@ public class User implements Serializable, Parcelable {
     List<Interest> interests;
 
     public User() {
+        this.id = "0";
+        this.fbId = "";
     }
 
     public User(String id, String name, String alias, String email, String birthday, String genre) {
@@ -88,7 +90,7 @@ public class User implements Serializable, Parcelable {
     }
 
     public boolean hasFbId() {
-        return fbId != null && !fbId.isEmpty();
+        return !fbId.isEmpty();
     }
 
     public boolean hasLatitude() {
