@@ -53,6 +53,7 @@
     <string name="hint_campo_texto_apellido">Primer apellido</string>
     <string name="hint_campo_texto_telefono">Teléfono</string>
     <string name="hint_campo_texto_correo">Correo</string>
+    <string name="username_used">Email ya utilizado en otra cuenta</string>
 
     <!-- Textos de menu items -->
     <string name="icon_game">Buscar candidatos</string>

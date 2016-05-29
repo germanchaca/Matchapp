@@ -222,24 +222,34 @@ public class SignupActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
 
-                String errorMessage;
-                if (error instanceof NoConnectionError) {
-                    errorMessage = getResources().getString(R.string.internet_problem);
-                } else {
-                    errorMessage = getResources().getString(R.string.signup_failed);
-                }
+                String errorMessage = getResources().getString(R.string.signup_failed);
 
                 try{
-                    String response = new String(error.networkResponse.data, "utf-8");
+                    if (error.networkResponse!= null){
+                        String response = new String(error.networkResponse.data, "utf-8");
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            String message = obj.getString("Mensaje");
+                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
-                    Log.e(TAG, "Volley error: " + response + ", code: " + networkResponse);
+                            if (error.networkResponse.statusCode == 400){
+                                errorMessage = getResources().getString(R.string.username_used);
+                                _emailText.setError(getResources().getString(R.string.username_used));
+
+                            }else {
+                                if (error instanceof NoConnectionError) {
+                                    errorMessage = getResources().getString(R.string.internet_problem);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-
                 onSignupFailed(errorMessage);
                 progressDialog.dismiss();
             }
@@ -250,9 +260,9 @@ public class SignupActivity extends AppCompatActivity {
 
         Log.d(TAG, "Body: " + body);
 
-        BaseStringRequest strReq2 = new BaseStringRequest(RestAPIContract.POST_USER, headers, body ,stringResponse, errorListener, Request.Method.POST);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_USER, headers, body ,stringResponse, errorListener, Request.Method.POST);
 
-        MyApplication.getInstance().addToRequestQueue(strReq2);
+        MyApplication.getInstance().addToRequestQueue(signUpRequest);
     }
 
     private int  calculateUserAge() {
@@ -276,12 +286,13 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setEnabled(true);
 
         Intent intent = new Intent(this, Intro.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
 
     public void onSignupFailed(String errorMessage) {
-        Toast.makeText(getBaseContext(), errorMessage, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), errorMessage, Toast.LENGTH_LONG).show();
         Snackbar.make(parentLayout,errorMessage,Snackbar.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
