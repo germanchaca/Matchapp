@@ -38,14 +38,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.ImageBase64;
 
 /**

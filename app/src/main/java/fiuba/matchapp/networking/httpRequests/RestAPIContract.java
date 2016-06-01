@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 /**
  * Created by german on 4/21/2016.

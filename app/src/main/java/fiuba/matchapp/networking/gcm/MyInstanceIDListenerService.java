@@ -1,7 +1,5 @@
 package fiuba.matchapp.networking.gcm;
 
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -21,7 +19,7 @@ import java.util.Map;
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 
 /**
  * Created by german on 4/21/2016.

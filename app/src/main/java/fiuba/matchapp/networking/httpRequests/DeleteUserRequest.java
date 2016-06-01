@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -14,27 +14,30 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 
 /**
  * Created by ger on 01/06/16.
  */
-public abstract class GetInterestsRequest {
-    private static final String TAG = "GetInterestsRequest";
+public abstract class DeleteUserRequest {
+    private static final String TAG = "PostSignInRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
+    private final User user;
 
-    protected abstract void onGetInterestsSuccess(List<Interest> interests);
+    protected abstract void onDeleteAppServerTokenSuccess();
 
-    protected abstract void onGetInterestsDefaultError();
+    protected abstract void onDeleteUserFailedDefaultError();
 
-    protected abstract void onGetInterestsConnectionError();
+    protected abstract void onDeleteUserFailedUserConnectionError();
+
+    public DeleteUserRequest(User user){
+        this.user = user;
+    }
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.GET_INTERESTS, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.GET);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.DELETE_USER(this.user.getEmail()), getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.DELETE);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -55,12 +58,9 @@ public abstract class GetInterestsRequest {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Success response: " + response);
-                try {
-                    onSuccessResponse(response);
 
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                }
+                onDeleteAppServerTokenSuccess();
+
             }
         };
     }
@@ -80,7 +80,7 @@ public abstract class GetInterestsRequest {
                             Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
-                                onGetInterestsConnectionError();
+                                onDeleteUserFailedUserConnectionError();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -91,20 +91,10 @@ public abstract class GetInterestsRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onGetInterestsDefaultError();
+                onDeleteUserFailedDefaultError();
                 return;
             }
         };
         return errorListener;
     }
-    private void onSuccessResponse(String response) throws JSONException {
-        JSONObject obj = new JSONObject(response);
-        List<Interest> interests = JsonParser.getInterestsFromJSONresponse(obj);
-
-        onGetInterestsSuccess(interests);
-    }
-
-
-
 }
-

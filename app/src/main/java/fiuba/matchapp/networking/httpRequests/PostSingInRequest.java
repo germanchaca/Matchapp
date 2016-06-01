@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -16,26 +16,33 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.JsonMetadataUtils;
+import fiuba.matchapp.networking.JsonParser;
 
 /**
  * Created by ger on 01/06/16.
  */
-public abstract class SignOutRequest {
+public abstract class PostSingInRequest {
+
     private static final String TAG = "PostSignInRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
+    private final String password;
+    private final String email;
 
-    protected abstract void onDeleteAppServerTokenSuccess();
+    protected abstract void onSignInFailedDefaultError();
 
-    protected abstract void onDeleteTokenFailedDefaultError();
+    protected abstract void onSignInFailedUserConnectionError();
 
-    protected abstract void onDeleteTokenFailedUserConnectionError();
+    protected abstract void onSignupSuccess();
 
-    public SignOutRequest(){
-
+    public PostSingInRequest(String email, String hashedPassword){
+        this.email = email;
+        this.password = hashedPassword;
     }
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.DELETE_SIGN_OUT, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.DELETE);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_SIGN_IN, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -46,9 +53,33 @@ public abstract class SignOutRequest {
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json; charset=utf-8");
-        headers.put("Authorization", MyApplication.getInstance().getPrefManager().getAppServerToken());
         return headers;
     }
+
+    private String getBody() {
+        String body = "";
+        JSONObject paramsJson = new JSONObject();
+
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("email", this.email);
+
+            userJson.put("password", this.password);
+
+            paramsJson.put("user",userJson);
+
+            JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
+            paramsJson.put("metadata", metadataJson);
+
+            body =paramsJson.toString();
+            Log.d(TAG, "Body: " + body);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
     @NonNull
     private Response.Listener<String> getResponseListener() {
         return new Response.Listener<String>() {
@@ -56,9 +87,12 @@ public abstract class SignOutRequest {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Success response: " + response);
+                try {
+                    onSuccessResponse(response);
 
-                onDeleteAppServerTokenSuccess();
-
+                } catch (JSONException e) {
+                    Log.e(TAG, "json parsing error: " + e.getMessage());
+                }
             }
         };
     }
@@ -78,7 +112,7 @@ public abstract class SignOutRequest {
                             Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
-                                onDeleteTokenFailedUserConnectionError();
+                                onSignInFailedUserConnectionError();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -89,11 +123,25 @@ public abstract class SignOutRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onDeleteTokenFailedDefaultError();
+                onSignInFailedDefaultError();
                 return;
             }
         };
         return errorListener;
+    }
+
+
+
+
+    private void onSuccessResponse(String response) throws JSONException {
+        JSONObject obj = new JSONObject(response);
+        User loggedUser = JsonParser.getUserFromJSONresponse(obj);
+        String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
+
+        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+        MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
+        onSignupSuccess();
     }
 
 }

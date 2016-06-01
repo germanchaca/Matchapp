@@ -1,15 +1,9 @@
 package fiuba.matchapp.controller.activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,10 +18,10 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.controller.clickToSelectEditText.Item;
-import fiuba.matchapp.networking.PostSingUpRequest;
+import fiuba.matchapp.model.UserInterest;
+import fiuba.matchapp.networking.httpRequests.PostSingUpRequest;
 import fiuba.matchapp.utils.AgeUtils;
 import fiuba.matchapp.utils.FacebookUtils;
-import fiuba.matchapp.utils.LocationController;
 import fiuba.matchapp.utils.MD5;
 
 public class SignupActivity extends GetLocationActivity {
@@ -138,6 +132,7 @@ public class SignupActivity extends GetLocationActivity {
         user.setName(_nameText.getText().toString());
         user.setAlias(_nameText.getText().toString());
         user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
+        user.setInterests(new ArrayList<UserInterest>());
         user.setGenre(_sex_input.getText().toString());
         user.setLatitude(super.latitude);
         user.setLongitude(super.longitude);

@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -17,31 +17,32 @@ import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.JsonMetadataUtils;
 
 /**
  * Created by ger on 01/06/16.
  */
-public abstract class PostAppServerTokenRequest {
-    private static final String TAG = "PostSignInRequest";
+public abstract class PutUpdatePhothoProfileUser {
+    private static final String TAG = "PutUpdatePhotoProfile";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
+    private final String encodedImage;
+    private User user;
 
-    protected abstract void onRefreshAppServerTokenSuccess();
+    protected abstract void onUpdatePhotoProfileSuccess();
+    protected abstract void onAppServerUpdatePhotoProfileDefaultError();
+    protected abstract void onAppServerConnectionError();
 
-    protected abstract void onRefreshAppServerTokenFailedDefaultError();
-
-    protected abstract void onRefreshAppServerTokenFailedUserConnectionError();
-
-    public PostAppServerTokenRequest(){
-
+    public PutUpdatePhothoProfileUser(User user, String encodedImage){
+        this.user = user;
+        this.encodedImage = encodedImage;
     }
-    public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_APPSERVER_TOKEN, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.POST);
+    public void make(){
+        BaseStringRequest updateUserProfilePhotoRequest = new BaseStringRequest(RestAPIContract.PUT_PHOTO_USER(user.getEmail()), getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.PUT);
 
-        signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        MyApplication.getInstance().addToRequestQueue(signUpRequest);
+        updateUserProfilePhotoRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        MyApplication.getInstance().addToRequestQueue(updateUserProfilePhotoRequest);
     }
     @NonNull
     private HashMap<String, String> getHeaders() {
@@ -50,6 +51,30 @@ public abstract class PostAppServerTokenRequest {
         headers.put("Authorization", MyApplication.getInstance().getPrefManager().getAppServerToken());
         return headers;
     }
+
+    private String getBody() {
+        String body = "";
+        JSONObject paramsJson = new JSONObject();
+
+        JSONObject userJson = new JSONObject();
+        try {
+
+            userJson.put("photo", this.encodedImage);
+
+            paramsJson.put("user",userJson);
+
+            JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
+            paramsJson.put("metadata", metadataJson);
+
+            body =paramsJson.toString();
+            Log.d(TAG, "Body: " + body);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
     @NonNull
     private Response.Listener<String> getResponseListener() {
         return new Response.Listener<String>() {
@@ -57,12 +82,7 @@ public abstract class PostAppServerTokenRequest {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Success response: " + response);
-                try {
-                    onSuccessResponse(response);
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                }
+                onUpdatePhotoProfileSuccess();
             }
         };
     }
@@ -82,7 +102,7 @@ public abstract class PostAppServerTokenRequest {
                             Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
-                                onRefreshAppServerTokenFailedUserConnectionError();
+                                onAppServerConnectionError();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -93,20 +113,10 @@ public abstract class PostAppServerTokenRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onRefreshAppServerTokenFailedDefaultError();
+                onAppServerUpdatePhotoProfileDefaultError();
                 return;
             }
         };
         return errorListener;
     }
-
-    private void onSuccessResponse(String response) throws JSONException {
-        JSONObject obj = new JSONObject(response);
-        String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
-        MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
-
-        onRefreshAppServerTokenSuccess();
-    }
-
-
 }

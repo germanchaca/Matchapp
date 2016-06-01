@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -9,18 +9,24 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
+import fiuba.matchapp.networking.JsonMetadataUtils;
+import fiuba.matchapp.networking.JsonUtils;
 
 /**
  * Created by ger on 01/06/16.
@@ -98,8 +104,10 @@ public abstract class PutUpdateUserData {
     private void fillBody(String key, List<UserInterest> interests) {
 
         try {
-            JSONArray interestsJsonArray = new JSONArray(interests);
-            userJson.put("interests", interestsJsonArray);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<UserInterest>>() {}.getType();
+            String interestArrayJson = gson.toJson(interests,type);
+            userJson.put("interests", interestArrayJson);
 
         } catch (JSONException e) {
             e.printStackTrace();

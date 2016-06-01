@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.dpizarro.autolabel.library.AutoLabelUI;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,16 +41,12 @@ public class InterestsRecyclerViewFragment extends Fragment {
     private TextView txtTitle;
 
 
-
-    /**
-     * Create a new instance of DetailsFragment, initialized to
-     * show the text at 'index'. {1 to 5} from number of interests
-     */
-    public static InterestsRecyclerViewFragment newInstance(int index) {
+    public static InterestsRecyclerViewFragment newInstance(String category, ArrayList<Interest> interests) {
         InterestsRecyclerViewFragment f = new InterestsRecyclerViewFragment();
-        // Supply index input as an argument.
+
         Bundle args = new Bundle();
-        args.putInt("index", index);
+        args.putString("category", category);
+        args.putParcelableArrayList("values", interests);
         f.setArguments(args);
         return f;
     }
@@ -60,9 +57,10 @@ public class InterestsRecyclerViewFragment extends Fragment {
             Bundle savedInstanceState) {
 
         Bundle args = getArguments();
-        int index = args.getInt("index", 0);
+        String category = args.getString("category");
+        ArrayList<Interest> values = args.getParcelableArrayList("values");
 
-        initInterestItemsString(index);
+        initInterestItemsString(category, values);
 
         View view = inflater.inflate(R.layout.fragment_interest, container, false);
         findViews(view);
@@ -72,16 +70,14 @@ public class InterestsRecyclerViewFragment extends Fragment {
         return view;
     }
 
-    private void initInterestItemsString(int index) {
-        index--;
-        String[] categories = getResources().getStringArray(R.array.categories);
-        String[] category_names = getResources().getStringArray(R.array.category_names);
-        category_array_name = categories [index];
-        category_name = category_names[index];
+    private void initInterestItemsString(String category, List<Interest> values) {
 
-        int resourceID = getResources().getIdentifier(category_array_name, "array", getContext().getPackageName());
-        if (resourceID != 0){
-            interest_items = Arrays.asList(getResources().getStringArray(resourceID));
+        category_name = category;
+
+        interest_items = new ArrayList<>();
+
+        for(Interest i: values){
+            interest_items.add(i.getDescription());
         }
     }
 

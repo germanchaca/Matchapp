@@ -34,7 +34,7 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.JsonParser;
-import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.MD5;
 
 public class LoginActivity extends FacebookLoginActivity {
