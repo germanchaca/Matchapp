@@ -107,7 +107,7 @@ public class MyPreferenceManager {
             Gson gson = new Gson();
             String json = pref.getString(KEY_USER_INTERESTS, null);
             Type type = new TypeToken<ArrayList<UserInterest>>() {}.getType();
-            ArrayList<Interest> interests = gson.fromJson(json, type);
+            ArrayList<UserInterest> interests = gson.fromJson(json, type);
 
             User user = new User();
             user.setName(name);
