@@ -31,7 +31,6 @@ import fiuba.matchapp.networking.gcm.NotificationUtils;
 public class MainActivity extends GetLocationActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     public static Context context;
@@ -56,14 +55,13 @@ public class MainActivity extends GetLocationActivity {
           //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();
         initUserLastLocation();
-        connect();//para el getLocationActivity
-        checkPlayServices();
+        locationServiceConnect();        //para el getLocationActivity
     }
 
     private void launchNewMatchActivity() {
         Intent intent = new Intent(MainActivity.this, NewMatchActivity.class);
 
-        Serializable userMatched = new User("2","Camila","alias","email","","");
+        Serializable userMatched = new User();
 
         intent.putExtra("new_match_user",userMatched);
         intent.putExtra("chat_room_id","1");
@@ -111,23 +109,6 @@ public class MainActivity extends GetLocationActivity {
         return true;
     }
 
-
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
-                        .show();
-            } else {
-                Log.i(TAG, getResources().getString(R.string.check_google_play_service_error));
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.check_google_play_service_error), Toast.LENGTH_LONG).show();
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
 
     /**
      * Handles new push notification

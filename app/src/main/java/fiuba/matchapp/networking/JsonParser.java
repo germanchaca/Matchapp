@@ -43,12 +43,12 @@ public class JsonParser {
             ArrayList<Interest> user_interests = getUserInterests(userObj);
 
             JSONObject objLocation = null;
-            String user_latitude = null;
-            String user_longitude = null;
+            double user_latitude = 0;
+            double user_longitude = 0;
             try {
                 objLocation = userObj.getJSONObject("location");
-                user_latitude = objLocation.getString("latitude");
-                user_longitude = objLocation.getString("longitude");
+                user_latitude = objLocation.getDouble("latitude");
+                user_longitude = objLocation.getDouble("longitude");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

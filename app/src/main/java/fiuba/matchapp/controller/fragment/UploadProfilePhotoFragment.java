@@ -38,10 +38,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.RestAPIContract;
 import fiuba.matchapp.utils.ImageBase64;
@@ -56,22 +58,29 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
     FrameLayout editImage;
     FloatingActionButton fbEditImage;
 
-    public Boolean isEmpty;
     private int chooserType;
     private ImageChooserManager imageChooserManager;
     private String filePath;
 
-    private String originalFilePath;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static String[] PERMISSIONS_CAMERA = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private OnProfilePhotoDataPass dataPasser;
 
+    public interface OnProfilePhotoDataPass {
+        public void onProfilePhotoDataPass(String data);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (OnProfilePhotoDataPass) context;
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isEmpty = true;
     }
 
     @Nullable
@@ -97,8 +106,6 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                 selectImage(v.getContext());
             }
         });
-
-
         return view;
     }
 
@@ -106,13 +113,16 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
     private void chooseImage() {
         ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
         chooserType = ChooserType.REQUEST_PICK_PICTURE;
+
         imageChooserManager = new ImageChooserManager(this,
                 ChooserType.REQUEST_PICK_PICTURE, true);
+
         Bundle bundle = new Bundle();
         bundle.putBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false);
         imageChooserManager.setExtras(bundle);
         imageChooserManager.setImageChooserListener(this);
         imageChooserManager.clearOldFiles();
+
         try {
             filePath = imageChooserManager.choose();
         } catch (IllegalArgumentException e) {
@@ -125,8 +135,10 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
     private void takePicture() {
         ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CAMERA, REQUEST_CAMERA_PERMISSION);
         chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
+
         imageChooserManager = new ImageChooserManager(this,
                 ChooserType.REQUEST_CAPTURE_PICTURE, true);
+
         imageChooserManager.setImageChooserListener(this);
         imageChooserManager.clearOldFiles();
         try {
@@ -157,16 +169,13 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             @Override
             public void run() {
 
-                originalFilePath = image.getFilePathOriginal();
-
                 if (image != null) {
                     loadImage(userImage, image.getFilePathOriginal(), getActivity());
 
                     Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
                     String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
 
-                    //sendEncodedImageToServer(encodedImage);
-                    isEmpty = false;
+                    dataPasser.onProfilePhotoDataPass(encodedImage);
 
                 } else {
                     Log.i(TAG, "Chosen Image: Is null");
@@ -296,8 +305,6 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         User user = MyApplication.getInstance().getPrefManager().getUser();
         user.setPhotoProfile(encodedImage);
         MyApplication.getInstance().getPrefManager().storeUser(user);
-
-        isEmpty = false;
     }
 
     public void displayAlertDialog() {
@@ -307,7 +314,6 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userImage.setImageDrawable(getResources().getDrawable(R.drawable.empty_profile_phd_350x350));//setea de nuevo el default
-                isEmpty = true;
                 dialog.dismiss();
 
             }

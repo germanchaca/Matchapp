@@ -1,5 +1,6 @@
 package fiuba.matchapp.controller.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -37,7 +38,18 @@ public class InterestsRecyclerViewFragment extends Fragment {
     private String category_array_name;
     private TextView txtSubtitle;
     private TextView txtTitle;
-    public Boolean isEmpty;
+
+    private OnInterestsDataPass dataPasser;
+
+    public interface OnInterestsDataPass {
+        public void onInterestsDataPass(List<Interest> data);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (OnInterestsDataPass) context;
+    }
 
     /**
      * Create a new instance of DetailsFragment, initialized to
@@ -57,7 +69,6 @@ public class InterestsRecyclerViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        isEmpty = true;
         Bundle args = getArguments();
         int index = args.getInt("index", 0);
 
@@ -92,6 +103,8 @@ public class InterestsRecyclerViewFragment extends Fragment {
             List<Interest> interests = savedInstanceState.getParcelableArrayList(KEY_INSTANCE_STATE);
             if (interests != null) {
                 mInterestsList = interests;
+                dataPasser.onInterestsDataPass(mInterestsList);
+
                 adapter.setInterests(interests);
                 recyclerView.setAdapter(adapter);
             }
@@ -109,6 +122,7 @@ public class InterestsRecyclerViewFragment extends Fragment {
         }
         if (success) {
             adapter.setItemSelected(position, !isSelected);
+            dataPasser.onInterestsDataPass(adapter.getInterests());
         }
     }
 
@@ -125,16 +139,9 @@ public class InterestsRecyclerViewFragment extends Fragment {
         mAutoLabel.setOnLabelsEmptyListener(new AutoLabelUI.OnLabelsEmptyListener() {
             @Override
             public void onLabelsEmpty() {
-                isEmpty=true;
+                //isEmpty=true;
             }
         });
-/*
-        mAutoLabel.setOnLabelClickListener(new AutoLabelUI.OnLabelClickListener() {
-            @Override
-            public void onClickLabel(View v) {
-                Toast.makeText(getActivity(), ((Label) v).getText() , Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
     }
 
@@ -174,7 +181,7 @@ public class InterestsRecyclerViewFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
-                isEmpty = false;
+                //isEmpty = false;
                 itemListClicked(position);
             }
         });
@@ -188,4 +195,6 @@ public class InterestsRecyclerViewFragment extends Fragment {
                 (ArrayList<? extends Parcelable>) adapter.getInterests());
 
     }
+
+
 }

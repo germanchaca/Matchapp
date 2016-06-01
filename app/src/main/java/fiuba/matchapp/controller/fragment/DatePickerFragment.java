@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    private static final int MIN_AGE = 16 ;
     TextView _dateText;
     public int birthYear,birthMonth,birthDay;
 
@@ -26,10 +28,13 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
+        c.set(year - MIN_AGE,month,day);
 
         // Create a new instance of DatePickerDialog and return it
-        DatePickerDialog datePickerDialog = new DatePickerDialog( getActivity(),this, year, month, day);
-        datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
+        DatePickerDialog datePickerDialog = new DatePickerDialog( getActivity(),this, year - MIN_AGE, month, day);
+
+
+        datePickerDialog.getDatePicker().setMaxDate(c.getTimeInMillis());
         return datePickerDialog;
     }
 

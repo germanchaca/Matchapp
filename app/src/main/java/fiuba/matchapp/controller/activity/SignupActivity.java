@@ -1,9 +1,14 @@
 package fiuba.matchapp.controller.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,39 +16,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 
 import fiuba.matchapp.R;
-import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.controller.clickToSelectEditText.Item;
-import fiuba.matchapp.networking.BaseStringRequest;
-import fiuba.matchapp.networking.JSONmetadata;
-import fiuba.matchapp.networking.JsonObjectGen;
-import fiuba.matchapp.networking.JsonParser;
-import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.networking.PostSingUpRequest;
+import fiuba.matchapp.utils.AgeUtils;
+import fiuba.matchapp.utils.FacebookUtils;
+import fiuba.matchapp.utils.LocationController;
 import fiuba.matchapp.utils.MD5;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends GetLocationActivity {
     private static final String TAG = "SignupActivity";
+
 
     private EditText _nameText;
     private EditText _emailText;
@@ -53,22 +42,28 @@ public class SignupActivity extends AppCompatActivity {
     private TextView _loginLink;
 
     private ClickToSelectEditText<Item> _sex_input;
-    private String userName;
-    private String userEmail;
-    private String userPassword;
-    private String userGender;
-    private String userBirthday;
-    private int userAge, year,month,day;
-    private String fbId;
-    private Boolean hasFbId;
+
     private DatePickerFragment dateFragment;
     private LinearLayout parentLayout;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        initViews();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            initSignUpFromFacebookData(extras);
+        }
+        super.initUserLastLocation();
+        super.locationServiceConnect();
+
+    }
+
+    private void initViews() {
         _nameText = (EditText) findViewById(R.id.input_name);
         _emailText = (EditText) findViewById(R.id.input_username);
         _dateText = (EditText) findViewById(R.id.input_date);
@@ -77,67 +72,46 @@ public class SignupActivity extends AppCompatActivity {
         _loginLink = (TextView) findViewById(R.id.link_login);
         _sex_input = (ClickToSelectEditText<Item>) findViewById(R.id.sex_input);
         parentLayout = (LinearLayout) findViewById(R.id.linearLayoutSignUp);
-
-        initConfirmSignInButton();
-        initLoginLinkButton();
-        initSexInput();
-        inicializarConCuentaFacebook();
-
-    }
-
-    private void initConfirmSignInButton() {
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    signup();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                signup();
             }
         });
-    }
-
-    private void initLoginLinkButton() {
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        initGenreInputDialog();
+
+        progressDialog = new ProgressDialog(SignupActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getResources().getString(R.string.creating_account));
     }
 
-    private void initSexInput() {
-        ArrayList<Item> lstSexos = new ArrayList<Item>();
+    private void initGenreInputDialog() {
+        ArrayList<Item> lstGenres = new ArrayList<Item>();
 
         String[] sexos = getResources().getStringArray(R.array.sex_array);
 
         for (int i = 0; i < sexos.length; i++) {
             Item iSexo = new Item(sexos[i]);
-            lstSexos.add(iSexo);
+            lstGenres.add(iSexo);
         }
-        _sex_input.setItems(lstSexos);
+        _sex_input.setItems(lstGenres);
     }
 
 
-    public void inicializarConCuentaFacebook() {
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            userName = extras.getString("userName");
-            userEmail = extras.getString("email");
-            userGender = extras.getString("userGender");
-            userBirthday = extras.getString("userBirthday");
-            fbId = extras.getString("fbId");
+    public void initSignUpFromFacebookData(Bundle extras) {
+        //String fbId = FacebookUtils.getFbId(extras);
+        User userFromFacebookData = FacebookUtils.getUserFromFacebookData(extras);
 
-            _dateText.setText(userBirthday);
-            _emailText.setText(userEmail);
-            _nameText.setText(userName);
-            _sex_input.setText(userGender);
-            hasFbId = true;
-        } else {
-            hasFbId = false;
-
-        }
+        _emailText.setText(userFromFacebookData.getEmail());
+        _nameText.setText(userFromFacebookData.getName());
+        _sex_input.setText(userFromFacebookData.getGenre());
     }
 
     public void showDatePickerDialog(View v) {
@@ -146,158 +120,77 @@ public class SignupActivity extends AppCompatActivity {
         dateFragment.show(getFragmentManager(), "datePicker");
     }
 
-    public void signup() throws JSONException {
+    public void signup() {
         Log.d(TAG, "Signup");
 
-        if (!validate()) {
+        if (!validateUserFields()) {
             onSignupFailed(getResources().getString(R.string.signup_failed));
             return;
         }
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getResources().getString(R.string.creating_account));
         progressDialog.show();
+        
+        User user = new User();
+        user.setEmail(_emailText.getText().toString());
+        user.setName(_nameText.getText().toString());
+        user.setAlias(_nameText.getText().toString());
+        user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
+        user.setGenre(_sex_input.getText().toString());
+        user.setLatitude(super.latitude);
+        user.setLongitude(super.longitude);
 
-        userName = _nameText.getText().toString();
-        userEmail = _emailText.getText().toString();
-        userBirthday = _dateText.getText().toString();
-        userAge = calculateUserAge();
-        userGender = _sex_input.getText().toString();
-        userPassword = MD5.getHashedPassword(_passwordText.getText().toString());
+        String userPassword = MD5.getHashedPassword(_passwordText.getText().toString());
 
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/json; charset=utf-8");
-
-        JSONObject paramsJson = new JSONObject();
-
-        JSONObject userJson = new JSONObject();
-        userJson.put("name", userName);
-        userJson.put("alias", userName);
-        userJson.put("email", userEmail);
-        userJson.put("sex", userGender);
-        userJson.put("age", userAge);
-        JSONArray interestsJsonArray = new JSONArray();
-        userJson.put("interests", interestsJsonArray);
-        userJson.put("photo_profile", "");
-        userJson.put("password", userPassword);
-        JSONObject locationJson = JsonObjectGen.getJsonObjectFromLocation(0, 0);
-        userJson.put("location", locationJson);
-        userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
-
-        paramsJson.put("user",userJson);
-
-
-        JSONObject metadataJson = JSONmetadata.getMetadata(1);
-
-        paramsJson.put("metadata", metadataJson);
-
-        Response.Listener<String> stringResponse = new Response.Listener<String>() {
-
+        PostSingUpRequest postSignUpRequest = new PostSingUpRequest(user, userPassword) {
             @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "response: " + response);
-                progressDialog.dismiss();
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
-                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
-
-                    MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
-
-                    onSignupSuccess();
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                }
+            protected void onSignupSuccess() {
+                onRequestSignupSuccess();
             }
-        };
-
-
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-
-                String errorMessage = getResources().getString(R.string.signup_failed);
-
-                try{
-                    if (error.networkResponse!= null){
-                        String response = new String(error.networkResponse.data, "utf-8");
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            String message = obj.getString("Mensaje");
-                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
-
-                            if (error.networkResponse.statusCode == 400){
-                                errorMessage = getResources().getString(R.string.username_used);
-                                _emailText.setError(getResources().getString(R.string.username_used));
-
-                            }else {
-                                if (error instanceof NoConnectionError) {
-                                    errorMessage = getResources().getString(R.string.internet_problem);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+            protected void onSignUpFailedUserInvalidError() {
+                String errorMessage = getResources().getString(R.string.username_used);
+                _emailText.setError(errorMessage);
                 onSignupFailed(errorMessage);
-                progressDialog.dismiss();
+            }
+
+            @Override
+            protected void onSignUpFailedUserConnectionError() {
+                String errorMessage = getResources().getString(R.string.internet_problem);
+                onSignupFailed(errorMessage);
+            }
+
+            @Override
+            protected void onSignUpFailedDefaultError() {
+                String errorMessage = getResources().getString(R.string.signup_failed);
+                onSignupFailed(errorMessage);
             }
         };
 
-        String body =paramsJson.toString();
-
-
-        Log.d(TAG, "Body: " + body);
-
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_USER, headers, body ,stringResponse, errorListener, Request.Method.POST);
-
-        MyApplication.getInstance().addToRequestQueue(signUpRequest);
+        postSignUpRequest.make();
     }
 
-    private int  calculateUserAge() {
-        final Calendar today = Calendar.getInstance();
-        int currentYear = today.get(Calendar.YEAR);
+    public void onRequestSignupSuccess() {
 
-        int age = currentYear - dateFragment.birthYear;
-
-        if (today.get(Calendar.MONTH) < dateFragment.birthMonth ) {
-            age--;
-        } else if (today.get(Calendar.MONTH) == dateFragment.birthMonth
-                && today.get(Calendar.DAY_OF_MONTH) < dateFragment.birthDay) {
-            age--;
-        }
-        return age;
-    }
-
-    public void onSignupSuccess() {
-
-
+        progressDialog.dismiss();
         _signupButton.setEnabled(true);
 
-        Intent intent = new Intent(this, Intro.class);
+        Intent intent = new Intent(this, FinishingSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
 
     public void onSignupFailed(String errorMessage) {
-        //Toast.makeText(getBaseContext(), errorMessage, Toast.LENGTH_LONG).show();
+        progressDialog.dismiss();
         Snackbar.make(parentLayout,errorMessage,Snackbar.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
+        
     }
 
-    public boolean validate() {
+    public boolean validateUserFields() {
         boolean valid = true;
 
         String name = _nameText.getText().toString();

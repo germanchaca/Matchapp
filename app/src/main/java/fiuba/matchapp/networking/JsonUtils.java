@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Created by german on 5/25/2016.
  */
-public class JsonObjectGen {
+public class JsonUtils {
     public static JSONObject getJsonObjectFromLocation(double latitude, double longitude){
         JSONObject locationJson=new JSONObject();
         try {

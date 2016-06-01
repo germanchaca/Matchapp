@@ -13,16 +13,10 @@ import java.util.Locale;
 import fiuba.matchapp.app.MyApplication;
 
 public class User implements Serializable, Parcelable {
-    String id;
-    String name;
-    String alias;
-    String email;
-    String birthday;
+    String id, name, alias, email, birthday, genre, photoProfile;
     int age;
-    String genre;
-    String fbId;
-    String latitude;
-    String longitude;
+    double latitude, longitude;
+    List<Interest> interests;
 
     public int getAge() {
         return age;
@@ -32,22 +26,9 @@ public class User implements Serializable, Parcelable {
         this.age = age;
     }
 
-    String photoProfile;
-
-    List<Interest> interests;
-
     public User() {
         this.id = "0";
-        this.fbId = "";
-    }
-
-    public User(String id, String name, String alias, String email, String birthday, String genre) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.birthday = birthday;
-        this.genre = genre;
-        this.alias = alias;
+        this.photoProfile = "";
     }
 
     protected User(Parcel in) {
@@ -57,9 +38,8 @@ public class User implements Serializable, Parcelable {
         email = in.readString();
         birthday = in.readString();
         genre = in.readString();
-        fbId = in.readString();
-        latitude = in.readString();
-        longitude = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -82,30 +62,11 @@ public class User implements Serializable, Parcelable {
         this.alias = alias;
     }
 
-    public String getFbProfileImageUrl() {
-        if (this.hasFbId()) {
-            return "http://graph.facebook.com/" + fbId + "/picture?type=large";
-        }
-        return "";
-    }
-
-    public boolean hasFbId() {
-        return !fbId.isEmpty();
-    }
-
-    public boolean hasLatitude() {
-        return latitude != null && !latitude.isEmpty();
-    }
-
-    public boolean hasLongitude() {
-        return longitude != null && !longitude.isEmpty();
-    }
-
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -125,19 +86,11 @@ public class User implements Serializable, Parcelable {
         this.genre = genre;
     }
 
-    public String getFbId() {
-        return fbId;
-    }
-
-    public void setFbId(String fbId) {
-        this.fbId = fbId;
-    }
-
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
@@ -193,30 +146,9 @@ public class User implements Serializable, Parcelable {
         dest.writeString(this.email);
         dest.writeString(this.birthday);
         dest.writeString(this.genre);
-        dest.writeString(this.fbId);
-        dest.writeString(this.latitude);
-        dest.writeString(this.longitude);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
         dest.writeString(this.photoProfile);
         dest.writeTypedList(this.interests);
-    }
-
-    public String getParsedAddress() {
-        String parsedAddress = "";
-        if (!hasLatitude() || !hasLongitude()) {
-            return parsedAddress;
-        }
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(MyApplication.getInstance().getApplicationContext(), Locale.getDefault());
-
-        try {
-            addresses = geocoder.getFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String country = addresses.get(0).getCountryName();
-            String city = addresses.get(0).getLocality();
-            parsedAddress = city + ", " + country;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return parsedAddress;
     }
 }

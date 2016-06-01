@@ -36,11 +36,13 @@ import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.utils.AdressUtils;
 
 /**
  * Created by german on 4/19/2016.
@@ -266,7 +268,11 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     }
 
     private void initEditAddress(User user) {
-        txtEditAddress.setText(user.getParsedAddress());
+        try {
+            txtEditAddress.setText(AdressUtils.getParsedAddress(user.getLatitude(),user.getLongitude()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         layoutRefreshLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -397,14 +403,18 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     public void refreshLocation() {
         this.initUserLastLocation();
-        super.connect();
+        super.locationServiceConnect();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         super.onConnected(bundle);
         this.user = MyApplication.getInstance().getPrefManager().getUser();
-        txtEditAddress.setText(this.user.getParsedAddress());
+        try {
+            txtEditAddress.setText(AdressUtils.getParsedAddress(this.user.getLatitude(),this.user.getLongitude()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         stopRefreshingLocationLoading();
         //TODO MANDAR AL SERVIDOR;
     }

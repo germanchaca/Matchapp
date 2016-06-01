@@ -47,6 +47,7 @@
     <string name="alert_dialog_continue_editing_cancel">Cancelar</string>
     <!-- SignUpActivity -->
     <string name="creating_account">Creando cuenta...</string>
+    <string name="refresh_account_details">Actualizando datos de perfil...</string>
     <string name="signup_failed">No se pudo completar el registro</string>
 
     <string name="hint_campo_texto_nombre">Primer nombre</string>
