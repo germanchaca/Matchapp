@@ -34,20 +34,12 @@ public class BaseStringRequest extends Request<String> {
         this.params = params;
     }
 
-    public BaseStringRequest(String url, Map<String, String> params, HashMap<String, String> headers,
-                             Response.Listener<String> reponseListener, Response.ErrorListener errorListener, int method){
-        this(url, params, reponseListener, errorListener, method);
-        this.headers = headers;
-        this.params = params;
-    }
-
     public BaseStringRequest(String url, HashMap<String, String> headers, String body,
                              Response.Listener<String> reponseListener, Response.ErrorListener errorListener, int method){
         this(url, null, reponseListener, errorListener, method);
         this.headers = headers;
         this.body = body;
     }
-
 
     @Override
     public byte[] getBody() throws AuthFailureError {

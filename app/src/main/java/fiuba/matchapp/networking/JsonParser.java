@@ -8,9 +8,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.model.UserInterest;
 
 /**
  * Created by german on 5/25/2016.
@@ -57,7 +59,7 @@ public class JsonParser {
                 String user_genre = getUserGenre(userObj);
                 loggedUser.setGenre(user_genre);
 
-                ArrayList<Interest> user_interests = getUserInterests(userObj);
+                ArrayList<UserInterest> user_interests = getUserInterests(userObj);
                 loggedUser.setInterests(user_interests);
 
                 JSONObject objLocation;
@@ -78,20 +80,20 @@ public class JsonParser {
 
     }
 
-    private static ArrayList<Interest> getUserInterests(JSONObject userObj) {
+    private static ArrayList<UserInterest> getUserInterests(JSONObject userObj) {
         JSONArray jsonArrayInterests = null;
         try {
             jsonArrayInterests = userObj.getJSONArray("interests");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ArrayList<Interest> user_interests = new ArrayList<Interest>();
+        ArrayList<UserInterest> user_interests = new ArrayList<UserInterest>();
         for(int i = 0; i < jsonArrayInterests.length(); i++) {
             try {
                 JSONObject interestObj = jsonArrayInterests.getJSONObject(i);
                 String category = interestObj.getString("category");
                 String value = interestObj.getString("value");
-                Interest interest = new Interest();
+                UserInterest interest = new UserInterest();
                 interest.setCategory(category);
                 interest.setDescription(value);
                 user_interests.add(interest);
@@ -153,5 +155,46 @@ public class JsonParser {
     private static JSONObject getUserJsonObject(JSONObject response, JSONObject userObj) throws JSONException {
         userObj = response.getJSONObject("user");
         return userObj;
+    }
+
+    public static List<Interest> getInterestsFromJSONresponse(JSONObject response) {
+        JSONObject interestsObj;
+
+        try {
+            interestsObj = response.getJSONObject("interests");
+            if(interestsObj != null){
+                return getInterests(interestsObj);
+            }
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+    private static ArrayList<Interest> getInterests(JSONObject userObj) {
+        JSONArray jsonArrayInterests = null;
+        try {
+            jsonArrayInterests = userObj.getJSONArray("interests");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ArrayList<Interest> interests = new ArrayList<Interest>();
+        for(int i = 0; i < jsonArrayInterests.length(); i++) {
+            try {
+                JSONObject interestObj = jsonArrayInterests.getJSONObject(i);
+                String category = interestObj.getString("category");
+                String value = interestObj.getString("value");
+                Interest interest = new Interest();
+                interest.setCategory(category);
+                interest.setDescription(value);
+                interest.setSelected(false);
+                interests.add(interest);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return interests;
     }
 }

@@ -18,6 +18,10 @@ public class RestAPIContract {
     //Sign In de usuario
     public static final String POST_SIGN_IN = BASE_URL + "/users/token/singin/";
 
+    //Consulta de intereses disponibles para que el usuario elija
+    public static final String GET_INTERESTS = BASE_URL + "/interests/";
+
+
     //Post de Token cada vez que me loggeo
     public static final String LOGIN = BASE_URL + "/token";
 

@@ -16,7 +16,7 @@ public class User implements Serializable, Parcelable {
     String id, name, alias, email, birthday, genre, photoProfile;
     int age;
     double latitude, longitude;
-    List<Interest> interests;
+    List<UserInterest> interests;
 
     public int getAge() {
         return age;
@@ -121,11 +121,11 @@ public class User implements Serializable, Parcelable {
     public String getPhotoProfile() {
         return photoProfile;
     }
-    public List<Interest> getInterests() {
+    public List<UserInterest> getInterests() {
         return interests;
     }
 
-    public void setInterests(List<Interest> interests) {
+    public void setInterests(List<UserInterest> interests) {
         this.interests = interests;
     }
 
