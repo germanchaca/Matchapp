@@ -60,14 +60,14 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
 
                 Map<String,List<Interest> > mapInterestsByCategory = new HashMap<>();
                 for (Interest i : interests) {
-                    if(!mapInterestsByCategory.containsKey(i.getCategory().toLowerCase())){
+                    if(!mapInterestsByCategory.containsKey(i.getCategory())){
                         List<Interest> list = new ArrayList<>();
                         list.add(i);
-                        mapInterestsByCategory.put(i.getCategory().toLowerCase(),list);
+                        mapInterestsByCategory.put(i.getCategory(),list);
                     }else {
-                        List<Interest> list = mapInterestsByCategory.get(i.getCategory().toLowerCase());
+                        List<Interest> list = mapInterestsByCategory.get(i.getCategory());
                         list.add(i);
-                        mapInterestsByCategory.put(i.getCategory().toLowerCase(),list);
+                        mapInterestsByCategory.put(i.getCategory(),list);
                     }
                 }
                 for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())

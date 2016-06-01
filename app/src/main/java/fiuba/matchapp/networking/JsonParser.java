@@ -175,7 +175,7 @@ public class JsonParser {
     }
     private static ArrayList<Interest> getInterests(JSONArray jsonArrayInterests) {
 
-        ArrayList<Interest> interests = new ArrayList<Interest>();
+        ArrayList<Interest> interests = new ArrayList<>();
         for(int i = 0; i < jsonArrayInterests.length(); i++) {
             try {
                 JSONObject interestObj = jsonArrayInterests.getJSONObject(i);

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import fiuba.matchapp.model.Interest;
 
 public class InterestsRecyclerViewFragment extends Fragment {
 
+    private static final String TAG = "InterestFragment";
     private final String KEY_INSTANCE_STATE = "stateInterests";
 
     private AutoLabelUI mAutoLabel;
@@ -36,7 +38,6 @@ public class InterestsRecyclerViewFragment extends Fragment {
     private RecyclerView recyclerView;
     private String category_name;
     private List<String> interest_items;
-    private String category_array_name;
     private TextView txtSubtitle;
     private TextView txtTitle;
 
@@ -79,6 +80,7 @@ public class InterestsRecyclerViewFragment extends Fragment {
         for(Interest i: values){
             interest_items.add(i.getDescription());
         }
+        Log.d(TAG, interest_items.toString());
     }
 
     @Override
@@ -156,7 +158,7 @@ public class InterestsRecyclerViewFragment extends Fragment {
         //Populate list
 
         for (int i = 0; i < interest_items.size(); i++) {
-            mInterestsList.add(new Interest(Integer.toString(i),category_array_name, interest_items.get(i)));
+            mInterestsList.add(new Interest(Integer.toString(i),category_name, interest_items.get(i)));
         }
 
         adapter = new InterestsRecyclerAdapter(mInterestsList);
@@ -165,7 +167,6 @@ public class InterestsRecyclerViewFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
-                //isEmpty = false;
                 itemListClicked(position);
             }
         });
