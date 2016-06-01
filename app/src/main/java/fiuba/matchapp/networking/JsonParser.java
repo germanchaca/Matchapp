@@ -30,43 +30,50 @@ public class JsonParser {
 
     public static User getUserFromJSONresponse(JSONObject response) {
         JSONObject userObj = null;
-        userObj = getUserJsonObject(response, userObj);
+        try {
+            userObj = getUserJsonObject(response, userObj);
 
-        if(userObj != null){
-            //String user_id = getUserId(userObj);
-            String user_name = getUserName(userObj);
-            String user_alias = getUserAlias(userObj);
-            String user_email = getUserMail(userObj);
-            int user_age = getUser_age(userObj);
-            String user_photo = getUserPhoto(userObj);
-            String user_genre = getUserGenre(userObj);
-            ArrayList<Interest> user_interests = getUserInterests(userObj);
+            if(userObj != null){
 
-            JSONObject objLocation = null;
-            double user_latitude = 0;
-            double user_longitude = 0;
-            try {
+                User loggedUser = new User();
+
+                getUserId(loggedUser, userObj);
+
+                String user_name = getUserName(userObj);
+                loggedUser.setName(user_name);
+
+                String user_alias = getUserAlias(userObj);
+                loggedUser.setAlias(user_alias);
+
+                String user_email = getUserMail(userObj);
+                loggedUser.setEmail(user_email);
+
+                int user_age = getUser_age(userObj);
+                loggedUser.setAge(user_age);
+
+                String user_photo = getUserPhoto(userObj);
+                loggedUser.setPhotoProfile(user_photo);
+
+                String user_genre = getUserGenre(userObj);
+                loggedUser.setGenre(user_genre);
+
+                ArrayList<Interest> user_interests = getUserInterests(userObj);
+                loggedUser.setInterests(user_interests);
+
+                JSONObject objLocation;
+                double user_latitude;
+                double user_longitude;
                 objLocation = userObj.getJSONObject("location");
                 user_latitude = objLocation.getDouble("latitude");
                 user_longitude = objLocation.getDouble("longitude");
-            } catch (JSONException e) {
-                e.printStackTrace();
+                loggedUser.setLatitude(user_latitude);
+                loggedUser.setLongitude(user_longitude);
+
+                return loggedUser;
             }
-
-            User loggedUser = new User();
-            //loggedUser.setId(user_id);
-            loggedUser.setName(user_name);
-            loggedUser.setAlias(user_alias);
-            loggedUser.setEmail(user_email);
-            loggedUser.setPhotoProfile(user_photo);
-            loggedUser.setAge(user_age);
-            loggedUser.setGenre(user_genre);
-            loggedUser.setInterests(user_interests);
-            loggedUser.setLatitude(user_latitude);
-            loggedUser.setLongitude(user_longitude);
-            return loggedUser;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
         return null;
 
     }
@@ -96,87 +103,55 @@ public class JsonParser {
         return user_interests;
     }
 
-    private static String getUserGenre(JSONObject userObj) {
-        String user_genre = null;
-        try {
-            user_genre = userObj.getString("sex");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static String getUserGenre(JSONObject userObj) throws JSONException {
+        String user_genre = userObj.getString("sex");
+        
         return user_genre;
     }
 
     @Nullable
-    private static String getUserPhoto(JSONObject userObj) {
-        String user_photo = null;
-        try {
-            user_photo = userObj.getString("photo_profile");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static String getUserPhoto(JSONObject userObj) throws JSONException {
+        String user_photo = userObj.getString("photo_profile");
+        
         return user_photo;
     }
 
-    private static int getUser_age(JSONObject userObj) {
-        int user_age = 0;
-        try {
-            user_age = userObj.getInt("age");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static int getUser_age(JSONObject userObj) throws JSONException {
+        int user_age = userObj.getInt("age");
+        
         return user_age;
     }
 
     @Nullable
-    private static String getUserMail(JSONObject userObj) {
-        String user_email = null;
-        try {
-            user_email = userObj.getString("email");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static String getUserMail(JSONObject userObj) throws JSONException {
+        String user_email = userObj.getString("email");
+        
         return user_email;
     }
 
     @Nullable
-    private static String getUserAlias(JSONObject userObj) {
-        String user_alias = null;
-        try {
-            user_alias = userObj.getString("alias");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static String getUserAlias(JSONObject userObj) throws JSONException {
+        String user_alias = userObj.getString("alias");
         return user_alias;
     }
 
     @Nullable
-    private static String getUserName(JSONObject userObj) {
-        String user_name = null;
-        try {
-            user_name = userObj.getString("name");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static String getUserName(JSONObject userObj) throws JSONException {
+        String user_name = userObj.getString("name");
         return user_name;
     }
 
     @Nullable
-    private static String getUserId(JSONObject userObj) {
+    private static String getUserId(User user, JSONObject userObj) throws JSONException {
         String user_id = null;
-        try {
-            user_id = userObj.getString("id");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(userObj.has("id")){
+            user.setId(userObj.getString("id"));
         }
         return user_id;
     }
 
-    private static JSONObject getUserJsonObject(JSONObject response, JSONObject userObj) {
-        try {
-            userObj = response.getJSONObject("user");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private static JSONObject getUserJsonObject(JSONObject response, JSONObject userObj) throws JSONException {
+        userObj = response.getJSONObject("user");
         return userObj;
     }
 }

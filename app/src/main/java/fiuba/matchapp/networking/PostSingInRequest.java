@@ -21,34 +21,34 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 
 /**
- * Created by ger on 31/05/16.
+ * Created by ger on 01/06/16.
  */
-public abstract class PostSingUpRequest {
-    private static final String TAG = "SignupActivity";
+public abstract class PostSingInRequest {
+
+    private static final String TAG = "PostSignInRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
-    private final User user;
     private final String password;
+    private final String email;
+
+    protected abstract void onSignInFailedDefaultError();
+
+    protected abstract void onSignInFailedUserConnectionError();
 
     protected abstract void onSignupSuccess();
-    protected abstract void onSignUpFailedUserInvalidError();
-    protected abstract void onSignUpFailedUserConnectionError();
-    protected abstract void onSignUpFailedDefaultError();
 
-    public PostSingUpRequest(User user, String password){
-        this.user = user;
-        this.password = password;
+    public PostSingInRequest(String email, String hashedPassword){
+        this.email = email;
+        this.password = hashedPassword;
     }
-
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_USER, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_SIGN_IN, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MyApplication.getInstance().addToRequestQueue(signUpRequest);
     }
-
     @NonNull
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -62,22 +62,9 @@ public abstract class PostSingUpRequest {
 
         JSONObject userJson = new JSONObject();
         try {
-            userJson.put("name", user.getName());
-            userJson.put("alias", user.getAlias());
-            userJson.put("email", user.getEmail());
-            userJson.put("sex", user.getGenre());
-            userJson.put("age", user.getAge());
+            userJson.put("email", this.email);
 
-            JSONArray interestsJsonArray = new JSONArray(user.getInterests());
-            userJson.put("interests", interestsJsonArray);
-
-            userJson.put("photo_profile", user.getPhotoProfile());
-
-            userJson.put("password", password);
-
-            JSONObject locationJson = JsonUtils.getJsonObjectFromLocation(user.getLatitude(), user.getLongitude());
-            userJson.put("location", locationJson);
-            userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
+            userJson.put("password", this.password);
 
             paramsJson.put("user",userJson);
 
@@ -97,19 +84,18 @@ public abstract class PostSingUpRequest {
     private Response.Listener<String> getResponseListener() {
         return new Response.Listener<String>() {
 
-                @Override
-                public void onResponse(String response) {
-                    Log.d(TAG, "Success response: " + response);
-                    try {
-                        onSuccessResponse(response);
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Success response: " + response);
+                try {
+                    onSuccessResponse(response);
 
-                    } catch (JSONException e) {
-                        Log.e(TAG, "json parsing error: " + e.getMessage());
-                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "json parsing error: " + e.getMessage());
                 }
-            };
+            }
+        };
     }
-
 
     private Response.ErrorListener getErrorListener() {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
@@ -125,12 +111,8 @@ public abstract class PostSingUpRequest {
                             String message = obj.getString("Mensaje");
                             Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
-                            if (error.networkResponse.statusCode == 400){
-                                onSignUpFailedUserInvalidError();
-                                return;
-
-                            }else if  (error instanceof NoConnectionError) {
-                                onSignUpFailedUserConnectionError();
+                            if  (error instanceof NoConnectionError) {
+                                onSignInFailedUserConnectionError();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -141,12 +123,14 @@ public abstract class PostSingUpRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onSignUpFailedDefaultError();
+                onSignInFailedDefaultError();
                 return;
             }
         };
         return errorListener;
     }
+
+
 
 
     private void onSuccessResponse(String response) throws JSONException {

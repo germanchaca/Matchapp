@@ -53,7 +53,7 @@ public class SignupActivity extends GetLocationActivity {
         setContentView(R.layout.activity_signup);
 
         initViews();
-        launchFinishingSignUpActivity();
+        //launchFinishingSignUpActivity();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

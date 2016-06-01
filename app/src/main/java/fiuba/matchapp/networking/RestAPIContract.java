@@ -10,9 +10,13 @@ public class RestAPIContract {
 
     private static final String GET_USER = BASE_URL + "/users/_ID_";
     private static final String PUT_USER = BASE_URL + "/users/_ID_";
+    private static final String PUT_PHOTO_USER = BASE_URL + "/users/_ID_//photo/";
 
     //Alta de usuario
     public static final String POST_USER = BASE_URL + "/users/";
+
+    //Sign In de usuario
+    public static final String POST_SIGN_IN = BASE_URL + "/users/token/singin/";
 
     //Post de Token cada vez que me loggeo
     public static final String LOGIN = BASE_URL + "/token";
@@ -25,9 +29,15 @@ public class RestAPIContract {
     public static String GET_USER(String userId) {
         return GET_USER.replace("_ID_", userId);
     }
+
     //Modificacion de perfil de usuario
     public static String PUT_USER(String userId) {
-        return GET_USER.replace("_ID_", userId);
+        return PUT_USER.replace("_ID_", userId);
+    }
+
+    //Modificacion de foto del perfil de usuario
+    public static String PUT_PHOTO_USER(String userId) {
+        return PUT_PHOTO_USER.replace("_ID_", userId);
     }
 
 
