@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.model.UserInterest;
 
 /**
  * Created by german on 4/21/2016.
@@ -80,7 +81,8 @@ public class MyPreferenceManager {
         editor.putString(KEY_USER_PHOTO_PROFILE, user.getPhotoProfile());
         //editor.putString(KEY_USER_BIRTHDAY, user.getBirthday());
         Gson gson = new Gson();
-        editor.putString(KEY_USER_INTERESTS, gson.toJson(user.getInterests()));
+        Type type = new TypeToken<ArrayList<UserInterest>>() {}.getType();
+        editor.putString(KEY_USER_INTERESTS, gson.toJson(user.getInterests(),type));
 
         editor.commit();
 
@@ -104,7 +106,7 @@ public class MyPreferenceManager {
 
             Gson gson = new Gson();
             String json = pref.getString(KEY_USER_INTERESTS, null);
-            Type type = new TypeToken<ArrayList<Interest>>() {}.getType();
+            Type type = new TypeToken<ArrayList<UserInterest>>() {}.getType();
             ArrayList<Interest> interests = gson.fromJson(json, type);
 
             User user = new User();

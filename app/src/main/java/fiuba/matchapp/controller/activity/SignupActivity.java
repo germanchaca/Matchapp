@@ -53,6 +53,7 @@ public class SignupActivity extends GetLocationActivity {
         setContentView(R.layout.activity_signup);
 
         initViews();
+        launchFinishingSignUpActivity();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -177,6 +178,10 @@ public class SignupActivity extends GetLocationActivity {
         progressDialog.dismiss();
         _signupButton.setEnabled(true);
 
+        launchFinishingSignUpActivity();
+    }
+
+    private void launchFinishingSignUpActivity() {
         Intent intent = new Intent(this, FinishingSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

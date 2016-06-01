@@ -30,7 +30,7 @@ public class InterestsRecyclerViewFragment extends Fragment {
     private final String KEY_INSTANCE_STATE = "stateInterests";
 
     private AutoLabelUI mAutoLabel;
-    private List<Interest> mInterestsList;
+    public List<Interest> mInterestsList;
     private InterestsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private String category_name;
@@ -39,17 +39,7 @@ public class InterestsRecyclerViewFragment extends Fragment {
     private TextView txtSubtitle;
     private TextView txtTitle;
 
-    private OnInterestsDataPass dataPasser;
 
-    public interface OnInterestsDataPass {
-        public void onInterestsDataPass(List<Interest> data);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        dataPasser = (OnInterestsDataPass) context;
-    }
 
     /**
      * Create a new instance of DetailsFragment, initialized to
@@ -103,7 +93,6 @@ public class InterestsRecyclerViewFragment extends Fragment {
             List<Interest> interests = savedInstanceState.getParcelableArrayList(KEY_INSTANCE_STATE);
             if (interests != null) {
                 mInterestsList = interests;
-                dataPasser.onInterestsDataPass(mInterestsList);
 
                 adapter.setInterests(interests);
                 recyclerView.setAdapter(adapter);
@@ -122,7 +111,6 @@ public class InterestsRecyclerViewFragment extends Fragment {
         }
         if (success) {
             adapter.setItemSelected(position, !isSelected);
-            dataPasser.onInterestsDataPass(adapter.getInterests());
         }
     }
 

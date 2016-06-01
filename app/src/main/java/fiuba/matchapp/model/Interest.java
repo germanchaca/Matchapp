@@ -9,23 +9,26 @@ import java.io.Serializable;
  * Created by german on 4/27/2016.
  */
 public class Interest implements Serializable,Parcelable {
-    String id,category, description;
+
+
+    UserInterest interest;
     private boolean selected;
 
     public Interest(){
-
+        this.interest = new UserInterest();
     }
     public Interest(String id, String category, String description) {
-        this.id = id;
-        this.category = category;
-        this.description = description;
+        this.interest = new UserInterest();
+        this.interest.setCategory(category);
+        this.interest.setId(id);
+        this.interest.setDescription(description);
         selected = false;
     }
 
     protected Interest(Parcel in) {
-        id = in.readString();
-        category = in.readString();
-        description = in.readString();
+        this.interest.setId(in.readString());
+        this.interest.setCategory(in.readString());
+        this.interest.setDescription(in.readString());
         selected = in.readByte() != 0;
     }
 
@@ -42,27 +45,27 @@ public class Interest implements Serializable,Parcelable {
     };
 
     public String getId() {
-        return id;
+        return this.interest.getId();
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.interest.setId(id);
     }
 
     public String getCategory() {
-        return category;
+        return this.interest.getCategory();
     }
 
     public void setCategory(String category) {
-        this.category = category;
+        this.interest.setCategory(category);
     }
 
     public String getDescription() {
-        return description;
+        return this.interest.getDescription();
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.interest.setDescription(description);
     }
 
     public void setSelected(boolean selected) {
@@ -72,6 +75,10 @@ public class Interest implements Serializable,Parcelable {
         return selected;
     }
 
+    public UserInterest getUserInterest() {
+        return interest;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -79,9 +86,9 @@ public class Interest implements Serializable,Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.category);
-        dest.writeString(this.description);
+        dest.writeString(this.interest.getId());
+        dest.writeString(this.interest.getCategory());
+        dest.writeString(this.interest.getDescription());
         dest.writeByte(selected ? (byte) 1 : (byte) 0);
     }
 }
