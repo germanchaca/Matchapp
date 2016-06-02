@@ -34,7 +34,7 @@ public abstract class PostSingInRequest {
 
     protected abstract void onSignInFailedUserConnectionError();
 
-    protected abstract void onSignupSuccess();
+    protected abstract void onSignInSuccess();
 
     public PostSingInRequest(String email, String hashedPassword){
         this.email = email;
@@ -42,7 +42,7 @@ public abstract class PostSingInRequest {
     }
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_SIGN_IN, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_APPSERVER_TOKEN, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -141,7 +141,7 @@ public abstract class PostSingInRequest {
         MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
         MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
-        onSignupSuccess();
+        onSignInSuccess();
     }
 
 }

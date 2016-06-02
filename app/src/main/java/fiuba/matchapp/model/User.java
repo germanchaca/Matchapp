@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ public class User implements Serializable, Parcelable {
     public User() {
         this.id = "0";
         this.photoProfile = "";
+        this.interests = new ArrayList<>();
     }
 
     protected User(Parcel in) {

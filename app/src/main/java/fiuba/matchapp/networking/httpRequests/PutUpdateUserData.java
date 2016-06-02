@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.JsonMetadataUtils;
@@ -66,14 +68,14 @@ public abstract class PutUpdateUserData {
         fillBody("name", alias);
     }
     public void changeAge(int age){
-        fillBody("name", age);
+        fillBody("age", age);
     }
 
     public void changeLocation(double latitude,double longitude ){
-        fillBody("name", latitude,longitude);
+        fillBody( latitude,longitude);
     }
     public void changeInterests(List<UserInterest> interests){
-        fillBody("name", interests);
+        fillBody( interests);
     }
     public void changeGcmRegistrationId(){
         fillBody();
@@ -101,13 +103,21 @@ public abstract class PutUpdateUserData {
 
     }
 
-    private void fillBody(String key, List<UserInterest> interests) {
+    private void fillBody( List<UserInterest> interests) {
 
         try {
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<UserInterest>>() {}.getType();
-            String interestArrayJson = gson.toJson(interests,type);
-            userJson.put("interests", interestArrayJson);
+
+            JSONArray jsonArray = new JSONArray();
+            for(UserInterest i:interests){
+                if(i != null){
+                    JSONObject intObj = new JSONObject();
+                    intObj.put("value", i.getDescription());
+                    intObj.put("category",i.getCategory());
+                    jsonArray.put(intObj);
+                }
+            }
+
+            userJson.put("interests", jsonArray);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -115,7 +125,7 @@ public abstract class PutUpdateUserData {
 
     }
 
-    private void fillBody(String key, double latitude,double longitude) {
+    private void fillBody( double latitude,double longitude) {
 
         try {
             JSONObject locationJson = JsonUtils.getJsonObjectFromLocation(latitude, longitude);

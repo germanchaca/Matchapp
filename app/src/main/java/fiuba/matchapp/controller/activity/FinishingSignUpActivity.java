@@ -23,6 +23,7 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
 import fiuba.matchapp.controller.fragment.UploadProfilePhotoFragment;
 import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
 import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
@@ -98,7 +99,7 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         if(TextUtils.isEmpty(this.profilePhoto)){
             showSnackBarError(getResources().getString(R.string.intro_error_empty_photo));
         }else{
-            //sendPhotoToAppServer(this.profilePhoto);
+            sendPhotoToAppServer(this.profilePhoto);
         }
     }
 
@@ -120,17 +121,20 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
             if( interestsIsEmpty(fragment.mInterestsList) ) {
                 showInterestError(getResources().getString(R.string.intro_error_empty_interest));
             }else{
-                //sendInterestsToAppServer(fragment.mInterestsList);
+                sendInterestsToAppServer(fragment.mInterestsList);
             }
         }
     }
 
-    private void sendPhotoToAppServer(String profilePhoto) {
+    private void sendPhotoToAppServer(final String profilePhoto) {
         progressDialog.show();
 
         PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
             protected void onUpdatePhotoProfileSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setPhotoProfile(profilePhoto);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
                 launchMainActivity();
             }
@@ -161,7 +165,11 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
     }
 
     private void sendInterestsToAppServer(List<Interest> data) {
-        List<UserInterest> selectedInterests = new ArrayList<UserInterest>();
+
+        final User user = MyApplication.getInstance().getPrefManager().getUser();
+
+        final List<UserInterest> selectedInterests = user.getInterests();
+
         for(Interest interest : data){
             if (interest.isSelected()) {
                 selectedInterests.add(interest.getUserInterest());
@@ -172,6 +180,8 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         PutUpdateUserData request = new PutUpdateUserData(MyApplication.getInstance().getPrefManager().getUser()) {
             @Override
             protected void onUpdateDataSuccess() {
+                user.setInterests(selectedInterests);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
             }
 

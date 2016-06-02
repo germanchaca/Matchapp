@@ -27,6 +27,8 @@
     <string name="running_auth">Autenticando...</string>
     <string name="dialog_close_button">OK</string>
 
+    <string name="error_invalid_credentials">Los datos ingresados no son válidos</string>
+
     <!-- Validaciones de LoginActivity -->
     <string name="invalid_username_empty">Ingrese su email</string>
     <string name="invalid_mail_invalid">Ingrese un email válido</string>
