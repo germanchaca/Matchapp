@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -16,26 +16,28 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.User;
 
 /**
  * Created by ger on 01/06/16.
  */
-public abstract class SignOutRequest {
+public abstract class DeleteUserRequest {
     private static final String TAG = "PostSignInRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
+    private final User user;
 
     protected abstract void onDeleteAppServerTokenSuccess();
 
-    protected abstract void onDeleteTokenFailedDefaultError();
+    protected abstract void onDeleteUserFailedDefaultError();
 
-    protected abstract void onDeleteTokenFailedUserConnectionError();
+    protected abstract void onDeleteUserFailedUserConnectionError();
 
-    public SignOutRequest(){
-
+    public DeleteUserRequest(User user){
+        this.user = user;
     }
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.DELETE_SIGN_OUT, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.DELETE);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.DELETE_USER(this.user.getEmail()), getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.DELETE);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -78,7 +80,7 @@ public abstract class SignOutRequest {
                             Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
-                                onDeleteTokenFailedUserConnectionError();
+                                onDeleteUserFailedUserConnectionError();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -89,11 +91,10 @@ public abstract class SignOutRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onDeleteTokenFailedDefaultError();
+                onDeleteUserFailedDefaultError();
                 return;
             }
         };
         return errorListener;
     }
-
 }

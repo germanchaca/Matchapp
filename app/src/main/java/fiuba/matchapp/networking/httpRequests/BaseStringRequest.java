@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.util.Log;
 

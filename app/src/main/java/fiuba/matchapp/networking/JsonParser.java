@@ -81,28 +81,29 @@ public class JsonParser {
     }
 
     private static ArrayList<UserInterest> getUserInterests(JSONObject userObj) {
-        JSONArray jsonArrayInterests = null;
         try {
-            jsonArrayInterests = userObj.getJSONArray("interests");
+            JSONArray jsonArrayInterests = userObj.getJSONArray("interests");
+
+            ArrayList<UserInterest> user_interests = new ArrayList<UserInterest>();
+            for(int i = 0; i < jsonArrayInterests.length(); i++) {
+                try {
+                    JSONObject interestObj = jsonArrayInterests.getJSONObject(i);
+                    String category = interestObj.getString("category");
+                    String value = interestObj.getString("value");
+                    UserInterest interest = new UserInterest();
+                    interest.setCategory(category);
+                    interest.setDescription(value);
+                    user_interests.add(interest);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return user_interests;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ArrayList<UserInterest> user_interests = new ArrayList<UserInterest>();
-        for(int i = 0; i < jsonArrayInterests.length(); i++) {
-            try {
-                JSONObject interestObj = jsonArrayInterests.getJSONObject(i);
-                String category = interestObj.getString("category");
-                String value = interestObj.getString("value");
-                UserInterest interest = new UserInterest();
-                interest.setCategory(category);
-                interest.setDescription(value);
-                user_interests.add(interest);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return user_interests;
+        return null;
     }
 
     private static String getUserGenre(JSONObject userObj) throws JSONException {
@@ -158,10 +159,10 @@ public class JsonParser {
     }
 
     public static List<Interest> getInterestsFromJSONresponse(JSONObject response) {
-        JSONObject interestsObj;
+        JSONArray interestsObj;
 
         try {
-            interestsObj = response.getJSONObject("interests");
+            interestsObj = response.getJSONArray("interests");
             if(interestsObj != null){
                 return getInterests(interestsObj);
             }
@@ -172,14 +173,9 @@ public class JsonParser {
         return null;
 
     }
-    private static ArrayList<Interest> getInterests(JSONObject userObj) {
-        JSONArray jsonArrayInterests = null;
-        try {
-            jsonArrayInterests = userObj.getJSONArray("interests");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        ArrayList<Interest> interests = new ArrayList<Interest>();
+    private static ArrayList<Interest> getInterests(JSONArray jsonArrayInterests) {
+
+        ArrayList<Interest> interests = new ArrayList<>();
         for(int i = 0; i < jsonArrayInterests.length(); i++) {
             try {
                 JSONObject interestObj = jsonArrayInterests.getJSONObject(i);

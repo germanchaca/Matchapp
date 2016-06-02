@@ -34,7 +34,8 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.JsonParser;
-import fiuba.matchapp.networking.RestAPIContract;
+import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
+import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.MD5;
 
 public class LoginActivity extends FacebookLoginActivity {
@@ -82,14 +83,7 @@ public class LoginActivity extends FacebookLoginActivity {
         loginWithFacebook.setOnClickListener(new FacebookLogInButtonListener());
     }
 
-    private void initForgotPasswordLinkButton() {
-        _link_forgot_password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showForgotPasswordDialog();
-            }
-        });
-    }
+
 
     @Override
     protected void onFacebookLoggedIn(LoginResult loginResult) {
@@ -206,102 +200,36 @@ public class LoginActivity extends FacebookLoginActivity {
       //START server auth logic
 
 
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                RestAPIContract.LOGIN, new Response.Listener<String>() {
-
+        PostSingInRequest request = new PostSingInRequest(email,  MD5.getHashedPassword(password)) {
             @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "response: " + response);
-
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
-                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
-
-                    MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
-
-                    onLoginSuccess();
-                    progressDialog.dismiss();
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                    progressDialog.dismiss();
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                String errorMessage = null;
-                if(error instanceof NoConnectionError) {
-                    errorMessage = getResources().getString(R.string.internet_problem);
-                }else{
-                    errorMessage = getResources().getString(R.string.invalid_auth);
-                }
-                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
-                onLoginFailed(errorMessage);
+            protected void onSignInFailedDefaultError() {
                 progressDialog.dismiss();
+                onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
             }
-        }) {
 
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                JSONObject userJson=new JSONObject();
-                try {
-                    userJson.put("email",email);
-                    userJson.put("password", MD5.getHashedPassword(password));
-                    userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
-                    params.put("user", userJson.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d(TAG, "params: " + params.toString());
-                return params;
+            protected void onSignInFailedUserConnectionError() {
+                progressDialog.dismiss();
+                onLoginFailed(getResources().getString(R.string.internet_problem));
             }
+
             @Override
-            public HashMap<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("content-type","application/json");
-                return headers;
+            protected void onSignInSuccess() {
+                progressDialog.dismiss();
+                _loginButton.setEnabled(true);
+                launchMainActivity();
             }
         };
+        request.make();
 
-        //Adding request to request queue
-        MyApplication.getInstance().addToRequestQueue(strReq);
-
-        //ENDS server auth logic
-
-        /*
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        //mandar data de volley
-                        // onLoginFailed();
-                        onLoginSuccess();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);*/
     }
-
-    @Override
+      @Override
     public void onBackPressed() {
         // Deshabilita la opción de volver a la MainActivity
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
-        //User user = new User("0", "german","ger", "germanchaca@gmail.com", "10/10/1994", "Hombre");
-        //MyApplication.getInstance().getPrefManager().storeUser(user);
 
-        _loginButton.setEnabled(true);
-        launchMainActivity();
-    }
 
     private void launchMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -336,5 +264,14 @@ public class LoginActivity extends FacebookLoginActivity {
         }
 
         return valid;
+    }
+
+    private void initForgotPasswordLinkButton() {
+        _link_forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showForgotPasswordDialog();
+            }
+        });
     }
 }

@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.httpRequests;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -14,27 +14,35 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.JsonMetadataUtils;
+import fiuba.matchapp.networking.JsonParser;
 
 /**
  * Created by ger on 01/06/16.
  */
-public abstract class GetInterestsRequest {
-    private static final String TAG = "GetInterestsRequest";
+public abstract class PostSingInRequest {
+
+    private static final String TAG = "PostSignInRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
+    private final String password;
+    private final String email;
 
-    protected abstract void onGetInterestsSuccess(List<Interest> interests);
+    protected abstract void onSignInFailedDefaultError();
 
-    protected abstract void onGetInterestsDefaultError();
+    protected abstract void onSignInFailedUserConnectionError();
 
-    protected abstract void onGetInterestsConnectionError();
+    protected abstract void onSignInSuccess();
+
+    public PostSingInRequest(String email, String hashedPassword){
+        this.email = email;
+        this.password = hashedPassword;
+    }
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.GET_INTERESTS, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.GET);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_APPSERVER_TOKEN, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -45,9 +53,33 @@ public abstract class GetInterestsRequest {
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json; charset=utf-8");
-        headers.put("Authorization", MyApplication.getInstance().getPrefManager().getAppServerToken());
         return headers;
     }
+
+    private String getBody() {
+        String body = "";
+        JSONObject paramsJson = new JSONObject();
+
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("email", this.email);
+
+            userJson.put("password", this.password);
+
+            paramsJson.put("user",userJson);
+
+            JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
+            paramsJson.put("metadata", metadataJson);
+
+            body =paramsJson.toString();
+            Log.d(TAG, "Body: " + body);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
     @NonNull
     private Response.Listener<String> getResponseListener() {
         return new Response.Listener<String>() {
@@ -80,7 +112,7 @@ public abstract class GetInterestsRequest {
                             Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
-                                onGetInterestsConnectionError();
+                                onSignInFailedUserConnectionError();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -91,20 +123,25 @@ public abstract class GetInterestsRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onGetInterestsDefaultError();
+                onSignInFailedDefaultError();
                 return;
             }
         };
         return errorListener;
     }
+
+
+
+
     private void onSuccessResponse(String response) throws JSONException {
         JSONObject obj = new JSONObject(response);
-        List<Interest> interests = JsonParser.getInterestsFromJSONresponse(obj);
+        User loggedUser = JsonParser.getUserFromJSONresponse(obj);
+        String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
-        onGetInterestsSuccess(interests);
+        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+        MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
+        onSignInSuccess();
     }
 
-
-
 }
-

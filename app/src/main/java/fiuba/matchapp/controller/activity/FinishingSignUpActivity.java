@@ -12,17 +12,22 @@ import com.github.paolorotolo.appintro.AppIntro2;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
 import fiuba.matchapp.controller.fragment.UploadProfilePhotoFragment;
 import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
+import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
+import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
+import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 
 /**
  * Created by german on 4/26/2016.
@@ -41,23 +46,60 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         progressDialog = new ProgressDialog(FinishingSignUpActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
+        progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
+        progressDialog.show();
 
-        addSlide(InterestsRecyclerViewFragment.newInstance(1));
-        addSlide(InterestsRecyclerViewFragment.newInstance(2));
-        addSlide(InterestsRecyclerViewFragment.newInstance(3));
-        addSlide(InterestsRecyclerViewFragment.newInstance(4));
-        addSlide(InterestsRecyclerViewFragment.newInstance(5));
-        addSlide(new UploadProfilePhotoFragment());
+        getAllInterestFromAppServer();
+
+
+    }
+
+    private void getAllInterestFromAppServer() {
+        GetInterestsRequest request = new GetInterestsRequest() {
+            @Override
+            protected void onGetInterestsSuccess(List<Interest> interests) {
+
+                Map<String,List<Interest> > mapInterestsByCategory = new HashMap<>();
+                for (Interest i : interests) {
+                    if(!mapInterestsByCategory.containsKey(i.getCategory())){
+                        List<Interest> list = new ArrayList<>();
+                        list.add(i);
+                        mapInterestsByCategory.put(i.getCategory(),list);
+                    }else {
+                        List<Interest> list = mapInterestsByCategory.get(i.getCategory());
+                        list.add(i);
+                        mapInterestsByCategory.put(i.getCategory(),list);
+                    }
+                }
+                for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
+                {
+                    addSlide(InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue()));
+                }
+                addSlide(new UploadProfilePhotoFragment());
+
+                progressDialog.dismiss();
+                progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
+            }
+
+            @Override
+            protected void onGetInterestsDefaultError() {
+                showSnackBarError(getResources().getString(R.string.internet_problem));
+            }
+
+            @Override
+            protected void onGetInterestsConnectionError() {
+                showSnackBarError(getResources().getString(R.string.internet_problem));
+            }
+        };
+        request.make();
     }
 
     @Override
     public void onDonePressed() {
         if(TextUtils.isEmpty(this.profilePhoto)){
-            showEmptyPhotoError(getResources().getString(R.string.intro_error_empty_photo));
+            showSnackBarError(getResources().getString(R.string.intro_error_empty_photo));
         }else{
             sendPhotoToAppServer(this.profilePhoto);
-            launchMainActivity();
         }
     }
 
@@ -84,36 +126,80 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         }
     }
 
-    private void sendPhotoToAppServer(String profilePhoto) {
+    private void sendPhotoToAppServer(final String profilePhoto) {
+        progressDialog.show();
+
+        PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
+            @Override
+            protected void onUpdatePhotoProfileSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setPhotoProfile(profilePhoto);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+                launchMainActivity();
+            }
+
+            @Override
+            protected void onAppServerUpdatePhotoProfileDefaultError() {
+                showSnackBarError(getApplicationContext().getString(R.string.upload_photo_default_error));
+            }
+
+            @Override
+            protected void onAppServerConnectionError() {
+                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+            }
+        };
+        request.make();
 
         Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
     }
 
-    private void showEmptyPhotoError(String message) {
+    private void showSnackBarError(String message) {
         Snackbar.make(backgroundFrame,message , Snackbar.LENGTH_LONG).show();
         progressDialog.dismiss();
     }
 
     private void showInterestError(String message) {
         pager.setCurrentItem(pager.getCurrentItem() - 1);
-        Snackbar.make(backgroundFrame,message, Snackbar.LENGTH_LONG).show();
-        progressDialog.dismiss();
+        showSnackBarError(message);
     }
 
     private void sendInterestsToAppServer(List<Interest> data) {
-        List<UserInterest> selectedInterests = new ArrayList<UserInterest>();
+
+        final User user = MyApplication.getInstance().getPrefManager().getUser();
+
+        final List<UserInterest> selectedInterests = user.getInterests();
+
         for(Interest interest : data){
             if (interest.isSelected()) {
                 selectedInterests.add(interest.getUserInterest());
             }
         }
 
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<UserInterest>>() {}.getType();
-        String interestArrayJson = gson.toJson(selectedInterests,type);
+        progressDialog.show();
+        PutUpdateUserData request = new PutUpdateUserData(MyApplication.getInstance().getPrefManager().getUser()) {
+            @Override
+            protected void onUpdateDataSuccess() {
+                user.setInterests(selectedInterests);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+            }
 
-        Log.d(TAG, "Interests to send: " + interestArrayJson);
-        //TODO hacer put request al server
+            @Override
+            protected void onAppServerDefaultError() {
+                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                progressDialog.dismiss();
+            }
+
+            @Override
+            protected void onAppServerConnectionError() {
+                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                progressDialog.dismiss();
+            }
+        };
+        request.changeInterests(selectedInterests);
+        request.make();
+
     }
 
     @Override

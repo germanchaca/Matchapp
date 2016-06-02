@@ -27,6 +27,8 @@
     <string name="running_auth">Autenticando...</string>
     <string name="dialog_close_button">OK</string>
 
+    <string name="error_invalid_credentials">Los datos ingresados no son válidos</string>
+
     <!-- Validaciones de LoginActivity -->
     <string name="invalid_username_empty">Ingrese su email</string>
     <string name="invalid_mail_invalid">Ingrese un email válido</string>
@@ -47,6 +49,7 @@
     <string name="alert_dialog_continue_editing_cancel">Cancelar</string>
     <!-- SignUpActivity -->
     <string name="creating_account">Creando cuenta...</string>
+    <string name="searching_for_interests">Buscando intereses válidos...</string>
     <string name="refresh_account_details">Actualizando datos de perfil...</string>
     <string name="signup_failed">No se pudo completar el registro</string>
 
@@ -103,6 +106,9 @@
     <string name="intro_error_empty_interest">Debe seleccionar al menos una opción</string>
     <string name="intro_error_empty_photo">Debe elegir una foto de perfil</string>
     <string name="edit_profile_toolbar_label">Editar perfil</string>
+
+    <string name="upload_photo_default_error">No se pudo complear la operación, intente nuevamente</string>
+
 
     <!-- UploadImageFragment -->
     <string name="sending_image_server">Guardando imagen...</string>
