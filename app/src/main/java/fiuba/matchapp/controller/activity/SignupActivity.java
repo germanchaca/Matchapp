@@ -122,6 +122,7 @@ public class SignupActivity extends GetLocationActivity {
             onSignupFailed(getResources().getString(R.string.signup_failed));
             return;
         }
+        super.locationServiceConnect();
 
         _signupButton.setEnabled(false);
 

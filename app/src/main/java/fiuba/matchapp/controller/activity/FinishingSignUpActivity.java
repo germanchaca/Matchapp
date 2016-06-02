@@ -121,8 +121,12 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
             if( interestsIsEmpty(fragment.mInterestsList) ) {
                 showInterestError(getResources().getString(R.string.intro_error_empty_interest));
             }else{
-                sendInterestsToAppServer(fragment.mInterestsList);
+                Log.d(TAG, "Siguiente categoria");
+                //sendInterestsToAppServer(fragment.mInterestsList);
             }
+        }else {
+            Log.d(TAG, "Ultima");
+            onDonePressed();
         }
     }
 

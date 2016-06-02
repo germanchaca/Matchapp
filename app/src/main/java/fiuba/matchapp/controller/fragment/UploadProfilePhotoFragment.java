@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -37,12 +38,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.controller.activity.FinishingSignUpActivity;
+import fiuba.matchapp.controller.activity.MainActivity;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.ImageBase64;
 
@@ -66,6 +71,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static String[] PERMISSIONS_CAMERA = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private OnProfilePhotoDataPass dataPasser;
+    private ProgressDialog progressDialog;
 
     public interface OnProfilePhotoDataPass {
         public void onProfilePhotoDataPass(String data);
@@ -104,6 +110,11 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                 selectImage(v.getContext());
             }
         });
+
+
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getResources().getString(R.string.internet_problem));
+
         return view;
     }
 
@@ -170,10 +181,20 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                 if (image != null) {
                     loadImage(userImage, image.getFilePathOriginal(), getActivity());
 
-                    Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
-                    String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+                    Uri imageUri = Uri.fromFile(new File(image.getFilePathOriginal()));
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap( getContext().getContentResolver(), imageUri);
+                        String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+                        dataPasser.onProfilePhotoDataPass(encodedImage);
+                        //TODO ver de recortar la imagen para que todas mantengan la misma relación de aspecto
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                    dataPasser.onProfilePhotoDataPass(encodedImage);
+                    //Bitmap bitmap = ((BitmapDrawable) userImage.getDrawable()).getBitmap();
+                    //String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+
+                    //dataPasser.onProfilePhotoDataPass(encodedImage);
 
                 } else {
                     Log.i(TAG, "Chosen Image: Is null");
@@ -238,73 +259,44 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         builder.show();
     }
 
-    private void sendEncodedImageToServer(final String encodedImage) {
-        // checking for valid login session
-        User user = MyApplication.getInstance().getPrefManager().getUser();
-        if (user == null) {
-            return;
-        }
-        final ProgressDialog progressDialog = new ProgressDialog(this.getContext(), R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getResources().getString(R.string.sending_image_server));
+    private void sendPhotoToAppServer(final String profilePhoto) {
         progressDialog.show();
 
-        String endPoint = RestAPIContract.PUT_USER(user.getId());
-
-        StringRequest strReq = new StringRequest(Request.Method.PUT,
-                endPoint, new Response.Listener<String>() {
-
+        PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "response: " + response);
+            protected void onUpdatePhotoProfileSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setPhotoProfile(profilePhoto);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
-                try {
-                    JSONObject obj = new JSONObject(response);
-
-                    // check for error
-                    if (obj.getBoolean("error") == false) {
-                        onImageSuccesfullyUploaded(encodedImage);
-                        return;
-                    } else {
-                        displayAlertDialog();
-                        Log.d(TAG, getResources().getString(R.string.connection_problem));
-                    }
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                }
+                launchMainActivity();
             }
-        }, new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+            protected void onAppServerUpdatePhotoProfileDefaultError() {
+                progressDialog.dismiss();
+
+                displayAlertDialog();
             }
-        }) {
 
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("photo_profile", encodedImage);
-                Log.e(TAG, "params: " + params.toString());
-                return params;
+            protected void onAppServerConnectionError() {
+                progressDialog.dismiss();
+
+                displayAlertDialog();
             }
         };
-        //Adding request to request queue
-        MyApplication.getInstance().addToRequestQueue(strReq);
+        request.make();
 
-        return;
-
+        Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
     }
 
-    private void onImageSuccesfullyUploaded(String encodedImage) {
-        //Store user photo on SharedPreferences
-        User user = MyApplication.getInstance().getPrefManager().getUser();
-        user.setPhotoProfile(encodedImage);
-        MyApplication.getInstance().getPrefManager().storeUser(user);
+    private void launchMainActivity() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        getActivity().finish();
     }
-
     public void displayAlertDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setMessage(getResources().getString(R.string.connection_problem));
