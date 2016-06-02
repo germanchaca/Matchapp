@@ -42,6 +42,7 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.DeleteUserRequest;
 import fiuba.matchapp.utils.AdressUtils;
 
 /**
@@ -161,7 +162,27 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             @Override
             public void onClick(View v) {
                 parentLinearLayout.requestFocus();
-                MyApplication.getInstance().deletteAccount();
+                showProgressDialog();
+
+                DeleteUserRequest request = new DeleteUserRequest(MyApplication.getInstance().getPrefManager().getUser()) {
+                    @Override
+                    protected void onDeleteAppServerTokenSuccess() {
+
+                        MyApplication.getInstance().deletteAccount();
+                        hideProgressDialog();
+                    }
+
+                    @Override
+                    protected void onDeleteUserFailedDefaultError() {
+                        hideProgressDialog();
+                    }
+
+                    @Override
+                    protected void onDeleteUserFailedUserConnectionError() {
+                        hideProgressDialog();
+                    }
+                };
+                request.make();
             }
         });
     }
