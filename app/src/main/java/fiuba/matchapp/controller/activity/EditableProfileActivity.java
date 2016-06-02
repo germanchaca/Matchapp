@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -42,22 +43,9 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.DeleteUserRequest;
+import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
 import fiuba.matchapp.utils.AdressUtils;
 
-/**
- * Created by german on 4/19/2016.
- * TODO: 1.Guardar user en pref en commit changes
- * guardar foto en base64
- * Set user date en el DatePickerDialog si existiera, como metodo aparte para que no joda al signUp
- * 4.Editar intereses
- * 5.Volley request
- *
- *
- * Aclaraciones:
- * _en el cargando poner showProgressDialog
- * _ el server debe mandar error si le manda contraseña no valida
- */
 public class EditableProfileActivity extends GetLocationActivity implements ImageChooserListener {
 
     private final static String TAG = "Profile_Edit";
@@ -69,9 +57,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private ImageChooserManager imageChooserManager;
     private String filePath;
 
-    private String originalFilePath;
-    private String thumbnailFilePath;
-    private String thumbnailSmallFilePath;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -170,16 +155,20 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
                         MyApplication.getInstance().deletteAccount();
                         hideProgressDialog();
+
                     }
 
                     @Override
                     protected void onDeleteUserFailedDefaultError() {
+
                         hideProgressDialog();
+                        Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
                     protected void onDeleteUserFailedUserConnectionError() {
                         hideProgressDialog();
+                        Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
                     }
                 };
                 request.make();
@@ -555,10 +544,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                originalFilePath = image.getFilePathOriginal();
-                thumbnailFilePath = image.getFileThumbnail();
-                thumbnailSmallFilePath = image.getFileThumbnailSmall();
 
                 if (image != null) {
                     loadImage(userImage, image.getFilePathOriginal());

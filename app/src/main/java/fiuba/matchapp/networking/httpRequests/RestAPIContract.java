@@ -6,7 +6,8 @@ package fiuba.matchapp.networking.httpRequests;
 public class RestAPIContract {
 
     // localhost url -
-    public static final String BASE_URL = "http://192.168.1.107:8080";
+    //public static final String BASE_URL = "http://192.168.1.107:8080";
+    public static final String BASE_URL = "http://10.1.151.14:8080";
 
     private static final String GET_USER = BASE_URL + "/users/_ID_/";
     private static final String DELETE_USER = BASE_URL + "/users/_ID_/";
