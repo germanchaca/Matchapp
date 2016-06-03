@@ -86,8 +86,8 @@
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/primary"
+            android:backgroundTint="@color/accent"
+            android:textColor="@color/white"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/buttontxt_entrar"
             />

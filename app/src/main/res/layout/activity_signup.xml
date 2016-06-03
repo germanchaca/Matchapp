@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="56dp">
 
         <ImageView
@@ -123,17 +123,16 @@
             android:id="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="24dp"
-            android:textColor="@color/primary_dark"
-            android:padding="12dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/accent"
             android:text="@string/buttontxt_crear_cuenta"/>
 
         <TextView
             android:id="@+id/link_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
             android:gravity="center"
             android:text="@string/buttontxt_login"
             android:textSize="16dip"/>
