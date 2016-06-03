@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -38,15 +39,11 @@ import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.MD5;
 
-public class LoginActivity extends FacebookLoginActivity {
+public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
     private EditText _userNameText;
     private EditText _passwordText;
-    private Button _loginButton;
-    private Button loginWithFacebook;
-    private TextView _signupLink;
-    private TextView _link_forgot_password;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,12 +52,9 @@ public class LoginActivity extends FacebookLoginActivity {
 
         _userNameText = (EditText) findViewById(R.id.input_username);
         _passwordText = (EditText) findViewById(R.id.input_password);
-        _loginButton = (Button) findViewById(R.id.btn_login);
-        _signupLink = (TextView) findViewById(R.id.link_signup);
-        loginWithFacebook = (Button) findViewById(R.id.btn_fb_login);
-        //_link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
 
-        //initForgotPasswordLinkButton();
+        Button _loginButton = (Button) findViewById(R.id.btn_login);
+        Button _signupButton = (Button) findViewById(R.id.btn_signup);
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -70,7 +64,7 @@ public class LoginActivity extends FacebookLoginActivity {
             }
         });
 
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+        _signupButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -79,105 +73,7 @@ public class LoginActivity extends FacebookLoginActivity {
                 startActivity(intent);
             }
         });
-
-        loginWithFacebook.setOnClickListener(new FacebookLogInButtonListener());
     }
-
-
-
-    @Override
-    protected void onFacebookLoggedIn(LoginResult loginResult) {
-
-        System.out.println("loginSuccess");
-        GraphRequest request = GraphRequest.newMeRequest(
-                loginResult.getAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object,
-                                            GraphResponse response) {
-                        Log.v("LoginActivity", response.toString());
-                        Intent i = new Intent(LoginActivity.this, SignupActivity.class);
-                        try {
-                            String id = object.getString("id");
-                            i.putExtra("fbId", id);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            String firstName = object.getString("first_name");
-                            String lastName = object.getString("last_name");
-                            String userName = new StringBuilder(firstName).append(" ").append(lastName).toString();
-                            i.putExtra("userName", userName);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            String email = object.getString("email");
-                            i.putExtra("email", email);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            String gender = object.getString("gender");
-                            String[] sexos = getResources().getStringArray(R.array.sex_array);
-                            if (gender.contentEquals("male")) {
-                                gender = sexos[0];
-                            } else {
-                                gender = sexos[1];
-                            }
-                            i.putExtra("gender", gender);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            String birthday = object.getString("birthday");
-                            i.putExtra("birthday", birthday);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        startActivity(i);
-                    }
-                });
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,first_name,last_name,email,birthday,gender");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    public void showForgotPasswordDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dark_Dialog);
-        builder.setTitle(getResources().getString(R.string.dialog_forgot_password));
-        builder.setIcon(R.drawable.ic_https_24dp_whitw);
-
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        input.setHint(R.string.dialog_forgot_password_hint);
-
-        builder.setView(input);
-
-        builder.setPositiveButton(getResources().getString(R.string.dialog_forgot_password_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String emailToSendPassword = input.getText().toString();
-                //TODO: enviar esto al servidor para que le mande la contraseña al mail
-            }
-        });
-        builder.setNegativeButton(getResources().getString(R.string.dialog_forgot_password_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }
-
     public void login() {
         Log.d(TAG, "Intentando Loguear");
 
@@ -185,8 +81,6 @@ public class LoginActivity extends FacebookLoginActivity {
             onLoginFailed(getResources().getString(R.string.invalid_auth));
             return;
         }
-
-        _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -196,8 +90,6 @@ public class LoginActivity extends FacebookLoginActivity {
 
         final String email = _userNameText.getText().toString();
         final String password = _passwordText.getText().toString();
-
-      //START server auth logic
 
 
         PostSingInRequest request = new PostSingInRequest(email,  MD5.getHashedPassword(password)) {
@@ -216,7 +108,6 @@ public class LoginActivity extends FacebookLoginActivity {
             @Override
             protected void onSignInSuccess() {
                 progressDialog.dismiss();
-                _loginButton.setEnabled(true);
                 launchMainActivity();
             }
         };
@@ -225,7 +116,6 @@ public class LoginActivity extends FacebookLoginActivity {
     }
       @Override
     public void onBackPressed() {
-        // Deshabilita la opción de volver a la MainActivity
         moveTaskToBack(true);
     }
 
@@ -240,7 +130,6 @@ public class LoginActivity extends FacebookLoginActivity {
     public void onLoginFailed(String errorMessage) {
 
         Toast.makeText(getBaseContext(), errorMessage , Toast.LENGTH_LONG).show();
-        _loginButton.setEnabled(true);
     }
 
     public boolean validate() {
@@ -266,7 +155,47 @@ public class LoginActivity extends FacebookLoginActivity {
         return valid;
     }
 
-    private void initForgotPasswordLinkButton() {
+
+}
+
+
+/*
+
+_link_forgot_password = (TextView) findViewById(R.id.link_forgot_password);
+
+initForgotPasswordLinkButton();
+
+public void showForgotPasswordDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dark_Dialog);
+        builder.setTitle(getResources().getString(R.string.dialog_forgot_password));
+        builder.setIcon(R.drawable.ic_https_24dp_whitw);
+
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input.setHint(R.string.dialog_forgot_password_hint);
+
+        builder.setView(input);
+
+        builder.setPositiveButton(getResources().getString(R.string.dialog_forgot_password_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String emailToSendPassword = input.getText().toString();
+
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.dialog_forgot_password_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+    }
+     private void initForgotPasswordLinkButton() {
         _link_forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,4 +203,4 @@ public class LoginActivity extends FacebookLoginActivity {
             }
         });
     }
-}
+ */

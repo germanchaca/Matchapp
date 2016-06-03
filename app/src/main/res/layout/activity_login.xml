@@ -5,6 +5,7 @@
     tools:context=".controller.activity.LoginActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:backgroundTint="@color/black_smooth"
     android:background="@drawable/squares_reapeating"
     android:fitsSystemWindows="true">
 
@@ -28,13 +29,19 @@
 
 
         >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/round_corner_background_white"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin">
 
         <!--  Ingreso de nombre de usuario -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp">
+            >
 
             <EditText
                 android:id="@+id/input_username"
@@ -50,8 +57,6 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
             >
 
             <EditText
@@ -64,6 +69,28 @@
                 android:drawablePadding="@dimen/edittext_drawable_pad"
                 />
         </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+
+        <!--<TextView
+            android:id="@+id/link_forgot_password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="end"
+            android:textStyle="bold"
+            android:text="@string/buttontxt_forgot_password"
+            android:textSize="14dp"/>-->
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/primary"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/buttontxt_entrar"
+            />
 
         <!-- <TextView
              android:id="@+id/link_forgot_password"
@@ -74,49 +101,15 @@
              android:text="@string/buttontxt_forgot_password"
              android:textSize="14dp"/>-->
 
-         <!-- Boton de Login-->
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_marginBottom="6dp"
-            >
-
-            <!-- Boton de Login-->
-            <Button
-                android:id="@+id/link_signup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/primary_dark"
-                android:textColor="@color/white"
-                android:layout_marginBottom="32dp"
-                android:text="@string/buttontxt_registrar"
-                />
-            >
-            <Button
-                android:id="@+id/btn_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/primary_dark"
-                android:layout_toRightOf="@id/link_signup"
-                android:text="@string/buttontxt_entrar"
-                />
-            >
-
-        </RelativeLayout>
-        <!-- Boton de LoginFacebook-->
-
 
         <Button
-            android:id="@+id/btn_fb_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:drawableLeft="@drawable/facebook"
-            android:text="@string/buttontxt_fb_login"
-            android:backgroundTint="@color/fb"
-            />
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
+        android:text="@string/buttontxt_registrar"
+        />
 
     </LinearLayout>
 </ScrollView>

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/black_smooth"
     android:background="@drawable/squares_reapeating"
     >
 
@@ -44,21 +45,21 @@
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/primary_dark"
+            android:backgroundTint="@color/accent"
             android:textColor="@color/white"
             android:text="@string/buttontxt_entrar"
             />
-        >
+
         <!-- Boton de Login-->
         <Button
             android:id="@+id/btn_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/accent"
+            android:backgroundTint="@color/primary_dark"
             android:textColor="@color/white"
             android:text="@string/buttontxt_registrar"
             />
-        >
+
 
         </LinearLayout>
 
