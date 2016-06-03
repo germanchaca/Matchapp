@@ -1,32 +1,40 @@
 package fiuba.matchapp.utils;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 
 /**
  * Created by ger on 31/05/16.
  */
 public class FacebookUtils {
-    public String getFbProfileImageUrl(String fbId) {
-        return "http://graph.facebook.com/" + fbId + "/picture?type=large";
-    }
 
     public static User getUserFromFacebookData(Bundle extras){
         User user = new User();
 
-        if(extras.containsKey("userName")) {
-            user.setName(extras.getString("userName"));
+        if(extras.containsKey("name")) {
+            user.setName(extras.getString("name"));
         }
-        if(extras.containsKey("userName")) {
-            user.setAlias(extras.getString("userName"));
+        if(extras.containsKey("alias")) {
+            user.setAlias(extras.getString("alias"));
         }
-        if(extras.containsKey("userGender")) {
-            user.setEmail(extras.getString("userGender"));
+        if(extras.containsKey("gender")) {
+            user.setEmail(extras.getString("gender"));
         }
         if(extras.containsKey("email")){
             user.setGenre(extras.getString("email"));
         }
+        if(extras.containsKey("age")){
+            user.setAge(extras.getInt("age"));
+        }
+
 
         //String userBirthday = extras.getString("userBirthday");
         return user;
@@ -39,4 +47,49 @@ public class FacebookUtils {
             return "";
         }
     }
+    public static String getProfilePhotoUri(Bundle extras){
+        if(extras.containsKey("profile_image")){
+            return  extras.getString("profile_image");
+        }else{
+            return "";
+        }
+    }
+
+    public String getFbProfileImageUrl(String fbId) {
+        return "http://graph.facebook.com/" + fbId + "/picture?type=large";
+    }
+
+    public static void fillIntentWithUserDataFromFaceebookResponse(JSONObject object, Intent i, String facebookId, String firstName, String full_name, String profile_image) {
+        try {
+
+            String email = object.getString("email");
+            String gender = object.getString("gender");
+            String birthday = object.getString("birthday");//"1/1/1995 format"
+            int age = AgeUtils.getAgeFromBirthDay(birthday);
+
+            String[] sexos = MyApplication.getInstance().getResources().getStringArray(R.array.sex_array);
+            if (gender.contentEquals("male")) {
+                gender = sexos[0];
+            } else {
+                gender = sexos[1];
+            }
+            Log.d("FacebookUtils","FBGraphCallSuccess: " + email + " " + gender + " " + birthday + " " + age);
+
+            i.putExtra("fbId", facebookId);
+            i.putExtra("name", full_name);
+            i.putExtra("alias", firstName);
+            i.putExtra("profile_image",profile_image);
+
+            i.putExtra("email", email);
+            i.putExtra("gender", gender);
+            i.putExtra("age", age);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
+//String id = object.getString("id");
+//String firstName = object.getString("first_name");
+//String lastName = object.getString("last_name");
+//String userName = new StringBuilder(firstName).append(" ").append(lastName).toString();

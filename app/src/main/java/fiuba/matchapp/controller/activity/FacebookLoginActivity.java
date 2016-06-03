@@ -66,7 +66,7 @@ public abstract class FacebookLoginActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            manager.logInWithReadPermissions(FacebookLoginActivity.this, Arrays.asList("public_profile", "email"));
+            manager.logInWithReadPermissions(FacebookLoginActivity.this, Arrays.asList("public_profile", "email","user_birthday","user_photos"));
         }
     }
 
