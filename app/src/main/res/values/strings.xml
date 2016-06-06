@@ -122,4 +122,7 @@
     <string name="activity_new_match_title_later">Más adelante</string>
 
     <string name="internet_problem">Hay problemas de conexión</string>
+
+    <string name="swipe_like">Me gusta</string>
+    <string name="swipe_dislike">Descartar</string>
 </resources>
