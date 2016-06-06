@@ -15,6 +15,7 @@ import com.facebook.login.LoginResult;
 import org.json.JSONObject;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.controller.baseActivity.FacebookLoginActivity;
 import fiuba.matchapp.utils.FacebookUtils;
 
 

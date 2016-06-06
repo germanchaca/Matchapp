@@ -139,6 +139,7 @@ public abstract class PostSingInRequest {
         String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
         MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
+        MyApplication.getInstance().getPrefManager().storeUserPass(this.password);
         MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
         onSignInSuccess();

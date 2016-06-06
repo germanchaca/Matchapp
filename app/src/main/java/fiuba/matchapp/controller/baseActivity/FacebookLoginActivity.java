@@ -1,4 +1,4 @@
-package fiuba.matchapp.controller.activity;
+package fiuba.matchapp.controller.baseActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -62,7 +62,7 @@ public abstract class FacebookLoginActivity extends AppCompatActivity {
 
     protected abstract void onFacebookLoggedIn(LoginResult loginResult);
 
-    protected class FacebookLogInButtonListener implements View.OnClickListener {
+    public class FacebookLogInButtonListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {

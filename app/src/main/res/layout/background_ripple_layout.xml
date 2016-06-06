@@ -1,6 +1,6 @@
 <!--this layout contains ripple background animation and Imageview
 In ripple animation tag we have set some properties -->
-<fiuba.matchapp.controller.RippleAnimation
+<fiuba.matchapp.view.RippleAnimation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content"
@@ -31,4 +31,4 @@ In ripple animation tag we have set some properties -->
         android:text="Buscando candidatos..."/>
 
 
-</fiuba.matchapp.controller.RippleAnimation>
+</fiuba.matchapp.view.RippleAnimation>

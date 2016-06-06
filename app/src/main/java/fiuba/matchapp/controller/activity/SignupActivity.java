@@ -14,10 +14,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
-import fiuba.matchapp.controller.clickToSelectEditText.ClickToSelectEditText;
-import fiuba.matchapp.controller.clickToSelectEditText.Item;
+import fiuba.matchapp.view.LockedProgressDialog;
+import fiuba.matchapp.view.clickToSelectEditText.ClickToSelectEditText;
+import fiuba.matchapp.view.clickToSelectEditText.Item;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.PostSingUpRequest;
 import fiuba.matchapp.utils.AgeUtils;
@@ -81,9 +83,8 @@ public class SignupActivity extends GetLocationActivity {
         });
         initGenreInputDialog();
 
-        progressDialog = new ProgressDialog(SignupActivity.this,
+        progressDialog = new LockedProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.creating_account));
     }
 
@@ -132,7 +133,8 @@ public class SignupActivity extends GetLocationActivity {
         user.setEmail(_emailText.getText().toString());
         user.setName(_nameText.getText().toString());
         user.setAlias(_nameText.getText().toString());
-        user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
+        //user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
+        user.setAge(AgeUtils.getAgeFromBirthDay(_dateText.getText().toString()));
         user.setInterests(new ArrayList<UserInterest>());
         user.setGenre(_sex_input.getText().toString());
         user.setLatitude(super.latitude);

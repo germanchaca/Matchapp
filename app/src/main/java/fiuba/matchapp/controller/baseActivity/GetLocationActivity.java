@@ -1,7 +1,6 @@
-package fiuba.matchapp.controller.activity;
+package fiuba.matchapp.controller.baseActivity;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;

@@ -38,6 +38,7 @@ import fiuba.matchapp.networking.JsonParser;
 import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.MD5;
+import fiuba.matchapp.view.LockedProgressDialog;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -82,9 +83,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+        final ProgressDialog progressDialog = new LockedProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
+
         progressDialog.setMessage(getResources().getString(R.string.running_auth));
         progressDialog.show();
 
@@ -92,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
 
 
-        PostSingInRequest request = new PostSingInRequest(email,  MD5.getHashedPassword(password)) {
+        PostSingInRequest request = new PostSingInRequest(email, MD5.getHashedPassword(password)) {
             @Override
             protected void onSignInFailedDefaultError() {
                 progressDialog.dismiss();
@@ -118,8 +119,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
-
-
 
     private void launchMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);

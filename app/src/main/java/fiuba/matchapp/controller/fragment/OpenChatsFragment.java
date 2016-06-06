@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import fiuba.matchapp.R;
 import fiuba.matchapp.controller.activity.ChatRoomActivity;
 import fiuba.matchapp.adapter.ChatRoomsAdapter;
-import fiuba.matchapp.controller.SimpleDividerItemDecoration;
+import fiuba.matchapp.view.SimpleDividerItemDecoration;
 import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.model.Message;
 

@@ -10,18 +10,14 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.Serializable;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.controller.fragment.OpenChatsFragment;
 import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.model.User;

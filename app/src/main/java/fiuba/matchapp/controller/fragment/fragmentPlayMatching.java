@@ -2,7 +2,6 @@ package fiuba.matchapp.controller.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import fiuba.cardstack.SwipeDeck;
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.SwipeDeckAdapter;
-import fiuba.matchapp.controller.RippleAnimation;
+import fiuba.matchapp.view.RippleAnimation;
 
 public class fragmentPlayMatching extends Fragment {
     private static final String TAG = "Connect_fragment";

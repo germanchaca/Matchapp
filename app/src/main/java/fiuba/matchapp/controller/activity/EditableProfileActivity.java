@@ -41,6 +41,7 @@ import java.io.IOException;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;

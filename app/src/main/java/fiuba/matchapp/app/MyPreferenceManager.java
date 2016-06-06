@@ -48,6 +48,7 @@ public class MyPreferenceManager {
     private static final String KEY_USER_INTERESTS = "user_interests" ;
 
     private static final String KEY_APP_SERVER_TOKEN = "token" ;
+    private static final String KEY_APP_SERVER_PASS = "pass" ;
 
 
     // Constructor
@@ -61,11 +62,21 @@ public class MyPreferenceManager {
         editor.putString(KEY_APP_SERVER_TOKEN, token);
         editor.commit();
         Log.d(TAG, "AppServerToken guardado en shared preferences. " + token);
-
     }
+
+    public void storeUserPass (String pass){
+        editor.putString(KEY_APP_SERVER_PASS, pass);
+        editor.commit();
+        Log.d(TAG, "Password guardado en shared preferences. " + pass);
+    }
+
     public String getAppServerToken (){
         String appServerToken = pref.getString(KEY_APP_SERVER_TOKEN,null);
         return appServerToken;
+    }
+    public String getUserCredentials(){
+        String pass = pref.getString(KEY_APP_SERVER_PASS,null);
+        return pass;
     }
     public void storeUser(User user) {
         editor.putString(KEY_USER_ID, user.getId());

@@ -1,4 +1,4 @@
-package fiuba.matchapp.controller;
+package fiuba.matchapp.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
