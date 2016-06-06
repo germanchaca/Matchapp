@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -22,8 +23,8 @@ public class fragmentPlayMatching extends Fragment {
     private SwipeDeckAdapter adapter;
     private ArrayList<String> testData;
 
-    Button btnSwipeLeft;
-    Button btnSwipeRight;
+    LinearLayout btnSwipeLeft;
+    LinearLayout btnSwipeRight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class fragmentPlayMatching extends Fragment {
         cardStack.setLeftImage(R.id.left_image);
         cardStack.setRightImage(R.id.right_image);
 
-        btnSwipeLeft = (Button) view.findViewById(R.id.button);
+        btnSwipeLeft = (LinearLayout) view.findViewById(R.id.button);
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +110,7 @@ public class fragmentPlayMatching extends Fragment {
             }
         });
 
-        btnSwipeRight= (Button) view.findViewById(R.id.button2);
+        btnSwipeRight= (LinearLayout) view.findViewById(R.id.button2);
 
         btnSwipeRight.setOnClickListener(new View.OnClickListener() {
             @Override
