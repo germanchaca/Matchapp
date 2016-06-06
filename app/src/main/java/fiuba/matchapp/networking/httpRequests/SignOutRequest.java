@@ -47,6 +47,7 @@ public abstract class SignOutRequest {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json; charset=utf-8");
         headers.put("Authorization", MyApplication.getInstance().getPrefManager().getAppServerToken());
+        Log.d(TAG, "headers: " + headers.toString());
         return headers;
     }
     @NonNull
@@ -79,6 +80,10 @@ public abstract class SignOutRequest {
 
                             if  (error instanceof NoConnectionError) {
                                 onDeleteTokenFailedUserConnectionError();
+                                return;
+                            }
+                            if (error.networkResponse.statusCode == 401){
+                                onDeleteAppServerTokenSuccess();
                                 return;
                             }
                         } catch (JSONException e) {

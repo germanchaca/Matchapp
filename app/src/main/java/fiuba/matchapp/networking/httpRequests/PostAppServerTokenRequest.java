@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 
 /**
@@ -31,9 +32,6 @@ public abstract class PostAppServerTokenRequest {
 
     protected abstract void onRefreshAppServerTokenFailedUserConnectionError();
 
-    public PostAppServerTokenRequest(){
-
-    }
     public void make() {
 
         BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_APPSERVER_TOKEN, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.POST);
@@ -49,6 +47,30 @@ public abstract class PostAppServerTokenRequest {
         headers.put("Content-Type", "application/json; charset=utf-8");
         headers.put("Authorization", MyApplication.getInstance().getPrefManager().getAppServerToken());
         return headers;
+    }
+
+    private String getBody() {
+        String body = "";
+        JSONObject paramsJson = new JSONObject();
+
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("email", MyApplication.getInstance().getPrefManager().getUser().getEmail());
+
+            userJson.put("password", MyApplication.getInstance().getPrefManager().getUserCredentials());
+
+            paramsJson.put("user",userJson);
+
+            JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
+            paramsJson.put("metadata", metadataJson);
+
+            body =paramsJson.toString();
+            Log.d(TAG, "Body: " + body);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return body;
     }
     @NonNull
     private Response.Listener<String> getResponseListener() {

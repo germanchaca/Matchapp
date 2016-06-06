@@ -56,7 +56,7 @@ public class MainActivity extends GetLocationActivity {
         initUserLastLocation();
         locationServiceConnect();
 
-        progressDialog = new LockedProgressDialog(getApplicationContext(),
+        progressDialog = new LockedProgressDialog(MainActivity.this,
                 R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.signing_out));
@@ -178,6 +178,7 @@ public class MainActivity extends GetLocationActivity {
         SignOutRequest request = new SignOutRequest() {
             @Override
             protected void onDeleteAppServerTokenSuccess() {
+                progressDialog.dismiss();
                 MyApplication.getInstance().logout();
             }
 
@@ -185,12 +186,15 @@ public class MainActivity extends GetLocationActivity {
             protected void onDeleteTokenFailedDefaultError() {
                 String errorMessage = getResources().getString(R.string.internet_problem);
                 onDeleteTokenError(errorMessage);
+                //MyApplication.getInstance().logout();
+
             }
 
             @Override
             protected void onDeleteTokenFailedUserConnectionError() {
                 String errorMessage = getResources().getString(R.string.internet_problem);
                 onDeleteTokenError(errorMessage);
+                //MyApplication.getInstance().logout();
             }
         };
         request.make();

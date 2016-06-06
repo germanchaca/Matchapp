@@ -7,7 +7,7 @@ public class RestAPIContract {
 
     // localhost url -
     //public static final String BASE_URL = "http://192.168.1.107:8080";
-    public static final String BASE_URL = "http://192.168.1.115:8080";
+    public static final String BASE_URL = "http://192.168.1.113:8080";
 
     private static final String GET_USER = BASE_URL + "/users/_ID_/";
     private static final String DELETE_USER = BASE_URL + "/users/_ID_/";
@@ -25,9 +25,9 @@ public class RestAPIContract {
     public static final String GET_INTERESTS = BASE_URL + "/interests/";
 
     //Refresh AppServer Token
-    public static final String POST_SIGN_IN = BASE_URL + "/users/token/";
+    public static final String POST_SIGN_IN = BASE_URL + "/token/";
     //Refresh AppServer Token
-    public static final String DELETE_SIGN_OUT = BASE_URL + "/users/token/";
+    public static final String DELETE_SIGN_OUT = BASE_URL + "/token/";
 
 
 
