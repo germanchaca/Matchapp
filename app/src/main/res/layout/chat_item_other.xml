@@ -15,7 +15,7 @@
         android:layout_marginLeft="10dp"
         android:background="@drawable/bg_bubble_white"
         android:textIsSelectable="true"
-        android:textSize="14dp"/>
+        android:textSize="16dp"/>
 
     <TextView
         android:id="@+id/timestamp"
@@ -27,7 +27,7 @@
         android:layout_marginLeft="10dp"
         android:paddingLeft="10dp"
         android:paddingTop="6dp"
-        android:textSize="10dp"/>
+        android:textSize="12dp"/>
 
 
 </RelativeLayout>
