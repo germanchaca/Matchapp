@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import java.io.Serializable;
 
@@ -23,6 +25,8 @@ import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
+import fiuba.matchapp.networking.httpRequests.SignOutRequest;
+import fiuba.matchapp.view.LockedProgressDialog;
 
 public class MainActivity extends GetLocationActivity {
 
@@ -31,12 +35,15 @@ public class MainActivity extends GetLocationActivity {
 
     private OpenChatsFragment fragmentChats;
     private fiuba.matchapp.controller.fragment.fragmentPlayMatching fragmentPlayMatching;
+    private LockedProgressDialog progressDialog;
+    private RelativeLayout parentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        parentLayout = (RelativeLayout) findViewById(R.id.parentLayout);
         initToolbar();
 
         initFragments();
@@ -48,6 +55,11 @@ public class MainActivity extends GetLocationActivity {
         //para el getLocationActivity
         initUserLastLocation();
         locationServiceConnect();
+
+        progressDialog = new LockedProgressDialog(getApplicationContext(),
+                R.style.AppTheme_Dark_Dialog);
+
+        progressDialog.setMessage(getResources().getString(R.string.signing_out));
     }
 
     private void launchNewMatchActivity() {
@@ -138,7 +150,8 @@ public class MainActivity extends GetLocationActivity {
         switch (id) {
 
             case R.id.action_logout:
-                MyApplication.getInstance().logout();
+
+                logout();
                 break;
 
             case R.id.action_profile:
@@ -157,6 +170,35 @@ public class MainActivity extends GetLocationActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+
+        progressDialog.show();
+        SignOutRequest request = new SignOutRequest() {
+            @Override
+            protected void onDeleteAppServerTokenSuccess() {
+                MyApplication.getInstance().logout();
+            }
+
+            @Override
+            protected void onDeleteTokenFailedDefaultError() {
+                String errorMessage = getResources().getString(R.string.internet_problem);
+                onDeleteTokenError(errorMessage);
+            }
+
+            @Override
+            protected void onDeleteTokenFailedUserConnectionError() {
+                String errorMessage = getResources().getString(R.string.internet_problem);
+                onDeleteTokenError(errorMessage);
+            }
+        };
+        request.make();
+    }
+
+    private void onDeleteTokenError(String errorMessage) {
+        progressDialog.dismiss();
+        Snackbar.make(parentLayout,errorMessage,Snackbar.LENGTH_LONG).show();
     }
 
     private void initNotificationBroadcastReceiver() {

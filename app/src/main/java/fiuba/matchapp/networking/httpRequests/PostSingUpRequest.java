@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import fiuba.matchapp.networking.jsonUtils.JsonUtils;
@@ -71,7 +72,16 @@ public abstract class PostSingUpRequest {
             userJson.put("sex", user.getGenre());
             userJson.put("age", user.getAge());
 
-            JSONArray jsonArray = new JSONArray(user.getInterests());
+
+            JSONArray jsonArray = new JSONArray();
+            for(UserInterest i:user.getInterests()){
+                if(i != null){
+                    JSONObject intObj = new JSONObject();
+                    intObj.put("value", i.getDescription());
+                    intObj.put("category",i.getCategory());
+                    jsonArray.put(intObj);
+                }
+            }
 
             userJson.put("interests", jsonArray);
 

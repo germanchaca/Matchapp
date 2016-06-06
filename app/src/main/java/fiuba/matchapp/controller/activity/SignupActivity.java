@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.view.LockedProgressDialog;
@@ -85,6 +86,7 @@ public class SignupActivity extends GetLocationActivity {
 
         progressDialog = new LockedProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
+
         progressDialog.setMessage(getResources().getString(R.string.creating_account));
     }
 
@@ -133,9 +135,17 @@ public class SignupActivity extends GetLocationActivity {
         user.setEmail(_emailText.getText().toString());
         user.setName(_nameText.getText().toString());
         user.setAlias(_nameText.getText().toString());
-        //user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
-        user.setAge(AgeUtils.getAgeFromBirthDay(_dateText.getText().toString()));
-        user.setInterests(new ArrayList<UserInterest>());
+        user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
+        //user.setAge(AgeUtils.getAgeFromBirthDay(_dateText.getText().toString()));
+        UserInterest i = new UserInterest();
+        i.setDescription("Los Redondos");
+        i.setCategory("Musica");
+        ArrayList<UserInterest> list = new ArrayList<UserInterest>();
+        list.add(i);
+
+        user.setInterests(list);
+
+        //user.setInterests(new ArrayList<UserInterest>());
         user.setGenre(_sex_input.getText().toString());
         user.setLatitude(super.latitude);
         user.setLongitude(super.longitude);

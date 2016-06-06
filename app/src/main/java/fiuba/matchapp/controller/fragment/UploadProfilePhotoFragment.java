@@ -50,6 +50,7 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.ImageBase64;
+import fiuba.matchapp.view.LockedProgressDialog;
 
 /**
  * Created by german on 4/28/2016.
@@ -111,8 +112,8 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             }
         });
 
+        progressDialog = new LockedProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
 
-        progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.internet_problem));
 
         return view;
@@ -186,6 +187,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap( getContext().getContentResolver(), imageUri);
                         String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
                         dataPasser.onProfilePhotoDataPass(encodedImage);
+
                         //TODO ver de recortar la imagen para que todas mantengan la misma relación de aspecto
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -125,4 +125,6 @@
 
     <string name="swipe_like">Me gusta</string>
     <string name="swipe_dislike">Descartar</string>
+
+    <string name="signing_out">Cerrando sesión...</string>
 </resources>

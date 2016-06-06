@@ -117,12 +117,12 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         List<Fragment> slides = getSlides();
         InterestsRecyclerViewFragment fragment = (InterestsRecyclerViewFragment) slides.get(index-1);
 
-        if (index < slides.size()){ //fragments de intereses
+        if (index < slides.size()-1){ //fragments de intereses
             if( interestsIsEmpty(fragment.mInterestsList) ) {
                 showInterestError(getResources().getString(R.string.intro_error_empty_interest));
             }else{
                 Log.d(TAG, "Siguiente categoria");
-                //sendInterestsToAppServer(fragment.mInterestsList);
+                sendInterestsToAppServer(fragment.mInterestsList);
             }
         }else {
             Log.d(TAG, "Ultima");
