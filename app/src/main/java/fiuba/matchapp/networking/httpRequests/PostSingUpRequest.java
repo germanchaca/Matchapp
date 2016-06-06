@@ -9,24 +9,19 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.model.UserInterest;
-import fiuba.matchapp.networking.JsonMetadataUtils;
-import fiuba.matchapp.networking.JsonParser;
-import fiuba.matchapp.networking.JsonUtils;
+import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
+import fiuba.matchapp.networking.jsonUtils.JsonParser;
+import fiuba.matchapp.networking.jsonUtils.JsonUtils;
 
 /**
  * Created by ger on 31/05/16.

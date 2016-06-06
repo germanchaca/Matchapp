@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.networking.JsonParser;
+import fiuba.matchapp.networking.jsonUtils.JsonParser;
 
 /**
  * Created by ger on 01/06/16.

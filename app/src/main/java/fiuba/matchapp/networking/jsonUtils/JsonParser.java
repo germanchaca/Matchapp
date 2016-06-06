@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.jsonUtils;
 
 import android.support.annotation.Nullable;
 import android.util.Log;

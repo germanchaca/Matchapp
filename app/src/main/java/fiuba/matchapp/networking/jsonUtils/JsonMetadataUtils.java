@@ -1,4 +1,4 @@
-package fiuba.matchapp.networking;
+package fiuba.matchapp.networking.jsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,42 +1,17 @@
 package fiuba.matchapp.controller.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginResult;
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import fiuba.matchapp.R;
-import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.JsonParser;
 import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
-import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.utils.MD5;
 import fiuba.matchapp.view.LockedProgressDialog;
 

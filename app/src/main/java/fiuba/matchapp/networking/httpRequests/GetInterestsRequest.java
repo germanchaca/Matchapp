@@ -18,7 +18,7 @@ import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Interest;
-import fiuba.matchapp.networking.JsonParser;
+import fiuba.matchapp.networking.jsonUtils.JsonParser;
 
 /**
  * Created by ger on 01/06/16.

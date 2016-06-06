@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.JsonMetadataUtils;
+import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 
 /**
  * Created by ger on 01/06/16.

@@ -29,7 +29,6 @@ public class MainActivity extends GetLocationActivity {
     private String TAG = MainActivity.class.getSimpleName();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
-    public static Context context;
     private OpenChatsFragment fragmentChats;
     private fiuba.matchapp.controller.fragment.fragmentPlayMatching fragmentPlayMatching;
 
@@ -37,21 +36,18 @@ public class MainActivity extends GetLocationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        context = this;
         setContentView(R.layout.activity_main);
         initToolbar();
 
-        if (MyApplication.getInstance().getPrefManager().getUser() == null) {
-            launchLoginActivity();
+        initFragments();
+        //launchNewMatchActivity();
 
-        } else {
-            initFragments();
-            //launchNewMatchActivity();
-        }
           //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();
+
+        //para el getLocationActivity
         initUserLastLocation();
-        locationServiceConnect();        //para el getLocationActivity
+        locationServiceConnect();
     }
 
     private void launchNewMatchActivity() {
@@ -92,19 +88,11 @@ public class MainActivity extends GetLocationActivity {
         super.onPause();
     }
 
-    private void launchLoginActivity() {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
 
     /**
      * Handles new push notification
@@ -155,7 +143,7 @@ public class MainActivity extends GetLocationActivity {
 
             case R.id.action_profile:
 
-                Intent intent = new Intent(context, EditableProfileActivity.class);
+                Intent intent = new Intent(getApplicationContext(), EditableProfileActivity.class);
                 startActivity(intent);
                 break;
 
