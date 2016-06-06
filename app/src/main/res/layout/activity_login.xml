@@ -67,6 +67,7 @@
                 android:drawableLeft="@drawable/ic_https_24dp_whitw"
                 android:inputType="textPassword"
                 android:drawablePadding="@dimen/edittext_drawable_pad"
+                android:layout_marginBottom="8dp"
                 />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>

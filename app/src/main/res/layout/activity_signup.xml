@@ -115,7 +115,8 @@
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
                 android:drawablePadding="@dimen/edittext_drawable_pad"
-                android:drawableLeft="@drawable/ic_https_24dp_whitw"/>
+                android:drawableLeft="@drawable/ic_https_24dp_whitw"
+                android:layout_marginBottom="8dp"/>
         </android.support.design.widget.TextInputLayout>
 </LinearLayout>
         <!-- Boton de registro -->
