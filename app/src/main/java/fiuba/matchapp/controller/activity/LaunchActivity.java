@@ -19,6 +19,7 @@ public class LaunchActivity extends AppCompatActivity {
 
         if (MyApplication.getInstance().getPrefManager().getUser() == null) {
             launchLoginActivity();
+            //launchMainActivity();
         }else {
             launchMainActivity();
         }

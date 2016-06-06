@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/deckButtonsColor">
+        android:background="@color/deckButtonsColor"
+        android:elevation="48dp"
+        >
 
         <LinearLayout
             style="?android:attr/buttonBarButtonStyle"
@@ -67,12 +69,14 @@
         android:id="@+id/swipe_deck"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/swipe_horizontal_margin"
-        swipedeck:card_spacing="10dp"
+        android:layout_marginBottom="42dp"
+
+        swipedeck:card_spacing="0dp"
         swipedeck:max_visible="3"
         swipedeck:opacity_end="0.2"
         swipedeck:render_above="false"
-        swipedeck:rotation_degrees="15"/>
+        swipedeck:rotation_degrees="15"
+        />
 
 
 </fiuba.cardstack.SwipeFrameLayout>
