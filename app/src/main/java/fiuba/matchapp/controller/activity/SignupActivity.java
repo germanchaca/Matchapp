@@ -137,11 +137,11 @@ public class SignupActivity extends GetLocationActivity {
         user.setAlias(_nameText.getText().toString());
         user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
         //user.setAge(AgeUtils.getAgeFromBirthDay(_dateText.getText().toString()));
-        UserInterest i = new UserInterest();
-        i.setDescription("Los Redondos");
-        i.setCategory("Musica");
+        //UserInterest i = new UserInterest();
+        //i.setDescription("Los Redondos");
+        //i.setCategory("Musica");
         ArrayList<UserInterest> list = new ArrayList<UserInterest>();
-        list.add(i);
+        //list.add(i);
 
         user.setInterests(list);
 

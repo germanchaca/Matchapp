@@ -287,6 +287,8 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
 
                 displayAlertDialog();
             }
+
+        
         };
         request.make();
 

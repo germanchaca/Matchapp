@@ -26,6 +26,7 @@ import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
+import fiuba.matchapp.networking.httpRequests.PostAppServerTokenRequest;
 import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 
@@ -90,9 +91,11 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
             protected void onGetInterestsConnectionError() {
                 showSnackBarError(getResources().getString(R.string.internet_problem));
             }
+
         };
         request.make();
     }
+
 
     @Override
     public void onDonePressed() {

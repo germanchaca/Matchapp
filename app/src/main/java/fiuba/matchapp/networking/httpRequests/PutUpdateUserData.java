@@ -200,6 +200,10 @@ public abstract class PutUpdateUserData {
                                 onAppServerConnectionError();
                                 return;
                             }
+                            if (error.networkResponse.statusCode == 401){
+                                onErrorNoAuth();
+                                return;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -214,8 +218,25 @@ public abstract class PutUpdateUserData {
         };
         return errorListener;
     }
+    private void onErrorNoAuth() {
+        PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
+            @Override
+            protected void onRefreshAppServerTokenSuccess() {
+                this.make();
+            }
 
+            @Override
+            protected void onRefreshAppServerTokenFailedDefaultError() {
+                onAppServerDefaultError();
+            }
 
+            @Override
+            protected void onRefreshAppServerTokenFailedUserConnectionError() {
+                onAppServerDefaultError();
+            }
+        };
+        request.make();
+    }
 
 
 }

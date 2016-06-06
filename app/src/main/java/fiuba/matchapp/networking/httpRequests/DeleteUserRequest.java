@@ -32,6 +32,7 @@ public abstract class DeleteUserRequest {
 
     protected abstract void onDeleteUserFailedUserConnectionError();
 
+
     public DeleteUserRequest(User user){
         this.user = user;
     }
@@ -83,6 +84,10 @@ public abstract class DeleteUserRequest {
                                 onDeleteUserFailedUserConnectionError();
                                 return;
                             }
+                            if (error.networkResponse.statusCode == 401){
+                                onErrorNoAuth();
+                                return;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -97,4 +102,26 @@ public abstract class DeleteUserRequest {
         };
         return errorListener;
     }
+
+    private void onErrorNoAuth() {
+        PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
+            @Override
+            protected void onRefreshAppServerTokenSuccess() {
+                this.make();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenFailedDefaultError() {
+                onDeleteUserFailedDefaultError();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenFailedUserConnectionError() {
+                onDeleteUserFailedDefaultError();
+            }
+        };
+        request.make();
+    }
+
+
 }

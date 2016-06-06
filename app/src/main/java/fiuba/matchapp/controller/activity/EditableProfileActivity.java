@@ -153,15 +153,12 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 DeleteUserRequest request = new DeleteUserRequest(MyApplication.getInstance().getPrefManager().getUser()) {
                     @Override
                     protected void onDeleteAppServerTokenSuccess() {
-
-                        MyApplication.getInstance().deletteAccount();
                         hideProgressDialog();
-
+                        MyApplication.getInstance().deletteAccount();
                     }
 
                     @Override
                     protected void onDeleteUserFailedDefaultError() {
-
                         hideProgressDialog();
                         Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
                     }
@@ -171,6 +168,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                         hideProgressDialog();
                         Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
                     }
+
                 };
                 request.make();
             }

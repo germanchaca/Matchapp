@@ -32,6 +32,7 @@ public abstract class GetInterestsRequest {
     protected abstract void onGetInterestsDefaultError();
 
     protected abstract void onGetInterestsConnectionError();
+
     public void make() {
 
         BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.GET_INTERESTS, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.GET);
@@ -84,6 +85,10 @@ public abstract class GetInterestsRequest {
                                 onGetInterestsConnectionError();
                                 return;
                             }
+                            if (error.networkResponse.statusCode == 401){
+                                onErrorNoAuth();
+                                return;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -98,6 +103,28 @@ public abstract class GetInterestsRequest {
         };
         return errorListener;
     }
+
+    private void onErrorNoAuth() {
+        PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
+            @Override
+            protected void onRefreshAppServerTokenSuccess() {
+                this.make();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenFailedDefaultError() {
+                onGetInterestsDefaultError();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenFailedUserConnectionError() {
+                onGetInterestsDefaultError();
+            }
+        };
+        request.make();
+    }
+
+
     private void onSuccessResponse(String response) throws JSONException {
         JSONObject obj = new JSONObject(response);
         List<Interest> interests = JsonParser.getInterestsFromJSONresponse(obj);
