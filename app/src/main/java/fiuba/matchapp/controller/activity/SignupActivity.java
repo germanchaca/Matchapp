@@ -11,7 +11,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
@@ -154,8 +157,8 @@ public class SignupActivity extends GetLocationActivity {
 
         PostSingUpRequest postSignUpRequest = new PostSingUpRequest(user, userPassword) {
             @Override
-            protected void onSignupSuccess() {
-                onRequestSignupSuccess();
+            protected void onSignupSuccess(Map<String, List<Interest>> mapInterestsByCategory) {
+                onRequestSignupSuccess(mapInterestsByCategory);
             }
 
             @Override
@@ -181,17 +184,18 @@ public class SignupActivity extends GetLocationActivity {
         postSignUpRequest.make();
     }
 
-    public void onRequestSignupSuccess() {
+    public void onRequestSignupSuccess(Map<String, List<Interest>> mapInterestsByCategory) {
 
         progressDialog.dismiss();
         _signupButton.setEnabled(true);
 
-        launchFinishingSignUpActivity();
+        launchFinishingSignUpActivity(mapInterestsByCategory);
     }
 
-    private void launchFinishingSignUpActivity() {
+    private void launchFinishingSignUpActivity(Map<String, List<Interest>> mapInterestsByCategory) {
         Intent intent = new Intent(this, FinishingSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("hashInterests", (Serializable) mapInterestsByCategory);
         startActivity(intent);
         finish();
     }

@@ -83,7 +83,7 @@ public abstract class SignOutRequest {
                                 return;
                             }
                             if (error.networkResponse.statusCode == 401){
-                                onDeleteAppServerTokenSuccess();
+                                onErrorNoAuth();
                                 return;
                             }
                         } catch (JSONException e) {
@@ -100,5 +100,23 @@ public abstract class SignOutRequest {
         };
         return errorListener;
     }
+    private void onErrorNoAuth() {
+        PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
+            @Override
+            protected void onRefreshAppServerTokenSuccess() {
+                this.make();
+            }
 
+            @Override
+            protected void onRefreshAppServerTokenFailedDefaultError() {
+                onDeleteTokenFailedUserConnectionError();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenFailedUserConnectionError() {
+                onDeleteTokenFailedUserConnectionError();
+            }
+        };
+        request.make();
+    }
 }

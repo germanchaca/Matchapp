@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.paolorotolo.appintro.AppIntro2;
+import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,58 +45,31 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
 
         this.profilePhoto = "";
 
+        initProgressDialog();
+
+        addInterestsSlides();
+
+        addSlide(new UploadProfilePhotoFragment());
+        setFadeAnimation();
+    }
+
+    private void initProgressDialog() {
         progressDialog = new ProgressDialog(FinishingSignUpActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
+        progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
         progressDialog.show();
-
-        getAllInterestFromAppServer();
-
-
     }
 
-    private void getAllInterestFromAppServer() {
-        GetInterestsRequest request = new GetInterestsRequest() {
-            @Override
-            protected void onGetInterestsSuccess(List<Interest> interests) {
+    private void addInterestsSlides() {
+        Intent intent = getIntent();
+        Map<String,List<Interest> > mapInterestsByCategory = (Map<String,List<Interest>>) intent.getSerializableExtra("hashInterests");
 
-                Map<String,List<Interest> > mapInterestsByCategory = new HashMap<>();
-                for (Interest i : interests) {
-                    if(!mapInterestsByCategory.containsKey(i.getCategory())){
-                        List<Interest> list = new ArrayList<>();
-                        list.add(i);
-                        mapInterestsByCategory.put(i.getCategory(),list);
-                    }else {
-                        List<Interest> list = mapInterestsByCategory.get(i.getCategory());
-                        list.add(i);
-                        mapInterestsByCategory.put(i.getCategory(),list);
-                    }
-                }
-                for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
-                {
-                    addSlide(InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue()));
-                }
-                addSlide(new UploadProfilePhotoFragment());
-
-                progressDialog.dismiss();
-                progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
-            }
-
-            @Override
-            protected void onGetInterestsDefaultError() {
-                showSnackBarError(getResources().getString(R.string.internet_problem));
-            }
-
-            @Override
-            protected void onGetInterestsConnectionError() {
-                showSnackBarError(getResources().getString(R.string.internet_problem));
-            }
-
-        };
-        request.make();
+        for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
+        {
+            addSlide(InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue()));
+        }
     }
-
 
     @Override
     public void onDonePressed() {
@@ -120,16 +94,13 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         List<Fragment> slides = getSlides();
         InterestsRecyclerViewFragment fragment = (InterestsRecyclerViewFragment) slides.get(index-1);
 
-        if (index < slides.size()-1){ //fragments de intereses
+        if (index < slides.size()){ //fragments de intereses
             if( interestsIsEmpty(fragment.mInterestsList) ) {
                 showInterestError(getResources().getString(R.string.intro_error_empty_interest));
             }else{
                 Log.d(TAG, "Siguiente categoria");
                 sendInterestsToAppServer(fragment.mInterestsList);
             }
-        }else {
-            Log.d(TAG, "Ultima");
-            onDonePressed();
         }
     }
 
@@ -226,4 +197,6 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
     public void onProfilePhotoDataPass(String data) {
         this.profilePhoto = data;
     }
+
+
 }

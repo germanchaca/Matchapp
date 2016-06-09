@@ -15,9 +15,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
+import fiuba.matchapp.controller.fragment.UploadProfilePhotoFragment;
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
@@ -33,7 +40,7 @@ public abstract class PostSingUpRequest {
     private final User user;
     private final String password;
 
-    protected abstract void onSignupSuccess();
+    protected abstract void onSignupSuccess(Map<String, List<Interest>> mapInterestsByCategory);
     protected abstract void onSignUpFailedUserInvalidError();
     protected abstract void onSignUpFailedUserConnectionError();
     protected abstract void onSignUpFailedDefaultError();
@@ -114,12 +121,8 @@ public abstract class PostSingUpRequest {
                 @Override
                 public void onResponse(String response) {
                     Log.d(TAG, "Success response: " + response);
-                    try {
-                        onSuccessResponse(response);
+                    getAllInterestFromAppServer(response);
 
-                    } catch (JSONException e) {
-                        Log.e(TAG, "json parsing error: " + e.getMessage());
-                    }
                 }
             };
     }
@@ -163,15 +166,57 @@ public abstract class PostSingUpRequest {
     }
 
 
-    private void onSuccessResponse(String response) throws JSONException {
+    private void onSuccessResponse(String response, Map<String,List<Interest> > mapInterestsByCategory) throws JSONException {
         JSONObject obj = new JSONObject(response);
         User loggedUser = JsonParser.getUserFromJSONresponse(obj);
         String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
         MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
         MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+        MyApplication.getInstance().getPrefManager().storeUserPass(this.password);
 
-        onSignupSuccess();
+        onSignupSuccess(mapInterestsByCategory);
     }
+
+    private void getAllInterestFromAppServer(final String response) {
+        GetInterestsRequest request = new GetInterestsRequest() {
+            @Override
+            protected void onGetInterestsSuccess(List<Interest> interests) {
+
+                Map<String,List<Interest> > mapInterestsByCategory = new HashMap<>();
+                for (Interest i : interests) {
+                    if(!mapInterestsByCategory.containsKey(i.getCategory())){
+                        List<Interest> list = new ArrayList<>();
+                        list.add(i);
+                        mapInterestsByCategory.put(i.getCategory(),list);
+                    }else {
+                        List<Interest> list = mapInterestsByCategory.get(i.getCategory());
+                        list.add(i);
+                        mapInterestsByCategory.put(i.getCategory(),list);
+                    }
+                }
+                try {
+                    onSuccessResponse(response, mapInterestsByCategory);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected void onGetInterestsDefaultError() {
+                onSignUpFailedUserConnectionError();
+            }
+
+            @Override
+            protected void onGetInterestsConnectionError() {
+                onSignUpFailedUserConnectionError();
+
+            }
+
+        };
+        request.make();
+    }
+
 
 }
