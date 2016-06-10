@@ -71,8 +71,8 @@ public abstract class PutUpdateUserData {
     public void changeInterests(List<UserInterest> interests){
         fillBody( interests);
     }
-    public void changeGcmRegistrationId(){
-        fillBody();
+    public void changeGcmRegistrationId(String gcmId){
+        fillBody("gcm_registration_id", gcmId);
     }
 
     @NonNull
@@ -134,8 +134,6 @@ public abstract class PutUpdateUserData {
 
         try {
             userJson.put(key, changeValue);
-
-            userJson.put("gcm_registration_id", FirebaseInstanceId.getInstance().getToken());
 
         } catch (JSONException e) {
             e.printStackTrace();

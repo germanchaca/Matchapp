@@ -19,6 +19,7 @@ import java.util.Map;
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 
 /**
@@ -36,7 +37,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
-        //sendRegistrationToServer(refreshedToken);
+        sendRegistrationToServer(refreshedToken);
     }
 
     private void sendRegistrationToServer(final String token) {
@@ -45,50 +46,23 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
         if (user == null) {
             return;
         }
-        String endPoint = RestAPIContract.PUT_USER(user.getId());
-
-        StringRequest strReq = new StringRequest(Request.Method.PUT,
-                endPoint, new Response.Listener<String>() {
-
+        PutUpdateUserData request = new PutUpdateUserData(user) {
             @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "response: " + response);
+            protected void onUpdateDataSuccess() {
 
-                try {
-                    JSONObject obj = new JSONObject(response);
-
-                    // check for error
-                    if (obj.getBoolean("error") == false) {
-                        // broadcasting token sent to server
-                        //Intent registrationComplete = new Intent(Config.SENT_TOKEN_TO_SERVER);
-                        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(registrationComplete);
-                    } else {
-                        Log.d(TAG, getResources().getString(R.string.gsmintentservice_error_server_app_send_registrationgsm) );
-                    }
-
-                } catch (JSONException e) {
-                    Log.d(TAG, "json parsing error: " + e.getMessage());
-                }
             }
-        }, new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                Log.d(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
+            protected void onAppServerDefaultError() {
+
             }
-        }) {
 
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("gcm_registration_id", token);
-                Log.d(TAG, "params: " + params.toString());
-                return params;
+            protected void onAppServerConnectionError() {
+
             }
         };
-        //Adding request to request queue
-        MyApplication.getInstance().addToRequestQueue(strReq);
+
     }
 }
 
