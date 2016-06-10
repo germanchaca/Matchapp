@@ -104,7 +104,7 @@ public abstract class SignOutRequest {
         PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                this.make();
+                retry();
             }
 
             @Override
@@ -118,5 +118,8 @@ public abstract class SignOutRequest {
             }
         };
         request.make();
+    }
+    private void retry() {
+        this.make();
     }
 }

@@ -110,7 +110,7 @@ public abstract class GetInterestsRequest {
         PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                this.make();
+                retry();
             }
 
             @Override
@@ -134,7 +134,9 @@ public abstract class GetInterestsRequest {
         onGetInterestsSuccess(interests);
     }
 
-
+    private void retry() {
+        this.make();
+    }
 
 }
 

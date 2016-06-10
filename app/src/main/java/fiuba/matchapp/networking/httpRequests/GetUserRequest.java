@@ -54,8 +54,6 @@ public abstract class GetUserRequest {
         return headers;
     }
 
-
-
     @NonNull
     private Response.Listener<String> getResponseListener() {
         return new Response.Listener<String>() {
@@ -91,6 +89,10 @@ public abstract class GetUserRequest {
                                 onGetUserRequestFailedUserConnectionError();
                                 return;
                             }
+                            if (error.networkResponse.statusCode == 401){
+                                onErrorNoAuth();
+                                return;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -107,13 +109,32 @@ public abstract class GetUserRequest {
     }
 
 
-
-
     private void onSuccessResponse(String response) throws JSONException {
         JSONObject obj = new JSONObject(response);
         User user = JsonParser.getUserFromJSONresponse(obj);
 
         onGetUserRequestSuccess(user);
     }
+    private void onErrorNoAuth() {
+        PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
+            @Override
+            protected void onRefreshAppServerTokenSuccess() {
+                retry();
+            }
 
+            @Override
+            protected void onRefreshAppServerTokenFailedDefaultError() {
+                onGetUserRequestFailedDefaultError();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenFailedUserConnectionError() {
+                onGetUserRequestFailedUserConnectionError();
+            }
+        };
+        request.make();
+    }
+    private void retry() {
+        this.make();
+    }
 }

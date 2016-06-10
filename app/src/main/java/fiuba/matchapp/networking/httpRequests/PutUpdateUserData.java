@@ -220,7 +220,7 @@ public abstract class PutUpdateUserData {
         PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                this.make();
+                retry();
             }
 
             @Override
@@ -236,5 +236,7 @@ public abstract class PutUpdateUserData {
         request.make();
     }
 
-
+    private void retry() {
+        this.make();
+    }
 }

@@ -124,7 +124,7 @@ public abstract class PutUpdatePhothoProfileUser {
         PostAppServerTokenRequest request = new PostAppServerTokenRequest() {
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                this.make();
+                retry();
             }
 
             @Override
@@ -138,5 +138,8 @@ public abstract class PutUpdatePhothoProfileUser {
             }
         };
         request.make();
+    }
+    private void retry() {
+        this.make();
     }
 }
