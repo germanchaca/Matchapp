@@ -72,7 +72,6 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
         }
         switch (type) {
             case Config.PUSH_TYPE_NEW_MESSAGE:
-
                 processChatNewMessageNotification(data, notificationBody, notificationTitle, notifitacionTimestamp);
                 break;
             case Config.PUSH_TYPE_NEW_MATCH:
@@ -102,20 +101,13 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
     private void processChatNewMessageNotification(Map<String, String> data, String notificationBody, String notificationTitle, String notifitacionTimestamp) {
         String userId = data.get("user_id");
         String chatMessage = data.get("message");
-        //String chatMessageId = data.get("message_id");
-        String chatMessageCreatedAt = data.get("created_at");
-        String chatMessageChatRoomId = data.get("chat_room_id");
 
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
-            // app is in foreground, broadcast the push message
             Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
 
             pushNotification.putExtra("type", Config.PUSH_TYPE_NEW_MESSAGE);
             pushNotification.putExtra("user_id", userId);
             pushNotification.putExtra("message", chatMessage);
-            //pushNotification.putExtra("message_id", chatMessageId);
-            pushNotification.putExtra("created_at", chatMessageCreatedAt);
-            pushNotification.putExtra("chat_room_id", chatMessageChatRoomId);
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
@@ -124,13 +116,10 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             // app is in background
 
             Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-            resultIntent.putExtra("message", notificationBody);//habria que darle todos los extras para que se abra el chatRoomActivity
+
             resultIntent.putExtra("type", Config.PUSH_TYPE_NEW_MESSAGE);
             resultIntent.putExtra("user_id", userId);
             resultIntent.putExtra("message", chatMessage);
-            //resultIntent.putExtra("message_id", chatMessageId);
-            resultIntent.putExtra("created_at", chatMessageCreatedAt);
-            resultIntent.putExtra("chat_room_id", chatMessageChatRoomId);
 
             showNotificationMessage(getApplicationContext(), notificationTitle, notificationBody, notifitacionTimestamp, resultIntent);
         }

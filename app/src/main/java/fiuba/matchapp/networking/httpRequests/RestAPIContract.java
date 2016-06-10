@@ -47,10 +47,10 @@ public class RestAPIContract {
     public static String PUT_USER(String userId) {
         return PUT_USER.replace("_ID_", userId);
     }
-    public static String DELETE_USER(String userId) {
-        return PUT_USER.replace("_ID_", userId);
-    }
 
+    public static String DELETE_USER(String userId) {
+        return DELETE_USER.replace("_ID_", userId);
+    }
 
     //Modificacion de foto del perfil de usuario
     public static String PUT_PHOTO_USER(String userId) {

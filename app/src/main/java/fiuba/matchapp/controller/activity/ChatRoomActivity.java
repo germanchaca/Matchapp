@@ -32,8 +32,6 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     private String TAG = ChatRoomActivity.class.getSimpleName();
 
-    private String chatRoomId;
-    private String selfUserId;
     private RecyclerView recyclerView;
     private ChatRoomThreadAdapter mAdapter;
     private ArrayList<Message> messageArrayList;
@@ -41,32 +39,22 @@ public class ChatRoomActivity extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private ImageButton btnSend;
     private CircularImageView circleProfileImg;
+    private TextView titleChat;
+    private User user;
+    private String selfUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_room);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView titleChat = (TextView) findViewById(R.id.title_chat);
-        setSupportActionBar(toolbar);
-
-        //TODO cambiar esta imagen por la de perfil de usuario
-        circleProfileImg = (CircularImageView) findViewById(R.id.profile_img_toolbar);
-
-        inputMessage = (EditText) findViewById(R.id.message);
-        btnSend = (ImageButton) findViewById(R.id.btn_send);
+        initViews();
 
         Intent intent = getIntent();
-        chatRoomId = intent.getStringExtra("chat_room_id");
-        String title = intent.getStringExtra("name");
+        this.user  = (User) intent.getSerializableExtra("user");
+        if(this.user == null)
+            return;
 
-        titleChat.setText(title);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//muestra el volver al home
-
-        if (chatRoomId == null) {
-            finish();
-        }
-
+        titleChat.setText(this.user.getAlias());
+        
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         messageArrayList = new ArrayList<>();
@@ -100,20 +88,41 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         fetchChatThread();
     }
+
+    private void initViews() {
+        setContentView(R.layout.activity_chat_room);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        titleChat = (TextView) findViewById(R.id.title_chat);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//muestra el volver al home
+        circleProfileImg = (CircularImageView) findViewById(R.id.profile_img_toolbar);
+
+        inputMessage = (EditText) findViewById(R.id.message);
+        btnSend = (ImageButton) findViewById(R.id.btn_send);
+    }
+
     /**
      * Handling new push message, will add the message to
      * recycler view and scroll it to bottom
      * */
     private void handlePushNotification(Intent intent) {
-        Message message = (Message) intent.getSerializableExtra("message");
-        String chatRoomId = intent.getStringExtra("chat_room_id");
+        if(intent.hasExtra("user_id")){
+            String userId = intent.getStringExtra("user_id");
+            if (intent.hasExtra("message")){
+                Message message = (Message) intent.getSerializableExtra("message");
 
-        if (message != null && chatRoomId != null) {
-            messageArrayList.add(message);
-            mAdapter.notifyDataSetChanged();
-            if (mAdapter.getItemCount() > 1) {
-                recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+                if( this.user.getEmail() == userId){
+                    addNewMessage(message);
+                }
             }
+        }
+    }
+
+    private void addNewMessage(Message message) {
+        messageArrayList.add(message);
+        mAdapter.notifyDataSetChanged();
+        if (mAdapter.getItemCount() > 1) {
+            recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
         }
     }
 
@@ -148,86 +157,10 @@ public class ChatRoomActivity extends AppCompatActivity {
             return;
         }
 
-        //String endPoint = RestAPIContract.CHAT_ROOM_MESSAGE.replace("_ID_", chatRoomId);
-
         this.inputMessage.setText("");
 
-        /*StringRequest strReq = new StringRequest(Request.Method.POST,
-                endPoint, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.e(TAG, "response: " + response);
-
-                try {
-                    JSONObject obj = new JSONObject(response);
-
-                    if (obj.getBoolean("error") == false) {
-                        JSONObject commentObj = obj.getJSONObject("message");
-
-                        String commentId = commentObj.getString("message_id");
-                        String commentText = commentObj.getString("message");
-                        String createdAt = commentObj.getString("created_at");
-
-                        JSONObject userObj = obj.getJSONObject("user");
-                        String userId = userObj.getString("user_id");
-                        String userName = userObj.getString("name");
-                        User user = new User(userId, userName, null);
-
-                        Message message = new Message();
-                        message.setId(commentId);
-                        message.setMessage(commentText);
-                        message.setCreatedAt(createdAt);
-                        message.setUser(user);
-
-                        messageArrayList.add(message);
-
-                        mAdapter.notifyDataSetChanged();
-                        if (mAdapter.getItemCount() > 1) {
-                            // scrolling to bottom of the recycler view
-                            recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
-                        }
-
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
-                inputMessage.setText(message);
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("user_id", MyApplication.getInstance().getPrefManager().getUser().getId());
-                params.put("message", message);
-
-                Log.e(TAG, "Params: " + params.toString());
-
-                return params;
-            };
-        };
 
 
-        // disabling retry policy so that it won't make
-        // multiple http calls
-        int socketTimeout = 0;
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-
-        strReq.setRetryPolicy(policy);
-
-        //Adding request to request queue
-        MyApplication.getInstance().addToRequestQueue(strReq);
-        */
     }
 
 
@@ -253,13 +186,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         message.setCreatedAt(createdAt);
         message.setUser(user);
 
-        messageArrayList.add(message);
-
-        mAdapter.notifyDataSetChanged();
-
-        if (mAdapter.getItemCount() > 1) {
-            recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
-        }
+        addNewMessage(message);
     }
 
         /**

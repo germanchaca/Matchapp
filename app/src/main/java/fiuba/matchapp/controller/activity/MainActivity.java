@@ -25,6 +25,7 @@ import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
+import fiuba.matchapp.networking.httpRequests.GetUserRequest;
 import fiuba.matchapp.networking.httpRequests.SignOutRequest;
 import fiuba.matchapp.view.LockedProgressDialog;
 
@@ -42,36 +43,24 @@ public class MainActivity extends GetLocationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initViews();
+        initFragments();
+          //Broadcast receiver calls when new push notification is received
+        initNotificationBroadcastReceiver();
+        //para el getLocationActivity
+
+        //locationServiceConnect();
+
+
+    }
+
+    private void initViews() {
         setContentView(R.layout.activity_main);
         parentLayout = (RelativeLayout) findViewById(R.id.parentLayout);
         initToolbar();
-
-        initFragments();
-        //launchNewMatchActivity();
-
-          //Broadcast receiver calls when new push notification is received
-        initNotificationBroadcastReceiver();
-
-        //para el getLocationActivity
-        initUserLastLocation();
-        locationServiceConnect();
-
-        progressDialog = new LockedProgressDialog(MainActivity.this,
-                R.style.AppTheme_Dark_Dialog);
+        progressDialog = new LockedProgressDialog(MainActivity.this, R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.signing_out));
-    }
-
-    private void launchNewMatchActivity() {
-        Intent intent = new Intent(MainActivity.this, NewMatchActivity.class);
-
-        Serializable userMatched = new User();
-
-        intent.putExtra("new_match_user",userMatched);
-        intent.putExtra("chat_room_id","1");
-
-        startActivity(intent);
-        finish();
     }
 
     private void initToolbar() {
@@ -109,11 +98,39 @@ public class MainActivity extends GetLocationActivity {
     /**
      * Handles new push notification
      */
-    private void handlePushNotification(Intent intent) {
+    private void handlePushNotification( Intent intent) {
         if (intent.hasExtra("type")) {
             String type = intent.getStringExtra("type");
             if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
-                //solo incrementar el badge de unreadCount, el handle lo hago en ChatRoomActivity el agregar uevo mensaje a la history
+                //TODO cambiar de color un icono o poner un badge
+
+            }else if(type == Config.PUSH_TYPE_NEW_MATCH){
+                if (intent.hasExtra("user_id")) {
+                    String userId = intent.getStringExtra("user_id");
+                    GetUserRequest request = new GetUserRequest(userId) {
+                        @Override
+                        protected void onGetUserRequestFailedDefaultError() {
+
+                        }
+
+                        @Override
+                        protected void onGetUserRequestFailedUserConnectionError() {
+
+                        }
+
+                        @Override
+                        protected void onGetUserRequestSuccess(User user) {
+                            Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
+
+                            i.putExtra("new_match_user", (Serializable) user);
+
+                            startActivity(i);
+                            finish();
+                        }
+                    };
+                    request.make();
+
+                }
             }
         }
     }
@@ -140,7 +157,6 @@ public class MainActivity extends GetLocationActivity {
         FragmentTransaction ft = fm.beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.replace(R.id.contentFragment, fragment);
-
         ft.commit();
     }
 
@@ -186,15 +202,12 @@ public class MainActivity extends GetLocationActivity {
             protected void onDeleteTokenFailedDefaultError() {
                 String errorMessage = getResources().getString(R.string.internet_problem);
                 onDeleteTokenError(errorMessage);
-                //MyApplication.getInstance().logout();
-
             }
 
             @Override
             protected void onDeleteTokenFailedUserConnectionError() {
                 String errorMessage = getResources().getString(R.string.internet_problem);
                 onDeleteTokenError(errorMessage);
-                //MyApplication.getInstance().logout();
             }
         };
         request.make();
@@ -225,4 +238,5 @@ public class MainActivity extends GetLocationActivity {
     private void unregisterNotificationBroadcastreceiver() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
+
 }
