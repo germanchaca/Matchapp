@@ -34,7 +34,7 @@ public abstract class PostAppServerTokenRequest {
 
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_APPSERVER_TOKEN, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.POST);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_SIGN_IN, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -100,8 +100,8 @@ public abstract class PostAppServerTokenRequest {
                         String response = new String(error.networkResponse.data, "utf-8");
                         try {
                             JSONObject obj = new JSONObject(response);
-                            String message = obj.getString("Mensaje");
-                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
+                            //String message = obj.getString("Mensaje");
+                            Log.e(TAG, "Volley error: "  + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
                                 onRefreshAppServerTokenFailedUserConnectionError();
