@@ -15,6 +15,7 @@ import com.facebook.login.LoginResult;
 import org.json.JSONObject;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.FacebookLoginActivity;
 import fiuba.matchapp.utils.FacebookUtils;
 
@@ -25,6 +26,8 @@ public class WelcomeActivity extends FacebookLoginActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyApplication.getInstance().getPrefManager().clear();
+
         setContentView(R.layout.activity_welcome);
 
         Button loginButton = (Button) findViewById(R.id.btn_login);

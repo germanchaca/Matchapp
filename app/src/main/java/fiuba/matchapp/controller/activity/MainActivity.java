@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -191,6 +192,7 @@ public class MainActivity extends GetLocationActivity {
     private void logout() {
 
         progressDialog.show();
+        Log.d(TAG,"signOut");
         SignOutRequest request = new SignOutRequest() {
             @Override
             protected void onDeleteAppServerTokenSuccess() {

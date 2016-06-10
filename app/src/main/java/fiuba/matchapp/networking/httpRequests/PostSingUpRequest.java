@@ -54,9 +54,9 @@ public abstract class PostSingUpRequest {
 
         BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.POST_USER, getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.POST);
 
-        signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
+          //      DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            //    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         MyApplication.getInstance().addToRequestQueue(signUpRequest);
     }
@@ -129,7 +129,6 @@ public abstract class PostSingUpRequest {
                         User loggedUser = JsonParser.getUserFromJSONresponse(obj);
                         String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
-                        MyApplication.getInstance().getPrefManager().clear();
                         MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
                         getAllInterestFromAppServer(loggedUser,appServerToken);
@@ -148,7 +147,7 @@ public abstract class PostSingUpRequest {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error response: " );
+
 
                 try{
                     if (error.networkResponse!= null){
@@ -169,6 +168,8 @@ public abstract class PostSingUpRequest {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }else {
+                        Log.d(TAG, "Network Response == null " );
                     }
 
                 } catch (UnsupportedEncodingException e) {

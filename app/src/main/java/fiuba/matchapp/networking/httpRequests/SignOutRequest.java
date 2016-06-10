@@ -21,7 +21,7 @@ import fiuba.matchapp.app.MyApplication;
  * Created by ger on 01/06/16.
  */
 public abstract class SignOutRequest {
-    private static final String TAG = "PostSignInRequest";
+    private static final String TAG = "SignOutRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
 
     protected abstract void onDeleteAppServerTokenSuccess();
