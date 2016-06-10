@@ -26,6 +26,7 @@ public class WelcomeActivity extends FacebookLoginActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         MyApplication.getInstance().getPrefManager().clear();
 
         setContentView(R.layout.activity_welcome);

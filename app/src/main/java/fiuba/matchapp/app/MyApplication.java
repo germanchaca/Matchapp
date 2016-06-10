@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import fiuba.matchapp.controller.activity.LoginActivity;
+import fiuba.matchapp.controller.activity.WelcomeActivity;
 
 /**
  * Created by german on 4/21/2016.
@@ -69,7 +70,7 @@ public class MyApplication extends Application {
 
     public void logout() {
         pref.clear();
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, WelcomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

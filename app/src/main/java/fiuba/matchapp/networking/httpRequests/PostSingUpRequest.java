@@ -129,9 +129,11 @@ public abstract class PostSingUpRequest {
                         User loggedUser = JsonParser.getUserFromJSONresponse(obj);
                         String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
 
+                        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
                         MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+                        MyApplication.getInstance().getPrefManager().storeUserPass(password);
 
-                        getAllInterestFromAppServer(loggedUser,appServerToken);
+                        getAllInterestFromAppServer();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -170,12 +172,28 @@ public abstract class PostSingUpRequest {
                         }
                     }else {
                         Log.d(TAG, "Network Response == null " );
+                        PostSingInRequest request = new PostSingInRequest(user.getEmail(), password) {
+                            @Override
+                            protected void onSignInFailedDefaultError() {
+                                onSignUpFailedUserConnectionError();
+                            }
+
+                            @Override
+                            protected void onSignInFailedUserConnectionError() {
+                                onSignUpFailedUserConnectionError();
+                            }
+
+                            @Override
+                            protected void onSignInSuccess() {
+                                getAllInterestFromAppServer();
+                            }
+                        };
+                        request.make();
                     }
 
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onSignUpFailedDefaultError();
                 return;
             }
         };
@@ -183,26 +201,12 @@ public abstract class PostSingUpRequest {
     }
 
 
-    private void onSuccessResponse(User loggedUser, String appServerToken, List<Interest> mapInterestsByCategory) throws JSONException {
-
-
-        MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-
-        MyApplication.getInstance().getPrefManager().storeUserPass(this.password);
-
-        onSignupSuccess(mapInterestsByCategory);
-    }
-
-    private void getAllInterestFromAppServer( final User loggedUser, final String appServerToken  ) {
+    private void getAllInterestFromAppServer() {
         GetInterestsRequest request = new GetInterestsRequest() {
             @Override
             protected void onGetInterestsSuccess(List<Interest> interests) {
 
-                try {
-                    onSuccessResponse(loggedUser, appServerToken, interests);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                onSignupSuccess(interests);
 
             }
 
