@@ -63,7 +63,7 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
 
     private void addInterestsSlides() {
         Intent intent = getIntent();
-        Map<String,List<Interest> > mapInterestsByCategory = (Map<String,List<Interest>>) intent.getSerializableExtra("hashInterests");
+        Map<String,List<Interest> > mapInterestsByCategory = (Map<String,List<Interest>>) intent.getExtras().get("hashInterests");
 
         for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
         {

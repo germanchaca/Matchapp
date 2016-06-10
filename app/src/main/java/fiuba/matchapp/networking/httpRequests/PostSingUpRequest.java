@@ -121,7 +121,18 @@ public abstract class PostSingUpRequest {
                 @Override
                 public void onResponse(String response) {
                     Log.d(TAG, "Success response: " + response);
-                    getAllInterestFromAppServer(response);
+
+                    JSONObject obj = null;
+                    try {
+                        obj = new JSONObject(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
+                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
+                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
+                    getAllInterestFromAppServer(loggedUser,appServerToken);
 
                 }
             };
@@ -166,19 +177,17 @@ public abstract class PostSingUpRequest {
     }
 
 
-    private void onSuccessResponse(String response, Map<String,List<Interest> > mapInterestsByCategory) throws JSONException {
-        JSONObject obj = new JSONObject(response);
-        User loggedUser = JsonParser.getUserFromJSONresponse(obj);
-        String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
+    private void onSuccessResponse(User loggedUser, String appServerToken, Map<String, List<Interest>> mapInterestsByCategory) throws JSONException {
+
 
         MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
-        MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
         MyApplication.getInstance().getPrefManager().storeUserPass(this.password);
 
         onSignupSuccess(mapInterestsByCategory);
     }
 
-    private void getAllInterestFromAppServer(final String response) {
+    private void getAllInterestFromAppServer( final User loggedUser, final String appServerToken  ) {
         GetInterestsRequest request = new GetInterestsRequest() {
             @Override
             protected void onGetInterestsSuccess(List<Interest> interests) {
@@ -196,7 +205,7 @@ public abstract class PostSingUpRequest {
                     }
                 }
                 try {
-                    onSuccessResponse(response, mapInterestsByCategory);
+                    onSuccessResponse(loggedUser, appServerToken, mapInterestsByCategory);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

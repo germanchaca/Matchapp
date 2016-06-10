@@ -15,9 +15,11 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 
 /**
