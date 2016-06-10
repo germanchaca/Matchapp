@@ -185,10 +185,12 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                     Uri imageUri = Uri.fromFile(new File(image.getFilePathOriginal()));
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap( getContext().getContentResolver(), imageUri);
+
                         String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
                         dataPasser.onProfilePhotoDataPass(encodedImage);
 
-                        //TODO ver de recortar la imagen para que todas mantengan la misma relación de aspecto
+                        sendPhotoToAppServer(encodedImage);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
