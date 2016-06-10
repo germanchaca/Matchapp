@@ -57,6 +57,7 @@ public abstract class PostSingUpRequest {
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         MyApplication.getInstance().addToRequestQueue(signUpRequest);
     }
 
@@ -125,14 +126,17 @@ public abstract class PostSingUpRequest {
                     JSONObject obj = null;
                     try {
                         obj = new JSONObject(response);
+                        User loggedUser = JsonParser.getUserFromJSONresponse(obj);
+                        String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
+
+                        MyApplication.getInstance().getPrefManager().clear();
+                        MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
+
+                        getAllInterestFromAppServer(loggedUser,appServerToken);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    User loggedUser = JsonParser.getUserFromJSONresponse(obj);
-                    String appServerToken = JsonParser.getAppServerTokenFromJSONresponse(obj);
-                    MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
-                    getAllInterestFromAppServer(loggedUser,appServerToken);
 
                 }
             };
@@ -144,6 +148,7 @@ public abstract class PostSingUpRequest {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error response: " );
 
                 try{
                     if (error.networkResponse!= null){
