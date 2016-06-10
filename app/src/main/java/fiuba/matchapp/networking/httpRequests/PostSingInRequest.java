@@ -118,6 +118,25 @@ public abstract class PostSingInRequest {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }else {
+                        Log.d(TAG, "Network Response == null " );
+                        PostSingInRequest request = new PostSingInRequest(email, password) {
+                            @Override
+                            protected void onSignInFailedDefaultError() {
+                                onSignInFailedUserConnectionError();
+                            }
+
+                            @Override
+                            protected void onSignInFailedUserConnectionError() {
+                                onSignInFailedUserConnectionError();
+                            }
+
+                            @Override
+                            protected void onSignInSuccess() {
+                                onSignInSuccess();
+                            }
+                        };
+                        request.make();
                     }
 
                 } catch (UnsupportedEncodingException e) {
