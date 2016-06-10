@@ -40,7 +40,7 @@ public abstract class PostSingUpRequest {
     private final User user;
     private final String password;
 
-    protected abstract void onSignupSuccess(Map<String, List<Interest>> mapInterestsByCategory);
+    protected abstract void onSignupSuccess(List<Interest> mapInterestsByCategory);
     protected abstract void onSignUpFailedUserInvalidError();
     protected abstract void onSignUpFailedUserConnectionError();
     protected abstract void onSignUpFailedDefaultError();
@@ -177,7 +177,7 @@ public abstract class PostSingUpRequest {
     }
 
 
-    private void onSuccessResponse(User loggedUser, String appServerToken, Map<String, List<Interest>> mapInterestsByCategory) throws JSONException {
+    private void onSuccessResponse(User loggedUser, String appServerToken, List<Interest> mapInterestsByCategory) throws JSONException {
 
 
         MyApplication.getInstance().getPrefManager().storeUser(loggedUser);
@@ -192,20 +192,8 @@ public abstract class PostSingUpRequest {
             @Override
             protected void onGetInterestsSuccess(List<Interest> interests) {
 
-                Map<String,List<Interest> > mapInterestsByCategory = new HashMap<>();
-                for (Interest i : interests) {
-                    if(!mapInterestsByCategory.containsKey(i.getCategory())){
-                        List<Interest> list = new ArrayList<>();
-                        list.add(i);
-                        mapInterestsByCategory.put(i.getCategory(),list);
-                    }else {
-                        List<Interest> list = mapInterestsByCategory.get(i.getCategory());
-                        list.add(i);
-                        mapInterestsByCategory.put(i.getCategory(),list);
-                    }
-                }
                 try {
-                    onSuccessResponse(loggedUser, appServerToken, mapInterestsByCategory);
+                    onSuccessResponse(loggedUser, appServerToken, interests);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -226,6 +214,8 @@ public abstract class PostSingUpRequest {
         };
         request.make();
     }
+
+
 
 
 }

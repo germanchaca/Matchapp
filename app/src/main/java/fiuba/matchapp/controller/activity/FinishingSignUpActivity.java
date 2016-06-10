@@ -30,6 +30,7 @@ import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
 import fiuba.matchapp.networking.httpRequests.PostAppServerTokenRequest;
 import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
+import fiuba.matchapp.utils.InterestsUtils;
 
 /**
  * Created by german on 4/26/2016.
@@ -58,12 +59,13 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
-        progressDialog.show();
     }
 
     private void addInterestsSlides() {
         Intent intent = getIntent();
-        Map<String,List<Interest> > mapInterestsByCategory = (Map<String,List<Interest>>) intent.getExtras().get("hashInterests");
+        List<Interest> interests = intent.getParcelableArrayListExtra("interests");
+
+        Map<String,List<Interest>> mapInterestsByCategory = InterestsUtils.getStringListMap(interests);
 
         for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
         {

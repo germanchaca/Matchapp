@@ -26,9 +26,7 @@ public class Interest implements Serializable,Parcelable {
     }
 
     protected Interest(Parcel in) {
-        this.interest.setId(in.readString());
-        this.interest.setCategory(in.readString());
-        this.interest.setDescription(in.readString());
+        this.interest =in.readParcelable(UserInterest.class.getClassLoader());
         selected = in.readByte() != 0;
     }
 
@@ -86,9 +84,7 @@ public class Interest implements Serializable,Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.interest.getId());
-        dest.writeString(this.interest.getCategory());
-        dest.writeString(this.interest.getDescription());
+        dest.writeParcelable(this.interest,flags);
         dest.writeByte(selected ? (byte) 1 : (byte) 0);
     }
 }

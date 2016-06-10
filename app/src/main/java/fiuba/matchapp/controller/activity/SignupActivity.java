@@ -3,6 +3,7 @@ package fiuba.matchapp.controller.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -157,8 +158,8 @@ public class SignupActivity extends GetLocationActivity {
 
         PostSingUpRequest postSignUpRequest = new PostSingUpRequest(user, userPassword) {
             @Override
-            protected void onSignupSuccess(Map<String, List<Interest>> mapInterestsByCategory) {
-                onRequestSignupSuccess(mapInterestsByCategory);
+            protected void onSignupSuccess(List<Interest> interests) {
+                onRequestSignupSuccess((ArrayList<Interest>) interests);
             }
 
             @Override
@@ -184,18 +185,20 @@ public class SignupActivity extends GetLocationActivity {
         postSignUpRequest.make();
     }
 
-    public void onRequestSignupSuccess(Map<String, List<Interest>> mapInterestsByCategory) {
+    public void onRequestSignupSuccess(ArrayList<Interest> interests) {
 
         progressDialog.dismiss();
         _signupButton.setEnabled(true);
 
-        launchFinishingSignUpActivity(mapInterestsByCategory);
+        launchFinishingSignUpActivity(interests);
     }
 
-    private void launchFinishingSignUpActivity(Map<String, List<Interest>> mapInterestsByCategory) {
+    private void launchFinishingSignUpActivity( ArrayList<Interest> interests) {
+
         Intent intent = new Intent(this, FinishingSignUpActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra("hashInterests", (Serializable) mapInterestsByCategory);
+        intent.putParcelableArrayListExtra("interests",interests);
+        //intent.putExtra("interests", (Serializable) interests);
         startActivity(intent);
         finish();
     }
