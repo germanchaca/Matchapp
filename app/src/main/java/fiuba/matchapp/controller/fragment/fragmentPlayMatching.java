@@ -2,12 +2,15 @@ package fiuba.matchapp.controller.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -23,8 +26,10 @@ public class fragmentPlayMatching extends Fragment {
     private SwipeDeckAdapter adapter;
     private ArrayList<String> testData;
 
-    LinearLayout btnSwipeLeft;
-    LinearLayout btnSwipeRight;
+    RelativeLayout btnSwipeLeft;
+    RelativeLayout btnSwipeRight;
+    private FrameLayout container;
+    private FloatingActionButton buttonInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,8 @@ public class fragmentPlayMatching extends Fragment {
     private void init(View view) {
         rippleBackground1 = (RippleAnimation) view.findViewById(R.id.content);
         rippleBackground1.setVisibility(View.VISIBLE);
+        container = (FrameLayout) view.findViewById(R.id.container);
+        buttonInfo = (FloatingActionButton) view.findViewById(R.id.fb_info);
 
         cardStack = (SwipeDeck) view.findViewById(R.id.swipe_deck);
         cardStack.setHardwareAccelerationEnabled(true);
@@ -101,7 +108,7 @@ public class fragmentPlayMatching extends Fragment {
         cardStack.setLeftImage(R.id.left_image);
         cardStack.setRightImage(R.id.right_image);
 
-        btnSwipeLeft = (LinearLayout) view.findViewById(R.id.button);
+        btnSwipeLeft = (RelativeLayout) view.findViewById(R.id.button);
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +117,7 @@ public class fragmentPlayMatching extends Fragment {
             }
         });
 
-        btnSwipeRight= (LinearLayout) view.findViewById(R.id.button2);
+        btnSwipeRight= (RelativeLayout) view.findViewById(R.id.button2);
 
         btnSwipeRight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +134,7 @@ public class fragmentPlayMatching extends Fragment {
     private void startAnimation() {
         //if it's not running
         if (!rippleBackground1.isRippleAnimationRunning()) {
+            container.setVisibility(View.GONE);
             rippleBackground1.setVisibility(View.VISIBLE);
             btnSwipeLeft.setVisibility(View.GONE);
             btnSwipeRight.setVisibility(View.GONE);
@@ -140,6 +148,7 @@ public class fragmentPlayMatching extends Fragment {
             rippleBackground1.setVisibility(View.GONE);
             btnSwipeLeft.setVisibility(View.VISIBLE);
             btnSwipeRight.setVisibility(View.VISIBLE);
+            container.setVisibility(View.VISIBLE);
         }
 
     }

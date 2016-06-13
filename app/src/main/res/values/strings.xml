@@ -123,8 +123,8 @@
 
     <string name="internet_problem">Hay problemas de conexión</string>
 
-    <string name="swipe_like">Me gusta</string>
-    <string name="swipe_dislike">Descartar</string>
+    <string name="swipe_like">Sí</string>
+    <string name="swipe_dislike">No</string>
 
     <string name="signing_out">Cerrando sesión...</string>
 </resources>
