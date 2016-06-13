@@ -15,7 +15,6 @@ public class LaunchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch);
 
         if (MyApplication.getInstance().getPrefManager().getUser() == null) {
             launchLoginActivity();

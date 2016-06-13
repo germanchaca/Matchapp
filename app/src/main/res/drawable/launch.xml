@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:drawable="@color/primary"/>
+    <item
+        android:drawable="@drawable/squares_reapeating"
+        />
 
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ic_launchicon"/>
+            android:src="@drawable/ic_launchicon"
+            />
     </item>
 
 

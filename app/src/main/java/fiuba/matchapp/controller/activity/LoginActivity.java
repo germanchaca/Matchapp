@@ -90,11 +90,12 @@ public class LoginActivity extends AppCompatActivity {
         request.make();
 
     }
-      @Override
+    @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        super.onBackPressed();
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
     }
-
     private void launchMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
