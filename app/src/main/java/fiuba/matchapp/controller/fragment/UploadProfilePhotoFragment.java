@@ -114,7 +114,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
 
         progressDialog = new LockedProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
 
-        progressDialog.setMessage(getResources().getString(R.string.internet_problem));
+        progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
 
         return view;
     }
@@ -311,7 +311,6 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             public void onClick(DialogInterface dialog, int which) {
                 userImage.setImageDrawable(getResources().getDrawable(R.drawable.empty_profile_phd_350x350));//setea de nuevo el default
                 dialog.dismiss();
-
             }
         });
         AlertDialog dialog = alert.create();

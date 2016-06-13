@@ -133,7 +133,7 @@ public abstract class PostSingInRequest {
 
                             @Override
                             protected void onSignInSuccess() {
-                                onSignInSuccess();
+                                retry();
                             }
                         };
                         request.make();
@@ -142,14 +142,15 @@ public abstract class PostSingInRequest {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onSignInFailedDefaultError();
                 return;
             }
         };
         return errorListener;
     }
 
-
+     private void retry (){
+        onSignInSuccess();
+     }
 
 
     private void onSuccessResponse(String response) throws JSONException {

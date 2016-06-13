@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import fiuba.matchapp.controller.fragment.DatePickerFragment;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
 import fiuba.matchapp.utils.AdressUtils;
+import fiuba.matchapp.utils.ImageBase64;
 
 public class EditableProfileActivity extends GetLocationActivity implements ImageChooserListener {
 
@@ -82,6 +84,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private RelativeLayout layoutChangePassword;
     private RelativeLayout layoutDeleteAccount;
     private ProgressDialog progressDialog;
+
 
 
     @Override
@@ -130,6 +133,8 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         icEditMail = (ImageView) findViewById(R.id.icEditMail);
         layoutChangePassword = (RelativeLayout) findViewById(R.id.ChangePassword);
         layoutDeleteAccount = (RelativeLayout) findViewById(R.id.DeleteAccount);
+
+        this.userImage.setImageBitmap(ImageBase64.Base64ToBitmap(this.user.getPhotoProfile()));
 
         initBtnCommitChanges();
         initEditName(user);
