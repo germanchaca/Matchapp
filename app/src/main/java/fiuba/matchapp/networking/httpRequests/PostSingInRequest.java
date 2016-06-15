@@ -106,21 +106,19 @@ public abstract class PostSingInRequest {
                 try{
                     if (error.networkResponse!= null){
                         String response = new String(error.networkResponse.data, "utf-8");
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            String message = obj.getString("Mensaje");
-                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
+                        //JSONObject obj = new JSONObject(response);
+                        //String message = obj.getString("Mensaje");
+                        Log.e(TAG, "Volley error: "  + ", code: " + error.networkResponse.statusCode);
 
-                            if  (error instanceof NoConnectionError) {
-                                onSignInFailedUserConnectionError();
-                                return;
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        if  (error instanceof NoConnectionError) {
+                            onSignInFailedUserConnectionError();
+                            return;
+                        }else {
+                            onSignInFailedUserConnectionError();
                         }
                     }else {
                         Log.d(TAG, "Network Response == null " );
-                        PostSingInRequest request = new PostSingInRequest(email, password) {
+                        /*PostSingInRequest request = new PostSingInRequest(email, password) {
                             @Override
                             protected void onSignInFailedDefaultError() {
                                 onSignInFailedUserConnectionError();
@@ -135,8 +133,8 @@ public abstract class PostSingInRequest {
                             protected void onSignInSuccess() {
                                 retry();
                             }
-                        };
-                        request.make();
+                        };*/
+                        make();
                     }
 
                 } catch (UnsupportedEncodingException e) {
@@ -148,9 +146,9 @@ public abstract class PostSingInRequest {
         return errorListener;
     }
 
-     private void retry (){
+     /*private void retry (){
         onSignInSuccess();
-     }
+     }*/
 
 
     private void onSuccessResponse(String response) throws JSONException {

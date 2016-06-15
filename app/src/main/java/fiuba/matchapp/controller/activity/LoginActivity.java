@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText _userNameText;
     private EditText _passwordText;
+    private LockedProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        final ProgressDialog progressDialog = new LockedProgressDialog(LoginActivity.this,
+        progressDialog = new LockedProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.running_auth));
@@ -71,19 +72,17 @@ public class LoginActivity extends AppCompatActivity {
         PostSingInRequest request = new PostSingInRequest(email, MD5.getHashedPassword(password)) {
             @Override
             protected void onSignInFailedDefaultError() {
-                progressDialog.dismiss();
+
                 onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
             }
 
             @Override
             protected void onSignInFailedUserConnectionError() {
-                progressDialog.dismiss();
                 onLoginFailed(getResources().getString(R.string.internet_problem));
             }
 
             @Override
             protected void onSignInSuccess() {
-                progressDialog.dismiss();
                 launchMainActivity();
             }
         };
@@ -103,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed(String errorMessage) {
-
+        progressDialog.dismiss();
         Toast.makeText(getBaseContext(), errorMessage , Toast.LENGTH_LONG).show();
     }
 

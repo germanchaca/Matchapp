@@ -58,11 +58,13 @@ public class WelcomeActivity extends FacebookLoginActivity {
     private void launchSignUpActivity() {
         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void launchLoginActivity(){
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
