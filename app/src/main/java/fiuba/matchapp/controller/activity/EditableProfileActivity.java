@@ -53,6 +53,7 @@ import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
+import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 import fiuba.matchapp.utils.AdressUtils;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.utils.InterestsUtils;
@@ -94,17 +95,16 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private RecyclerView interestsMenuContainer;
     private ArrayList<InterestCategory> adapterUserInterestsList;
     private InterestsKeysArrayAdapter adapter;
+    private RelativeLayout layoutEditAge;
+    private EditText txtAge;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_editable_profile);
-
         user = MyApplication.getInstance().getPrefManager().getUser();
-
         initViews(user);
 
     }
@@ -120,20 +120,9 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     }
 
-    private void initEditPhotoIcons() {
-        editImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
-
-        fbEditImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        onServerConnectionFailedBackPressed();
     }
 
     private void initViews(final User user) {
@@ -146,14 +135,71 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         txtName = (EditText) findViewById(R.id.txtName);
         layoutEditAlias = (RelativeLayout) findViewById(R.id.layoutEditAlias);
         txtAlias = (EditText) findViewById(R.id.txtAlias);
+        layoutEditAge = (RelativeLayout) findViewById(R.id.layoutEditAge);
+        txtAge = (EditText) findViewById(R.id.txtAge);
         layoutRefreshLocation = (RelativeLayout) findViewById(R.id.layoutRefreshAddress);
         txtEditAddress = (TextView) findViewById(R.id.txtLocation);
         layoutEditMail = (RelativeLayout) findViewById(R.id.layoutEditMail);
         txtEmail = (TextView) findViewById(R.id.txtEditMail);
         layoutDeleteAccount = (RelativeLayout) findViewById(R.id.DeleteAccount);
 
+        initTootlBar();
         initPhotoProfile();
+        initEditName(user);
+        initEditAge(user);
+        initEditAlias(user);
+        initEditAddress(user);
+        initEditMail(user);
+        initRecyclerViewInterests();
 
+        initEditPhotoIcons();
+        initDeleteAccount();
+        initBtnCommitChanges();
+    }
+
+    private void initEditAge(User user) {
+
+        txtAge.setText(Integer.toString(user.getAge()));
+        txtAge.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validateAge();
+                } else {
+                    showBtnCommitChanges();
+                }
+            }
+        });
+        layoutEditName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtName.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(txtName, InputMethod.SHOW_FORCED);
+                showBtnCommitChanges();
+            }
+        });
+    }
+
+
+
+    private void initEditPhotoIcons() {
+        editImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+        fbEditImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+    }
+
+
+    private void initRecyclerViewInterests() {
         interestsMenuContainer = (RecyclerView) findViewById(R.id.nnterestsMenuContainer);
         adapterUserInterestsList = new ArrayList<>();
 
@@ -183,26 +229,9 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
             }
         }));
-
-        initBtnCommitChanges();
-        initEditName(user);
-        initEditAlias(user);
-        initEditAddress(user);
-        initEditMail(user);
-        initTootlBar();
-        initEditPhotoIcons();
-        initDeleteAccount();
     }
 
-    private void fillUserCategoryInterestsList() {
-        Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(this.user.getInterests());
-        for (Map.Entry<String, List<UserInterest>> entry : interestsMap.entrySet())
-        {
-            Log.d(TAG, "UserInterestCategory: " + entry.getKey());
-            InterestCategory interestCategory = new InterestCategory(entry.getKey(), entry.getValue().size());
-            adapterUserInterestsList.add(interestCategory);
-        }
-    }
+
 
     private void initPhotoProfile() {
         if(!TextUtils.isEmpty(this.user.getPhotoProfile())){
@@ -255,17 +284,17 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         builder.setMessage(getResources().getString(R.string.edit_profile_alert_dialog_connection_failed));
         builder.setPositiveButton(getResources().getString(R.string.alert_dialog_continue_editing_discard), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                onBackPressed();
-            }
+                back();            }
         });
         builder.setNegativeButton(getResources().getString(R.string.alert_dialog_continue_editing_cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                // do nothing
             }
         });
         builder.show();
     }
-
+    public void back(){
+        super.onBackPressed();
+    }
     private void showProgressDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
@@ -387,6 +416,12 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             txtName.setText(user.getName());
         }
     }
+    private void validateAge() {
+        String age = txtAge.getText().toString();
+        if (age.isEmpty()) {
+            txtAge.setText(user.getAge());
+        }
+    }
 
     /*public void validateMail() {
         String mail = txtEmail.getText().toString();
@@ -430,7 +465,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             e.printStackTrace();
         }
         stopRefreshingLocationLoading();
-        //TODO MANDAR AL SERVIDOR;
     }
 
     @Override
@@ -457,40 +491,89 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                commitChanges();
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void commitChanges() {
-        if (validate()) {
-            //TODO mandar datos al server
-            //TODO Cargando
-            onBackPressed();
-            // si no hay conexion onServerConnectionFailedBackPressed();
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getResources().getString(R.string.alert_dialog_continue_editing));
-            builder.setPositiveButton(getResources().getString(R.string.alert_dialog_continue_editing_discard), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    onBackPressed();
+        validate();
+        boolean makeRequest = false;
+        showProgressDialog();
+        final String name = txtName.getText().toString();
+        final String alias = txtAlias.getText().toString();
+        final int age = Integer.parseInt(txtAge.getText().toString());
+
+        PutUpdateUserData request = new PutUpdateUserData(user) {
+            @Override
+            protected void onUpdateDataSuccess() {
+
+                user.setName(name);
+                user.setAge(age);
+                user.setAlias(alias);
+
+                if (!((latitude == 0) && (longitude == 0)) && (( (latitude != user.getLatitude()) || (longitude!= user.getLongitude()) ))) {
+                    user.setLatitude(latitude);
+                    user.setLongitude(longitude);
                 }
-            });
-            builder.setNegativeButton(getResources().getString(R.string.alert_dialog_continue_editing_cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // do nothing
-                }
-            });
-            builder.show();
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                hideProgressDialog();
+                successCommitChanges();
+
+            }
+
+            @Override
+            protected void onAppServerDefaultError() {
+                hideProgressDialog();
+                onServerConnectionFailedBackPressed();
+            }
+
+            @Override
+            protected void onAppServerConnectionError() {
+                hideProgressDialog();
+                onServerConnectionFailedBackPressed();
+            }
+
+            @Override
+            protected void logout() {
+                hideProgressDialog();
+                MyApplication.getInstance().logout();
+            }
+        };
+
+        if(!TextUtils.equals(user.getName(),name)){
+            request.changeName(name);
+            makeRequest=true;
         }
+        if(!TextUtils.equals(user.getAlias(),alias)){
+            request.changeAlias(alias);
+            makeRequest=true;
+        }
+        if(user.getAge() == age){
+            request.changeAge(age);
+            makeRequest=true;
+        }
+        if (!((latitude == 0) && (longitude == 0)) && (( (latitude != user.getLatitude()) || (longitude!= user.getLongitude()) ))){
+            request.changeLocation(latitude,longitude);
+            makeRequest=true;
+        }
+        if(makeRequest){
+            request.make();
+        }else{
+            successCommitChanges();
+        }
+    }
 
-
+    private void successCommitChanges() {
+        hideProgressDialog();
+        finish();
     }
 
     private boolean validate() {
         validateName();
         validateAlias();
+        validateAge();
         //validateMail();
         return (!isUploadingImage && !hasMailError);
     }
@@ -643,6 +726,16 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             }
         });
         builder.show();
+    }
+
+    private void fillUserCategoryInterestsList() {
+        Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(this.user.getInterests());
+        for (Map.Entry<String, List<UserInterest>> entry : interestsMap.entrySet())
+        {
+            Log.d(TAG, "UserInterestCategory: " + entry.getKey());
+            InterestCategory interestCategory = new InterestCategory(entry.getKey(), entry.getValue().size());
+            adapterUserInterestsList.add(interestCategory);
+        }
     }
 
 /*    private void showChangePasswordDialog() {

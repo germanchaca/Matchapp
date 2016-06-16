@@ -98,7 +98,7 @@
     <string name="edit_profile_choose_picture">Elegir de galería</string>
     <string name="edit_profile_cancel">Cancelar</string>
     <string name="edit_profile_action_select_picture">Seleccionar foto</string>
-    <string name="edit_profile_alert_dialog_connection_failed">Hay problemas de conexión, desea descartar los cambios?</string>
+    <string name="edit_profile_alert_dialog_connection_failed">Desea descartar los cambios?</string>
 
     <string name="edit_profile_title_select_picture">Cambiar foto de perfil</string>
     <string name="error_location_refresh_failed">No se puede acceder a su ubicación actual, verifique tener habilitada la ubicación de su dispositivo</string>
