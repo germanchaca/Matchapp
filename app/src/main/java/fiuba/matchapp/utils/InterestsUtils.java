@@ -45,4 +45,13 @@ public class InterestsUtils {   @NonNull
         }
         return mapInterestsByCategory;
     }
+
+    public static boolean interestsIsEmpty(List<Interest> data){
+        if(data == null) return true;
+        for(Interest interest : data){
+            if (interest.isSelected()) return false;
+        }
+        return true;
+    }
+
 }

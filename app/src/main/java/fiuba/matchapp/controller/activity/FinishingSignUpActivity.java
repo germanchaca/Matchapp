@@ -97,7 +97,7 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         InterestsRecyclerViewFragment fragment = (InterestsRecyclerViewFragment) slides.get(index-1);
 
         if (index < slides.size()){ //fragments de intereses
-            if( interestsIsEmpty(fragment.mInterestsList) ) {
+            if( InterestsUtils.interestsIsEmpty(fragment.mInterestsList) ) {
                 showInterestError(getResources().getString(R.string.intro_error_empty_interest));
             }else{
                 Log.d(TAG, "Siguiente categoria");
@@ -198,13 +198,6 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
     public void onSlideChanged() {
     }
 
-    public boolean interestsIsEmpty(List<Interest> data){
-        if(data == null) return true;
-        for(Interest interest : data){
-            if (interest.isSelected()) return false;
-        }
-        return true;
-    }
 
 
     @Override

@@ -4,16 +4,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,10 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
 import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
+import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 import fiuba.matchapp.utils.InterestsUtils;
 import fiuba.matchapp.view.LockedProgressDialog;
 
@@ -35,6 +36,10 @@ public class InterestEditActivity extends AppCompatActivity {
     private static final String TAG = "InterestEditActivity";
     private LockedProgressDialog progressDialog;
     private FloatingActionButton btnConfirmChanges;
+    private InterestsRecyclerViewFragment fragment;
+    private FrameLayout partenLayout;
+    private String category;
+    private Map<String, List<UserInterest>> mapUserInterestsByCategory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +50,7 @@ public class InterestEditActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent.hasExtra("category")){
-            final String category = intent.getStringExtra("category");
+            category = intent.getStringExtra("category");
             Log.d(TAG,"Lanza fragment:" + category);
 
             GetInterestsRequest request = new GetInterestsRequest() {
@@ -58,13 +63,13 @@ public class InterestEditActivity extends AppCompatActivity {
                     {
                         if(TextUtils.equals(entry.getKey(), category)){
                             //intereses ya seleccionados por el usuario
-                            Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(MyApplication.getInstance().getPrefManager().getUser().getInterests());
-                            for (Map.Entry<String, List<UserInterest>> entryUser : interestsMap.entrySet())
+                            mapUserInterestsByCategory = InterestsUtils.getStringUserInterestsListMap(MyApplication.getInstance().getPrefManager().getUser().getInterests());
+                            for (Map.Entry<String, List<UserInterest>> entryUser : mapUserInterestsByCategory.entrySet())
                             {
                                 progressDialog.dismiss();
                                 if (TextUtils.equals(entryUser.getKey(),category)){
                                     //tengo en entryUser.getValue() la lista de intereses ya seleccionados por el usuario
-                                    Fragment fragment = InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue(),entryUser.getValue());
+                                    fragment = InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue(),entryUser.getValue());
 
                                     android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
                                     android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
@@ -118,6 +123,7 @@ public class InterestEditActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        partenLayout = (FrameLayout) findViewById(R.id.contentFragment);
         btnConfirmChanges = (FloatingActionButton) findViewById(R.id.confirmChanges);
         btnConfirmChanges.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,15 +131,78 @@ public class InterestEditActivity extends AppCompatActivity {
                 sendChangesToAppServer();
             }
         });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.edit_interesets_profile_toolbar_label));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    private void sendChangesToAppServer() {
+        progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
+
+        if( InterestsUtils.interestsIsEmpty(fragment.mInterestsList) ) {
+            showSnackBarError(getResources().getString(R.string.intro_error_empty_interest));
+        }else{
+            sendInterestsToAppServer(fragment.mInterestsList);
+        }
+    }
+
+    private void sendInterestsToAppServer(List<Interest> resultInterestsInThisCategory) {
+
+        final List<UserInterest> allUserInterests = new ArrayList<>();
+
+        for (Map.Entry<String, List<UserInterest>> entryUser : mapUserInterestsByCategory.entrySet())
+        {
+            if(!TextUtils.equals(entryUser.getKey(),category)){
+                allUserInterests.addAll(entryUser.getValue());
+            }else {
+                for(Interest interest:resultInterestsInThisCategory){
+                    if(interest.isSelected()){
+                        allUserInterests.add(interest.getUserInterest());
+                    }
+                }
+            }
+        }
+
+        progressDialog.show();
+        PutUpdateUserData request = new PutUpdateUserData(MyApplication.getInstance().getPrefManager().getUser()) {
+            @Override
+            protected void onUpdateDataSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setInterests(allUserInterests);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+                finish();
+            }
+
+            @Override
+            protected void onAppServerDefaultError() {
+                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                progressDialog.dismiss();
+            }
+
+            @Override
+            protected void onAppServerConnectionError() {
+                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                progressDialog.dismiss();
+            }
+
+            @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+        };
+        request.changeInterests(allUserInterests);
+        request.make();
 
     }
 
-    private void sendChangesToAppServer() {
-        onBackPressed();
+    private void showSnackBarError(String message) {
+        Snackbar.make(partenLayout,message , Snackbar.LENGTH_LONG).show();
+        progressDialog.dismiss();
     }
 
     @Override
