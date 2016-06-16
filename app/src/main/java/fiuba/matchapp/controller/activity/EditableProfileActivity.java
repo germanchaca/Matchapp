@@ -2,13 +2,10 @@ package fiuba.matchapp.controller.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,24 +13,20 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,19 +46,13 @@ import java.util.List;
 import java.util.Map;
 
 import fiuba.matchapp.R;
-import fiuba.matchapp.adapter.ChatRoomsAdapter;
 import fiuba.matchapp.adapter.InterestsKeysArrayAdapter;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
-import fiuba.matchapp.controller.fragment.DatePickerFragment;
-import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
-import fiuba.matchapp.model.ChatRoom;
-import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
-import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
 import fiuba.matchapp.utils.AdressUtils;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.utils.InterestsUtils;
@@ -105,6 +92,8 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private RelativeLayout layoutDeleteAccount;
     private ProgressDialog progressDialog;
     private RecyclerView interestsMenuContainer;
+    private ArrayList<InterestCategory> adapterUserInterestsList;
+    private InterestsKeysArrayAdapter adapter;
 
 
     @Override
@@ -117,6 +106,17 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         user = MyApplication.getInstance().getPrefManager().getUser();
 
         initViews(user);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        adapterUserInterestsList.clear();
+        user = MyApplication.getInstance().getPrefManager().getUser();
+        fillUserCategoryInterestsList();
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -155,17 +155,10 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         initPhotoProfile();
 
         interestsMenuContainer = (RecyclerView) findViewById(R.id.nnterestsMenuContainer);
+        adapterUserInterestsList = new ArrayList<>();
 
-        Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(this.user.getInterests());
-
-        final ArrayList<InterestCategory> list = new ArrayList<>();
-        for (Map.Entry<String, List<UserInterest>> entry : interestsMap.entrySet())
-        {
-            Log.d(TAG, "UserInterestCategory: " + entry.getKey());
-            InterestCategory interestCategory = new InterestCategory(entry.getKey(), entry.getValue().size());
-            list.add(interestCategory);
-        }
-        final InterestsKeysArrayAdapter adapter = new InterestsKeysArrayAdapter(this,list);
+        fillUserCategoryInterestsList();
+        adapter = new InterestsKeysArrayAdapter(this, adapterUserInterestsList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         interestsMenuContainer.setLayoutManager(layoutManager);
@@ -177,7 +170,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             @Override
             public void onClick(View view, int position) {
 
-                InterestCategory selectedInterestCategory = list.get(position);
+                InterestCategory selectedInterestCategory = adapterUserInterestsList.get(position);
                 Intent intent = new Intent(EditableProfileActivity.this, InterestEditActivity.class);
                 String categoryName = selectedInterestCategory.getName();
                 intent.putExtra("category", categoryName);
@@ -199,6 +192,16 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         initTootlBar();
         initEditPhotoIcons();
         initDeleteAccount();
+    }
+
+    private void fillUserCategoryInterestsList() {
+        Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(this.user.getInterests());
+        for (Map.Entry<String, List<UserInterest>> entry : interestsMap.entrySet())
+        {
+            Log.d(TAG, "UserInterestCategory: " + entry.getKey());
+            InterestCategory interestCategory = new InterestCategory(entry.getKey(), entry.getValue().size());
+            adapterUserInterestsList.add(interestCategory);
+        }
     }
 
     private void initPhotoProfile() {
