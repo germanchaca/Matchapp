@@ -116,9 +116,17 @@ public abstract class SignOutRequest {
             protected void onRefreshAppServerTokenFailedUserConnectionError() {
                 onDeleteTokenFailedUserConnectionError();
             }
+
+            @Override
+            protected void onErrorNoAuth() {
+                logout();
+            }
         };
         request.make();
     }
+
+    protected abstract void logout();
+
     private void retry() {
         this.make();
     }

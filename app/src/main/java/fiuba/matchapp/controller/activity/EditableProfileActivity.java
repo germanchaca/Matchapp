@@ -2,6 +2,8 @@ package fiuba.matchapp.controller.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,17 +16,24 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,15 +48,28 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.adapter.ChatRoomsAdapter;
+import fiuba.matchapp.adapter.InterestsKeysArrayAdapter;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
+import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
+import fiuba.matchapp.model.ChatRoom;
+import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
+import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
 import fiuba.matchapp.utils.AdressUtils;
 import fiuba.matchapp.utils.ImageBase64;
+import fiuba.matchapp.utils.InterestsUtils;
+import fiuba.matchapp.view.SimpleDividerItemDecoration;
 
 public class EditableProfileActivity extends GetLocationActivity implements ImageChooserListener {
 
@@ -69,22 +91,20 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private User user;
     private RelativeLayout layoutEditAlias;
     private EditText txtAlias;
-    private RelativeLayout layoutEditDate;
-    private TextView txtDate;
+
     private RelativeLayout layoutRefreshLocation;
     private TextView txtEditAddress;
     private ImageView refreshIcon;
     private RelativeLayout layoutEditMail;
-    private EditText txtEmail;
+    private TextView txtEmail;
     private boolean hasMailError = false;
     private boolean isUploadingImage = false;
     private FloatingActionButton btnCommitChanges;
     private LinearLayout parentLinearLayout;
-    private ImageView icEditMail;
-    private RelativeLayout layoutChangePassword;
+
     private RelativeLayout layoutDeleteAccount;
     private ProgressDialog progressDialog;
-
+    private RecyclerView interestsMenuContainer;
 
 
     @Override
@@ -93,7 +113,9 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_editable_profile);
+
         user = MyApplication.getInstance().getPrefManager().getUser();
+
         initViews(user);
 
     }
@@ -114,38 +136,75 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         });
     }
 
-    private void initViews(User user) {
+    private void initViews(final User user) {
         parentLinearLayout = (LinearLayout) findViewById(R.id.parentLayout);
         btnCommitChanges = (FloatingActionButton) findViewById(R.id.confirmChanges);
         editImage = (FrameLayout) findViewById(R.id.edit_image);
         userImage = (ImageView) findViewById(R.id.user_image);
         fbEditImage = (FloatingActionButton) findViewById(R.id.fb_edit_image);
-        txtDate = (TextView) findViewById(R.id.textViewBirthDate);
         layoutEditName = (RelativeLayout) findViewById(R.id.layoutEditName);
         txtName = (EditText) findViewById(R.id.txtName);
         layoutEditAlias = (RelativeLayout) findViewById(R.id.layoutEditAlias);
         txtAlias = (EditText) findViewById(R.id.txtAlias);
-        layoutEditDate = (RelativeLayout) findViewById(R.id.layoutEditDate);
         layoutRefreshLocation = (RelativeLayout) findViewById(R.id.layoutRefreshAddress);
         txtEditAddress = (TextView) findViewById(R.id.txtLocation);
         layoutEditMail = (RelativeLayout) findViewById(R.id.layoutEditMail);
-        txtEmail = (EditText) findViewById(R.id.txtEditMail);
-        icEditMail = (ImageView) findViewById(R.id.icEditMail);
-        layoutChangePassword = (RelativeLayout) findViewById(R.id.ChangePassword);
+        txtEmail = (TextView) findViewById(R.id.txtEditMail);
         layoutDeleteAccount = (RelativeLayout) findViewById(R.id.DeleteAccount);
 
-        this.userImage.setImageBitmap(ImageBase64.Base64ToBitmap(this.user.getPhotoProfile()));
+        initPhotoProfile();
+
+        interestsMenuContainer = (RecyclerView) findViewById(R.id.nnterestsMenuContainer);
+
+        Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(this.user.getInterests());
+
+        final ArrayList<InterestCategory> list = new ArrayList<>();
+        for (Map.Entry<String, List<UserInterest>> entry : interestsMap.entrySet())
+        {
+            Log.d(TAG, "UserInterestCategory: " + entry.getKey());
+            InterestCategory interestCategory = new InterestCategory(entry.getKey(), entry.getValue().size());
+            list.add(interestCategory);
+        }
+        final InterestsKeysArrayAdapter adapter = new InterestsKeysArrayAdapter(this,list);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        interestsMenuContainer.setLayoutManager(layoutManager);
+        interestsMenuContainer.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
+        interestsMenuContainer.setItemAnimator(new DefaultItemAnimator());
+        interestsMenuContainer.setAdapter(adapter);
+
+        interestsMenuContainer.addOnItemTouchListener(new InterestsKeysArrayAdapter.RecyclerTouchListener(getApplicationContext(), interestsMenuContainer, new InterestsKeysArrayAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                InterestCategory selectedInterestCategory = list.get(position);
+                Intent intent = new Intent(EditableProfileActivity.this, InterestEditActivity.class);
+                String categoryName = selectedInterestCategory.getName();
+                intent.putExtra("category", categoryName);
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
         initBtnCommitChanges();
         initEditName(user);
         initEditAlias(user);
-        initEditDate(user);
         initEditAddress(user);
         initEditMail(user);
         initTootlBar();
         initEditPhotoIcons();
-        initChangePassword();
         initDeleteAccount();
+    }
+
+    private void initPhotoProfile() {
+        if(!TextUtils.isEmpty(this.user.getPhotoProfile())){
+            this.userImage.setImageBitmap(ImageBase64.Base64ToBitmap(this.user.getPhotoProfile()));
+        }
     }
 
     private void initDeleteAccount() {
@@ -174,62 +233,19 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                         Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
                     }
 
+                    @Override
+                    protected void logOut() {
+                        hideProgressDialog();
+                        MyApplication.getInstance().logout();
+                    }
+
                 };
                 request.make();
             }
         });
     }
 
-    private void initChangePassword() {
-        layoutChangePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                parentLinearLayout.requestFocus();
-                showChangePasswordDialog();
-            }
-        });
-    }
 
-    private void showChangePasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.edit_profile_dialog_change_password_title));
-        builder.setIcon(R.drawable.ic_https_24dp);
-
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        input.setHint(R.string.edit_profile_dialog_change_password_hint);
-
-        builder.setView(input);
-
-        builder.setPositiveButton(getResources().getString(R.string.edit_profile_dialog_change_password_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newPassword = input.getText().toString();
-                //TODO: enviar esto al servidor
-                showProgressDialog();
-
-                //esto en realidad es cuando responde el server
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                //mandar data de volley
-                                // onLoginFailed();
-                                hideProgressDialog();
-                                //mostrarError si server devuelve error
-                            }
-                        }, 1000);
-            }
-        });
-        builder.setNegativeButton(getResources().getString(R.string.edit_profile_dialog_change_password_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
 
     private void onServerConnectionFailedBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -260,25 +276,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     private void initEditMail(User user) {
         txtEmail.setText(user.getEmail());
-        txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    validateMail();
-                } else {
-                    showBtnCommitChanges();
-                }
-            }
-        });
-        layoutEditMail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtEmail.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(txtEmail, InputMethod.SHOW_FORCED);
-                showBtnCommitChanges();
-            }
-        });
     }
 
     private void initEditAddress(User user) {
@@ -352,7 +349,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         });
     }
 
-    private void initEditDate(User user) {
+   /* private void initEditDate(User user) {
         txtDate.setText(user.getBirthday());
         layoutEditDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,7 +359,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 showBtnCommitChanges();
             }
         });
-    }
+    }*/
 
     private void initTootlBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -388,7 +385,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         }
     }
 
-    public void validateMail() {
+    /*public void validateMail() {
         String mail = txtEmail.getText().toString();
 
         if (mail.isEmpty()) {
@@ -406,7 +403,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 this.hasMailError = false;
             }
         }
-    }
+    }*/
 
 
     public void stopRefreshingLocationLoading() {
@@ -447,11 +444,11 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         Toast.makeText(getBaseContext(), getResources().getString(R.string.error_location_refresh_failed), Toast.LENGTH_LONG).show();
     }
 
-    public void showDatePickerDialog(View v) {
+    /*public void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.setEditText(txtDate);
         newFragment.show(getFragmentManager(), "datePicker");
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -491,7 +488,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
     private boolean validate() {
         validateName();
         validateAlias();
-        validateMail();
+        //validateMail();
         return (!isUploadingImage && !hasMailError);
     }
 
@@ -644,4 +641,46 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         });
         builder.show();
     }
+
+/*    private void showChangePasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.edit_profile_dialog_change_password_title));
+        builder.setIcon(R.drawable.ic_https_24dp);
+
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input.setHint(R.string.edit_profile_dialog_change_password_hint);
+
+        builder.setView(input);
+
+        builder.setPositiveButton(getResources().getString(R.string.edit_profile_dialog_change_password_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newPassword = input.getText().toString();
+                //TODO: enviar esto al servidor
+                showProgressDialog();
+
+                //esto en realidad es cuando responde el server
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                //mandar data de volley
+                                // onLoginFailed();
+                                hideProgressDialog();
+                                //mostrarError si server devuelve error
+                            }
+                        }, 1000);
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.edit_profile_dialog_change_password_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }*/
 }
+

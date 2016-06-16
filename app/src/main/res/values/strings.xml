@@ -83,6 +83,9 @@
     <!--Activity editable profile -->
     <string name="edit_profile_birthdate">Fecha de nacimiento</string>
     <string name="edit_profile_alias">Apodo</string>
+    <string name="edit_profile_age">Edad</string>
+    <string name="edit_profile_interests">Mis intereses</string>
+    <string name="edit_profile_common_interests">Intereses en común</string>
     <string name="edit_profile_dialog_change_password_title">Cambio de contrase\u0148a</string>
     <string name="edit_profile_dialog_change_password_hint">Nueva contrase\u0148a</string>
     <string name="edit_profile_dialog_change_password_ok">Confirmar</string>
@@ -106,6 +109,7 @@
     <string name="intro_error_empty_interest">Debe seleccionar al menos una opción</string>
     <string name="intro_error_empty_photo">Debe elegir una foto de perfil</string>
     <string name="edit_profile_toolbar_label">Editar perfil</string>
+    <string name="edit_interesets_profile_toolbar_label">Editar mis intereses</string>
 
     <string name="upload_photo_default_error">No se pudo complear la operación, intente nuevamente</string>
 

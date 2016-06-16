@@ -46,6 +46,8 @@
   <color name="deckButtonsColor">#ff21272b</color>
   <color name="trasparent">#00ffffff</color>
 
+  <color name="primaryTaslucent">#cc00838f</color>
+
 
   <color name="normalWindowBackgrpund">#f5f5f5</color>
 </resources>

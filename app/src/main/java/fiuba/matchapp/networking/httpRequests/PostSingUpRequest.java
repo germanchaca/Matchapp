@@ -221,6 +221,11 @@ public abstract class PostSingUpRequest {
 
             }
 
+            @Override
+            protected void logout() {
+                onSignUpFailedUserConnectionError();
+            }
+
         };
         request.make();
     }

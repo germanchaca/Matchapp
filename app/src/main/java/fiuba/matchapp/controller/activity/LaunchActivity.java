@@ -20,6 +20,7 @@ public class LaunchActivity extends AppCompatActivity {
             launchLoginActivity();
             //launchMainActivity();
         }else {
+           // MyApplication.getInstance().getPrefManager().clear();
             launchMainActivity();
         }
 

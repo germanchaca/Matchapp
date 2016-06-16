@@ -136,9 +136,17 @@ public abstract class PutUpdatePhothoProfileUser {
             protected void onRefreshAppServerTokenFailedUserConnectionError() {
                 onAppServerUpdatePhotoProfileDefaultError();
             }
+
+            @Override
+            protected void onErrorNoAuth() {
+                logOut();
+            }
         };
         request.make();
     }
+
+    protected abstract void logOut();
+
     private void retry() {
         this.make();
     }

@@ -107,6 +107,10 @@ public abstract class PostAppServerTokenRequest {
                                 onRefreshAppServerTokenFailedUserConnectionError();
                                 return;
                             }
+                            if (error.networkResponse.statusCode == 401){
+                                onErrorNoAuth();
+                                return;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -121,6 +125,8 @@ public abstract class PostAppServerTokenRequest {
         };
         return errorListener;
     }
+
+    protected abstract void onErrorNoAuth();
 
     private void onSuccessResponse(String response) throws JSONException {
         JSONObject obj = new JSONObject(response);

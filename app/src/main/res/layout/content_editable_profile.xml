@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -132,6 +132,62 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/layoutEditAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:id="@+id/icAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/ic_content_paste_24dp"/>
+
+                <TextView
+                    android:id="@+id/txtAgeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_toEndOf="@id/icAge"
+                    android:layout_toRightOf="@id/icAge"
+                    android:text="@string/edit_profile_age"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/profile_text_title"/>
+
+                <ImageView
+                    android:id="@+id/icEditAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/ic_mode_edit_24dp"/>
+
+                <EditText
+                    android:id="@+id/txtAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtAgeLabel"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="8dp"
+                    android:layout_toEndOf="@id/icAge"
+                    android:layout_toRightOf="@id/icAge"
+                    android:background="@null"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/profile_text_content"/>
+
+            </RelativeLayout>
+
+            <!--<RelativeLayout
                 android:id="@+id/layoutEditDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -185,7 +241,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/profile_text_content"/>
 
-            </RelativeLayout>
+            </RelativeLayout> -->
 
             <RelativeLayout
                 android:id="@+id/layoutRefreshAddress"
@@ -262,15 +318,6 @@
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:src="@drawable/ic_email_24dp"/>
 
-                <ImageView
-                    android:id="@+id/icEditMail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_mode_edit_24dp"/>
 
                 <TextView
                     android:id="@+id/txtEditMailLabel"
@@ -285,7 +332,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/profile_text_title"/>
 
-                <EditText
+                <TextView
                     android:id="@+id/txtEditMail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -306,6 +353,50 @@
             <include layout="@layout/item_divider"/>
 
             <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <RelativeLayout
+                    android:id="@+id/lblMyInterests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/icInterests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:src="@drawable/ic_keyboard_alt_24dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_toRightOf="@id/icInterests"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/edit_profile_interests"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/profile_text_title" />
+                </RelativeLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/nnterestsMenuContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_below="@id/lblMyInterests">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </RelativeLayout>
+
+            <!--<RelativeLayout
                 android:id="@+id/ChangePassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -344,7 +435,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/profile_text_title"/>
 
-            </RelativeLayout>
+            </RelativeLayout>-->
 
             <RelativeLayout
                 android:id="@+id/DeleteAccount"
@@ -370,4 +461,4 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-</layout>
+

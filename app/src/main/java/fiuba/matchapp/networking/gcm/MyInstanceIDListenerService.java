@@ -61,7 +61,14 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
             protected void onAppServerConnectionError() {
 
             }
+
+            @Override
+            protected void logout() {
+                MyApplication.getInstance().logout();
+            }
         };
+        request.changeGcmRegistrationId(token);
+        request.make();
 
     }
 }

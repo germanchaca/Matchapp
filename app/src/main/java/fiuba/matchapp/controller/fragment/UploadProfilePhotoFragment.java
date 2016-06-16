@@ -290,7 +290,13 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
                 displayAlertDialog();
             }
 
-        
+            @Override
+            protected void logOut() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+
+
         };
         request.make();
 

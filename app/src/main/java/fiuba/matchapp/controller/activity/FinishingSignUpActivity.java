@@ -128,6 +128,12 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
             protected void onAppServerConnectionError() {
                 showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
             }
+
+            @Override
+            protected void logOut() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
         };
         request.make();
 
@@ -175,6 +181,12 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
             protected void onAppServerConnectionError() {
                 showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
                 progressDialog.dismiss();
+            }
+
+            @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
             }
         };
         request.changeInterests(selectedInterests);

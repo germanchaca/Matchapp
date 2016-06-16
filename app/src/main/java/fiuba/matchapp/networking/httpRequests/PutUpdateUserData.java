@@ -232,9 +232,16 @@ public abstract class PutUpdateUserData {
             protected void onRefreshAppServerTokenFailedUserConnectionError() {
                 onAppServerDefaultError();
             }
+
+            @Override
+            protected void onErrorNoAuth() {
+                logout();
+            }
         };
         request.make();
     }
+
+    protected abstract void logout();
 
     private void retry() {
         this.make();

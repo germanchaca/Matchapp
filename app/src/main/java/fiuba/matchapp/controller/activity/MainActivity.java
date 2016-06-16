@@ -128,6 +128,12 @@ public class MainActivity extends GetLocationActivity {
                             startActivity(i);
                             finish();
                         }
+
+                        @Override
+                        protected void logout() {
+                            MyApplication.getInstance().logout();
+
+                        }
                     };
                     request.make();
 
@@ -210,6 +216,13 @@ public class MainActivity extends GetLocationActivity {
             protected void onDeleteTokenFailedUserConnectionError() {
                 String errorMessage = getResources().getString(R.string.internet_problem);
                 onDeleteTokenError(errorMessage);
+            }
+
+            @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+
             }
         };
         request.make();

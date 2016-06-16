@@ -131,9 +131,17 @@ public abstract class GetUserRequest {
             protected void onRefreshAppServerTokenFailedUserConnectionError() {
                 onGetUserRequestFailedUserConnectionError();
             }
+
+            @Override
+            protected void onErrorNoAuth() {
+                logout();
+            }
         };
         request.make();
     }
+
+    protected abstract void logout();
+
     private void retry() {
         this.make();
     }

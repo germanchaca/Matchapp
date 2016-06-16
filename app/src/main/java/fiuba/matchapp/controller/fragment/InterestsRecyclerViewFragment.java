@@ -1,6 +1,5 @@
 package fiuba.matchapp.controller.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -9,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,15 +17,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dpizarro.autolabel.library.AutoLabelUI;
+import com.google.android.gms.vision.text.Text;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.InterestsRecyclerAdapter;
 import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.UserInterest;
 
 public class InterestsRecyclerViewFragment extends Fragment {
 
@@ -40,10 +40,22 @@ public class InterestsRecyclerViewFragment extends Fragment {
     private List<String> interest_items;
     private TextView txtSubtitle;
     private TextView txtTitle;
+    private ArrayList<UserInterest> initialSelectedInterests;
 
 
     public static InterestsRecyclerViewFragment newInstance(String category, ArrayList<Interest> interests) {
         InterestsRecyclerViewFragment f = new InterestsRecyclerViewFragment();
+
+        Bundle args = new Bundle();
+        args.putString("category", category);
+        args.putParcelableArrayList("values", interests);
+        f.setArguments(args);
+        return f;
+    }
+
+    public static InterestsRecyclerViewFragment newInstance(String category, ArrayList<Interest> interests, List<UserInterest> userInterests) {
+        InterestsRecyclerViewFragment f = new InterestsRecyclerViewFragment();
+        f.initSelectedInterests(userInterests);
 
         Bundle args = new Bundle();
         args.putString("category", category);
@@ -68,7 +80,13 @@ public class InterestsRecyclerViewFragment extends Fragment {
         txtTitle.setText(category_name);
         setListeners();
         setRecyclerView();
+
+
         return view;
+    }
+
+    public void initSelectedInterests(List<UserInterest> userInterests){
+        this.initialSelectedInterests = (ArrayList<UserInterest>) userInterests;
     }
 
     private void initInterestItemsString(String category, List<Interest> values) {
@@ -163,6 +181,18 @@ public class InterestsRecyclerViewFragment extends Fragment {
 
         adapter = new InterestsRecyclerAdapter(mInterestsList);
         recyclerView.setAdapter(adapter);
+
+        if(this.initialSelectedInterests != null){
+            for (UserInterest userInterest: this.initialSelectedInterests){
+                for (int i = 0; i < interest_items.size(); i++) {
+                    if(TextUtils.equals(interest_items.get(i),userInterest.getDescription())){
+                        itemListClicked(i);
+                    }
+                }
+            }
+        }
+
+
         adapter.setOnItemClickListener(new InterestsRecyclerAdapter.OnItemClickListener() {
 
             @Override

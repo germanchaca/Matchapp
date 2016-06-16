@@ -122,9 +122,16 @@ public abstract class GetInterestsRequest {
             protected void onRefreshAppServerTokenFailedUserConnectionError() {
                 onGetInterestsDefaultError();
             }
+
+            @Override
+            protected void onErrorNoAuth() {
+                logout();
+            }
         };
         request.make();
     }
+
+    protected abstract void logout();
 
 
     private void onSuccessResponse(String response) throws JSONException {

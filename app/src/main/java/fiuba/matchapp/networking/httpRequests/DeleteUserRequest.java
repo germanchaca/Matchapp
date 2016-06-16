@@ -119,9 +119,16 @@ public abstract class DeleteUserRequest {
             protected void onRefreshAppServerTokenFailedUserConnectionError() {
                 onDeleteUserFailedDefaultError();
             }
+
+            @Override
+            protected void onErrorNoAuth() {
+                logOut();
+            }
         };
         request.make();
     }
+
+    protected abstract void logOut();
 
     private void retry() {
         this.make();
