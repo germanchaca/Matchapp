@@ -6,9 +6,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -53,6 +55,7 @@ import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
+import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 import fiuba.matchapp.utils.AdressUtils;
 import fiuba.matchapp.utils.ImageBase64;
@@ -230,9 +233,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             }
         }));
     }
-
-
-
     private void initPhotoProfile() {
         if(!TextUtils.isEmpty(this.user.getPhotoProfile())){
             this.userImage.setImageBitmap(ImageBase64.Base64ToBitmap(this.user.getPhotoProfile()));
@@ -420,6 +420,19 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         String age = txtAge.getText().toString();
         if (age.isEmpty()) {
             txtAge.setText(user.getAge());
+        }else if( Integer.parseInt(age) < 16) {
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+            alert.setMessage(getResources().getString(R.string.age_menor));
+            alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    txtAge.setText(user.getAge());
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = alert.create();
+            dialog.show();
         }
     }
 
@@ -634,11 +647,19 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
                 if (image != null) {
                     loadImage(userImage, image.getFilePathOriginal());
-                    //loadImage(userImage, image.getFileThumbnail());
                     isUploadingImage = true;
-                    //TODO mandar al server y mostrar cargando
+                    Uri imageUri = Uri.fromFile(new File(image.getFilePathOriginal()));
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap( getApplicationContext().getContentResolver(), imageUri);
+
+                        String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+
+                        sendPhotoToAppServer(encodedImage);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     isUploadingImage = false;
-                    showBtnCommitChanges();
                 } else {
                     Log.i(TAG, "Chosen Image: Is null");
                 }
@@ -737,6 +758,59 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             adapterUserInterestsList.add(interestCategory);
         }
     }
+
+    private void sendPhotoToAppServer(final String profilePhoto) {
+        showProgressDialog();
+        PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
+            @Override
+            protected void onUpdatePhotoProfileSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setPhotoProfile(profilePhoto);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            protected void onAppServerUpdatePhotoProfileDefaultError() {
+                progressDialog.dismiss();
+
+                displayAlertDialog();
+            }
+
+            @Override
+            protected void onAppServerConnectionError() {
+                progressDialog.dismiss();
+                displayAlertDialog();
+            }
+
+            @Override
+            protected void logOut() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+
+
+        };
+        request.make();
+
+        Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
+    }
+
+    private void displayAlertDialog() {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+        alert.setMessage(getResources().getString(R.string.connection_problem));
+        alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userImage.setImageDrawable(getResources().getDrawable(R.drawable.empty_profile_phd_350x350));//setea de nuevo el default
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
 
 /*    private void showChangePasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
