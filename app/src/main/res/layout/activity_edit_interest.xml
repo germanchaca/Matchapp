@@ -37,7 +37,7 @@ tools:context=".controller.activity.MainActivity">
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:src="@drawable/ic_done_black_24dp"
             android:visibility="visible"
-            app:backgroundTint="@color/primaryTaslucent"
+            app:backgroundTint="@color/primary_darker"
             android:layout_gravity="end|bottom" />
 
     </FrameLayout></android.support.design.widget.CoordinatorLayout>
