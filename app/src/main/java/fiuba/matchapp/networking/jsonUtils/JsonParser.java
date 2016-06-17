@@ -30,6 +30,24 @@ public class JsonParser {
         return appServerToken;
     }
 
+    public static ArrayList<User> getUsersFromJSONresponse(JSONArray response) {
+
+        ArrayList<User> users = new ArrayList<>();
+
+        for(int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject userObj = response.getJSONObject(i);
+                User user = JsonParser.getUserFromJSONresponse(userObj);
+                if(user != null){
+                    users.add(user);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return users;
+    }
+
     public static User getUserFromJSONresponse(JSONObject response) {
         JSONObject userObj = null;
         try {
