@@ -57,5 +57,24 @@ public class RestAPIContract {
         return PUT_PHOTO_USER.replace("_ID_", userId);
     }
 
+    //Post de match
+    private static final String POST_MATCH = BASE_URL + "/match/_ID_/";
+    public static String POST_MATCH(String userId) {
+        return POST_MATCH.replace("_ID_", userId);
+    }
+    //Obtener candidatos a match
+    public static final String GET_MATCH = BASE_URL + "/match/";
+
+    //Chat post new message
+    public static final String POST_CHAT = BASE_URL + "/chat/";
+    //Chat get chat rooms
+    public static final String GET_CHATROOMS = BASE_URL + "/chat/";
+    //Chat fetch chat history paginado (identifico la conversación por IdChat y MessageId es el ultimo que tenia yo
+    private static final String GET_CHAT_HISTORY = BASE_URL + "/match/_IDCHAT_-_IDMESSAGE_/";
+    public static String GET_CHAT_HISTORY(String chatId, String messageId) {
+        String temp = GET_CHAT_HISTORY.replace("_IDCHAT_", chatId);
+        return  temp.replace("_IDMESSAGE_", messageId);
+    }
+
 
 }
