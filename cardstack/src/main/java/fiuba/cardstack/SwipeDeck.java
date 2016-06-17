@@ -48,6 +48,7 @@ public class SwipeDeck extends FrameLayout {
     private SwipeListener swipeListener;
     private int leftImageResource;
     private int rightImageResource;
+
     private boolean cardInteraction;
 
     public SwipeDeck(Context context, AttributeSet attrs) {

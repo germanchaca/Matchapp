@@ -184,7 +184,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         message.setId(commentId);
         message.setMessage(commentText);
         message.setCreatedAt(createdAt);
-        message.setUser(user);
+        message.setUserId(user.getId());
 
         addNewMessage(message);
     }

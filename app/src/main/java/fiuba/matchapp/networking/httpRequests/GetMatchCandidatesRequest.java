@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public abstract class GetMatchCandidatesRequest {
 
     protected abstract void onGetMatchCandidatesRequestSuccess(List<User> user);
 
-    public GetMatchCandidatesRequest(String userId){
+    public GetMatchCandidatesRequest(){
     }
     public void make() {
 
@@ -111,10 +112,13 @@ public abstract class GetMatchCandidatesRequest {
     private void onSuccessResponse(String response) throws JSONException {
 
         JSONObject objJSon = new JSONObject(response);
-        JSONArray obj = objJSon.getJSONArray("users");
-
-        List<User> users = JsonParser.getUsersFromJSONresponse(obj);
-
+        JSONObject metadata = objJSon.getJSONObject("metadata");
+        int count = metadata.getInt("count");
+        List<User> users = new ArrayList<>();
+        if( count > 0){
+            JSONArray obj = objJSon.getJSONArray("users");
+            users = JsonParser.getUsersFromJSONresponse(obj);
+        }
         onGetMatchCandidatesRequestSuccess(users);
     }
     private void onErrorNoAuth() {

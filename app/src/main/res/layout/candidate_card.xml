@@ -26,7 +26,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    tools:src="@drawable/p2"/>
+                    android:src="@drawable/empty_profile_phd_350x350"
+                    />
 
                 <ImageView
                     android:id="@+id/right_image"

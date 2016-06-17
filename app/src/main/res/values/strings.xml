@@ -117,6 +117,8 @@
     <!-- UploadImageFragment -->
     <string name="sending_image_server">Guardando imagen...</string>
     <string name="connection_problem">Problemas de conexión, por favor verifique tener acceso a internet</string>
+    <string name="connection_problem_candidates">Reintentar</string>
+    <string name="connection_problem_candidates_later">Cancelar</string>
     <string name="connection_problem_ok">Ok</string>
     <string name="age_menor">Debes ser mayor de 16 años</string>
     <!--NewMatchActivity-->

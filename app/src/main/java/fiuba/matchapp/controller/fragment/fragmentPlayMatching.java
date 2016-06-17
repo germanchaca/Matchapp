@@ -1,6 +1,8 @@
 package fiuba.matchapp.controller.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -13,10 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fiuba.cardstack.SwipeDeck;
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.SwipeDeckAdapter;
+import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
 import fiuba.matchapp.view.RippleAnimation;
 
 public class fragmentPlayMatching extends Fragment {
@@ -24,7 +30,6 @@ public class fragmentPlayMatching extends Fragment {
     RippleAnimation rippleBackground1;
     private SwipeDeck cardStack;
     private SwipeDeckAdapter adapter;
-    private ArrayList<String> testData;
 
     RelativeLayout btnSwipeLeft;
     RelativeLayout btnSwipeRight;
@@ -33,9 +38,7 @@ public class fragmentPlayMatching extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -43,28 +46,68 @@ public class fragmentPlayMatching extends Fragment {
         View view = inflater.inflate(R.layout.fragment_connect, container, false);
 
         init(view);
-
-        startAnimation();
-
         initCardstack();
-        stopAnimation();
-        //stopAnimation();//deberia estar cuando recibo el http request answer con los candidatos
         return view;
     }
 
-    private void agregarCandidatosDePrueba(){
-        testData.add("0");
-        testData.add("1");
-        testData.add("2");
-        testData.add("3");
-        testData.add("4");
+    private void showConnectionError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getResources().getString(R.string.connection_problem));
+        builder.setPositiveButton(getResources().getString(R.string.connection_problem_candidates), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                initCardstack();
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.connection_problem_candidates_later), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //TODO show retryButton
+            }
+        });
 
+        builder.show();
     }
     private void initCardstack(){
-        testData = new ArrayList<>();
-        agregarCandidatosDePrueba();
 
-        adapter = new SwipeDeckAdapter(testData, getActivity());
+        //agregarCandidatosDePrueba();
+
+        GetMatchCandidatesRequest request = new GetMatchCandidatesRequest() {
+            @Override
+            protected void onGetMatchCandidatesRequestFailedDefaultError() {
+                stopAnimation();
+                showConnectionError();
+            }
+
+            @Override
+            protected void onGetMatchCandidatesRequestFailedUserConnectionError() {
+                stopAnimation();
+                showConnectionError();
+            }
+
+            @Override
+            protected void onGetMatchCandidatesRequestSuccess(List<User> user) {
+                if(user.size() == 0){
+                    //TODO mostrar no hay candidatos
+                }else {
+                    ArrayList<User> users = (ArrayList<User>) user;
+                    adapter = new SwipeDeckAdapter(users, getActivity(),buttonInfo);
+                    fillCardStack();
+                }
+                stopAnimation();
+
+            }
+
+            @Override
+            protected void logout() {
+                stopAnimation();
+                MyApplication.getInstance().logout();
+            }
+        };
+        startAnimation();
+        request.make();
+
+    }
+
+    private void fillCardStack() {
         cardStack.setAdapter(adapter);
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
@@ -80,8 +123,7 @@ public class fragmentPlayMatching extends Fragment {
             @Override
             public void cardsDepleted() {
                 Log.i("MainActivity", "no more cards");
-                startAnimation();
-                //TODO aca va de nuevo la petición al http server, ojo que si supera el max hay que mostrar otra pantalla
+                initCardstack();
             }
 
             @Override
@@ -96,6 +138,7 @@ public class fragmentPlayMatching extends Fragment {
 
         });
     }
+
     private void init(View view) {
         rippleBackground1 = (RippleAnimation) view.findViewById(R.id.content);
         rippleBackground1.setVisibility(View.VISIBLE);
@@ -127,10 +170,6 @@ public class fragmentPlayMatching extends Fragment {
         });
     }
 
-    private void addCandidate(String candidate){
-        testData.add(candidate);
-        adapter.notifyDataSetChanged();
-    }
     private void startAnimation() {
         //if it's not running
         if (!rippleBackground1.isRippleAnimationRunning()) {

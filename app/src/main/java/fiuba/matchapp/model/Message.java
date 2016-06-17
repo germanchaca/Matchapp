@@ -9,12 +9,22 @@ public class Message implements Serializable {
     String status;
     String userId;
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    User user;
+
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
-        userId = userId;
+        this.userId = userId;
     }
 
     public String getStatus() {

@@ -111,7 +111,7 @@ public class InterestEditActivity extends AppCompatActivity {
     }
 
     private void showConnectionError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getResources().getString(R.string.connection_problem));
         builder.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
