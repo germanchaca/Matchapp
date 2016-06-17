@@ -28,7 +28,6 @@ public abstract class GetMatchCandidatesRequest {
 
     private static final String TAG = "GetUserRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
-    private final String userId;
 
     protected abstract void onGetMatchCandidatesRequestFailedDefaultError();
 
@@ -37,11 +36,10 @@ public abstract class GetMatchCandidatesRequest {
     protected abstract void onGetMatchCandidatesRequestSuccess(List<User> user);
 
     public GetMatchCandidatesRequest(String userId){
-        this.userId = userId;
     }
     public void make() {
 
-        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.GET_USER(userId), getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.GET);
+        BaseStringRequest signUpRequest = new BaseStringRequest(RestAPIContract.GET_MATCH, getHeaders(), "" ,getResponseListener(), getErrorListener(), Request.Method.GET);
 
         signUpRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,

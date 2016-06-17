@@ -58,10 +58,8 @@ public class RestAPIContract {
     }
 
     //Post de match
-    private static final String POST_MATCH = BASE_URL + "/match/_ID_/";
-    public static String POST_MATCH(String userId) {
-        return POST_MATCH.replace("_ID_", userId);
-    }
+    public static final String POST_MATCH = BASE_URL + "/match/";
+
     //Obtener candidatos a match
     public static final String GET_MATCH = BASE_URL + "/match/";
 
