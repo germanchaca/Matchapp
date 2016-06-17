@@ -73,7 +73,8 @@ public class RestAPIContract {
     private static final String GET_CHAT_HISTORY = BASE_URL + "/match/_IDCHAT_-_IDMESSAGE_/";
     public static String GET_CHAT_HISTORY(String chatId, String messageId) {
         String temp = GET_CHAT_HISTORY.replace("_IDCHAT_", chatId);
-        return  temp.replace("_IDMESSAGE_", messageId);
+        return  temp.replace("_IDMESSAGE_", messageId
+        );
     }
 
 
