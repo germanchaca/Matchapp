@@ -23,7 +23,7 @@ import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
  */
 public abstract class PostChatNewMessageRequest {
 
-    private static final String TAG = "PostMatchRequest";
+    private static final String TAG = "PostChatNewMessageRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
     private final String userId;
     private final String message;

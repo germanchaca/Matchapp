@@ -3,17 +3,37 @@ package fiuba.matchapp.model;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    String id, message, createdAt;
-    User user;
+    String id;
+    String message;
+    String createdAt;
+    String status;
+    String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Message() {
     }
 
-    public Message(String id, String message, String createdAt, User user) {
+    public Message(String id, String message, String createdAt,String status, String userId) {
         this.id = id;
         this.message = message;
         this.createdAt = createdAt;
-        this.user = user;
+        this.userId = userId;
+        this.status = status;
     }
 
     public String getId() {
@@ -40,11 +60,6 @@ public class Message implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+
 }

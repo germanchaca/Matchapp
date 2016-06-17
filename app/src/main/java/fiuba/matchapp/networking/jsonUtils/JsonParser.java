@@ -11,13 +11,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fiuba.matchapp.model.Interest;
+import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 
-/**
- * Created by german on 5/25/2016.
- */
 public class JsonParser {
+
+    public static List<Message> getMessagesFromJSONResponse(JSONObject response, String messageId){
+        ArrayList<Message> messages= new ArrayList<>();
+
+        try {
+            int olderMessage = response.getInt("LastMessageId");
+            for(int i = olderMessage; i < response.length(); i++) {
+                JSONObject messajeJsonObj = response.getJSONObject(Integer.toString(i));
+
+                Message message = getMessageFromJSONresponse(messajeJsonObj,Integer.toString(i));
+                if (message != null){
+                    messages.add(message);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
+    private static Message getMessageFromJSONresponse(JSONObject messageObj, String messageId) {
+        String status = null;
+        try {
+            status = messageObj.getString("status");
+            String msg = messageObj.getString("message");
+            String userId = messageObj.getString("user");
+            String time = messageObj.getString("time");
+            Message message = new Message(messageId,msg,time,status,userId);
+            return  message;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String getAppServerTokenFromJSONresponse(JSONObject response){
 
         String appServerToken= null;

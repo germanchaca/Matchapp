@@ -26,7 +26,7 @@ import fiuba.matchapp.networking.jsonUtils.JsonParser;
  */
 public abstract class GetMatchCandidatesRequest {
 
-    private static final String TAG = "GetUserRequest";
+    private static final String TAG = "GetMatchCandidatesRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
 
     protected abstract void onGetMatchCandidatesRequestFailedDefaultError();
@@ -80,24 +80,20 @@ public abstract class GetMatchCandidatesRequest {
                 try{
                     if (error.networkResponse!= null){
                         String response = new String(error.networkResponse.data, "utf-8");
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            String message = obj.getString("Mensaje");
-                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
+                        //JSONObject obj = new JSONObject(response);
+                        //String message = obj.getString("Mensaje");
+                        Log.e(TAG, "Volley error: " + ", code: " + error.networkResponse.statusCode);
 
-                            if  (error instanceof NoConnectionError) {
-                                onGetMatchCandidatesRequestFailedUserConnectionError();
-                                return;
-                            }else if (error.networkResponse.statusCode == 401) {
-                                onErrorNoAuth();
-                                return;
-                            }else {
-                                onGetMatchCandidatesRequestFailedDefaultError();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        if  (error instanceof NoConnectionError) {
+                            onGetMatchCandidatesRequestFailedUserConnectionError();
+                            return;
+                        }else if (error.networkResponse.statusCode == 401) {
+                            onErrorNoAuth();
+                            return;
+                        }else {
+                            onGetMatchCandidatesRequestFailedDefaultError();
                         }
+
                     }else {
                         make();
                     }
@@ -113,7 +109,10 @@ public abstract class GetMatchCandidatesRequest {
 
 
     private void onSuccessResponse(String response) throws JSONException {
-        JSONArray obj = new JSONArray(response);
+
+        JSONObject objJSon = new JSONObject(response);
+        JSONArray obj = objJSon.getJSONArray("users");
+
         List<User> users = JsonParser.getUsersFromJSONresponse(obj);
 
         onGetMatchCandidatesRequestSuccess(users);
