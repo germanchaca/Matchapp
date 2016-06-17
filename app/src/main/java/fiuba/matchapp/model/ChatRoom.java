@@ -3,18 +3,19 @@ package fiuba.matchapp.model;
 import java.io.Serializable;
 
 public class ChatRoom implements Serializable {
-    String id, name, lastMessage, timestamp;
+    String id, lastMessage, timestamp;
     int unreadCount;
+    User user;
 
     public ChatRoom() {
     }
 
-    public ChatRoom(String id, String name, String lastMessage, String timestamp, int unreadCount) {
+    public ChatRoom(String id, User user, String lastMessage, String timestamp, int unreadCount) {
         this.id = id;
-        this.name = name;
         this.lastMessage = lastMessage;
         this.timestamp = timestamp;
         this.unreadCount = unreadCount;
+        this.user = user;
     }
 
     public String getId() {
@@ -26,12 +27,9 @@ public class ChatRoom implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return user.getName();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getLastMessage() {
         return lastMessage;

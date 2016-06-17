@@ -10,12 +10,51 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 
 public class JsonParser {
+
+    public static List<ChatRoom> getChatRoomsFromJSONResponse(JSONArray response){
+        ArrayList<ChatRoom> chatrooms= new ArrayList<>();
+
+        for(int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject chatRoomObj = response.getJSONObject(i);
+                ChatRoom chatRoom = getChatRoomFromJSONresponse(chatRoomObj);
+                if(chatRoom != null){
+                    chatrooms.add(chatRoom);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return chatrooms;
+    }
+
+    private static ChatRoom getChatRoomFromJSONresponse(JSONObject chatRoomObj) {
+        try {
+            String chatRoomId = chatRoomObj.getString("chatroom_id");
+
+            JSONObject lastMessageJsonObj = chatRoomObj.getJSONObject("LastMessage");
+            String lastMessageId = chatRoomObj.getString("message_id");
+            Message lastMessage = getMessageFromJSONresponse(lastMessageJsonObj,lastMessageId );
+
+            User user = getUserFromJSONresponse(chatRoomObj);
+
+            int unread = chatRoomObj.getInt("Unread");
+
+            ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage.getMessage(),lastMessage.getCreatedAt(), unread);
+
+            return  chatRoom;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static List<Message> getMessagesFromJSONResponse(JSONObject response, String messageId){
         ArrayList<Message> messages= new ArrayList<>();
@@ -37,9 +76,11 @@ public class JsonParser {
     }
 
     private static Message getMessageFromJSONresponse(JSONObject messageObj, String messageId) {
-        String status = null;
         try {
-            status = messageObj.getString("status");
+            String status = "R";
+            if(messageObj.has("status")){
+                status = messageObj.getString("status");
+            }
             String msg = messageObj.getString("message");
             String userId = messageObj.getString("user");
             String time = messageObj.getString("time");
