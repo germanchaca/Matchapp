@@ -55,6 +55,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     private RelativeLayout contentRetry;
     private ImageView retryImage;
     private TextView subtitleRetry;
+    private User userMatched;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +63,13 @@ public class ChatRoomActivity extends AppCompatActivity {
         initViews();
 
         Intent intent = getIntent();
-        this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
-        if (this.chatRoom == null)
-            return;
+        if(intent.hasExtra("chatroom")){
+            this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
+        }
+        if(intent.hasExtra("user")){
+            this.userMatched = intent.getParcelableExtra("user");
+        }
+
         selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
 
         titleChat.setText(this.chatRoom.getUser().getAlias());
@@ -100,8 +105,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         progressDialog = new LockedProgressDialog(ChatRoomActivity.this, R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
+        if (this.chatRoom != null){
+            fetchChatThread(chatRoom.getId());
+        }
 
-        fetchChatThread( chatRoom.getLastMessage().getId());
     }
 
     private void initViews() {
@@ -198,8 +205,14 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(message)) {
             return;
         }
+        String userId;
+        if(userMatched == null){
+            userId = chatRoom.getUser().getId();
+        }else{
+            userId = userMatched.getId();
+        }
 
-        PostChatNewMessageRequest request = new PostChatNewMessageRequest(chatRoom.getUser().getId(),message) {
+        PostChatNewMessageRequest request = new PostChatNewMessageRequest(userId,message) {
             @Override
             protected void onPostChatNewMessageRequestFailedDefaultError() {
                 //TODO tildar como no enviado con opción de volver a enviar

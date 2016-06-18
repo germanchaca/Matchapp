@@ -3,6 +3,7 @@ package fiuba.matchapp.controller.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -60,7 +61,7 @@ public class NewMatchActivity extends AppCompatActivity {
     private void startChatting() {
         Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
         //intent.putExtra("chat_room_id", chatRoomId);
-        intent.putExtra("name", userMatched.getName());
+        intent.putExtra("user", (Parcelable) userMatched);
         startActivity(intent);
         finish();
     }
