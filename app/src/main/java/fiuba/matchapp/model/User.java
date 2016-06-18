@@ -41,7 +41,8 @@ public class User implements Serializable, Parcelable {
         longitude = in.readDouble();
         age = in.readInt();
         photoProfile = in.readString();
-        //in.readTypedList(interests,UserInterest.CREATOR);
+        interests = new ArrayList<>();
+        in.readTypedList(interests,UserInterest.CREATOR);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -152,6 +153,6 @@ public class User implements Serializable, Parcelable {
         dest.writeDouble(this.longitude);
         dest.writeInt(this.age);
         dest.writeString(this.photoProfile);
-        //dest.writeTypedList(this.interests);
+        dest.writeTypedList(this.interests);
     }
 }
