@@ -5,21 +5,13 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     public static final String STATUS_UNREAD = "D";
+    public static final String STATUS_READ = "R";
+    public static final String STATUS_UNSENT = "U";
     String id;
     String message;
     String createdAt;
     String status;
     String userId;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    User user;
 
     public String getUserId() {
         return userId;

@@ -4,16 +4,25 @@ import java.io.Serializable;
 
 public class ChatRoom implements Serializable {
     String id;
-    String lastMessage;
+    Message lastMessage;
     String timestamp;
 
     int unreadCount;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     User user;
 
     public ChatRoom() {
     }
 
-    public ChatRoom(String id, User user, String lastMessage, String timestamp, int unreadCount) {
+    public ChatRoom(String id, User user, Message lastMessage, String timestamp, int unreadCount) {
         this.id = id;
         this.lastMessage = lastMessage;
         this.timestamp = timestamp;
@@ -34,11 +43,11 @@ public class ChatRoom implements Serializable {
     }
 
 
-    public String getLastMessage() {
+    public Message getLastMessage() {
         return lastMessage;
     }
 
-    public void setLastMessage(String lastMessage) {
+    public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
 

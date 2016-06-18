@@ -124,7 +124,7 @@ public abstract class GetChatHistoryRequest {
 
         JSONObject jsonResponse = new JSONObject(response);
 
-        List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse,idMessage);
+        List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse);
 
         onGetChatHistoryRequestSuccess(messages);
     }

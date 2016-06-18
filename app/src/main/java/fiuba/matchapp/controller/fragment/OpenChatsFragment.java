@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ public class OpenChatsFragment extends Fragment {
     private Context context;
     private LockedProgressDialog progressDialog;
     private RelativeLayout containerChats;
+    private RelativeLayout contentRetry;
+    private ImageView retryImage;
+    private TextView subtitleRetry;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +88,18 @@ public class OpenChatsFragment extends Fragment {
 
         containerChats = (RelativeLayout) view.findViewById(R.id.containerChats);
 
+        contentRetry = (RelativeLayout) view.findViewById(R.id.contentRetry);
+        contentRetry.setVisibility(View.GONE);
+        retryImage = (ImageView) view.findViewById(R.id.retryImage);
+        retryImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchChatRooms();
+            }
+        });
+        subtitleRetry = (TextView) view.findViewById(R.id.subtitleRetry);
+        subtitleRetry.setText(getResources().getString(R.string.retry_fetching_all_chatrooms));
+
         progressDialog = new LockedProgressDialog(getActivity(), R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
@@ -96,7 +113,7 @@ public class OpenChatsFragment extends Fragment {
         for (ChatRoom cr : chatRoomArrayList) {
             if (cr.getId().equals(chatRoomId)) {
                 int index = chatRoomArrayList.indexOf(cr);
-                cr.setLastMessage(message.getMessage());
+                cr.setLastMessage(message);
                 cr.setUnreadCount(cr.getUnreadCount() + 1);
                 chatRoomArrayList.remove(index);
                 chatRoomArrayList.add(index, cr);
@@ -109,11 +126,14 @@ public class OpenChatsFragment extends Fragment {
 
     private void fetchChatRooms() {
         progressDialog.show();
+        contentRetry.setVisibility(View.GONE);
 
         GetChatOpenRoomsRequest request = new GetChatOpenRoomsRequest() {
             @Override
             protected void onGetChatOpenRoomsRequestFailedDefaultError() {
                 progressDialog.dismiss();
+                contentRetry.setVisibility(View.VISIBLE);
+
                 Snackbar.make(containerChats,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
 
             }
@@ -121,6 +141,7 @@ public class OpenChatsFragment extends Fragment {
             @Override
             protected void onGetChatOpenRoomsRequestFailedUserConnectionError() {
                 progressDialog.dismiss();
+                contentRetry.setVisibility(View.VISIBLE);
                 Snackbar.make(containerChats,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
             }
 

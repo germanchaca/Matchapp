@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,18 +16,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.ChatRoomThreadAdapter;
+import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.httpRequests.GetChatHistoryRequest;
+import fiuba.matchapp.networking.httpRequests.PostChatNewMessageRequest;
+import fiuba.matchapp.view.LockedProgressDialog;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
@@ -40,8 +48,13 @@ public class ChatRoomActivity extends AppCompatActivity {
     private ImageButton btnSend;
     private CircularImageView circleProfileImg;
     private TextView titleChat;
-    private User user;
     private String selfUserId;
+    private ChatRoom chatRoom;
+    private LockedProgressDialog progressDialog;
+    private RelativeLayout containerChatRoom;
+    private RelativeLayout contentRetry;
+    private ImageView retryImage;
+    private TextView subtitleRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +62,16 @@ public class ChatRoomActivity extends AppCompatActivity {
         initViews();
 
         Intent intent = getIntent();
-        this.user  = (User) intent.getSerializableExtra("user");
-        if(this.user == null)
+        this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
+        if (this.chatRoom == null)
             return;
+        selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
 
-        titleChat.setText(this.user.getAlias());
-        
+        titleChat.setText(this.chatRoom.getUser().getAlias());
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         messageArrayList = new ArrayList<>();
-
-        selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
-
         mAdapter = new ChatRoomThreadAdapter(this, messageArrayList, selfUserId);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -86,7 +97,11 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
 
-        fetchChatThread();
+        progressDialog = new LockedProgressDialog(ChatRoomActivity.this, R.style.AppTheme_Dark_Dialog);
+
+        progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
+
+        fetchChatThread( chatRoom.getLastMessage().getId());
     }
 
     private void initViews() {
@@ -99,24 +114,50 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         inputMessage = (EditText) findViewById(R.id.message);
         btnSend = (ImageButton) findViewById(R.id.btn_send);
+        containerChatRoom = (RelativeLayout) findViewById(R.id.containerChatRoom);
+
+        contentRetry = (RelativeLayout) findViewById(R.id.contentRetry);
+        contentRetry.setVisibility(View.GONE);
+        retryImage = (ImageView) findViewById(R.id.retryImage);
+        retryImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchChatThread( chatRoom.getLastMessage().getId());
+            }
+        });
+        subtitleRetry = (TextView) findViewById(R.id.subtitleRetry);
+        subtitleRetry.setText(getResources().getString(R.string.fetching_chat_history));
+
     }
 
     /**
      * Handling new push message, will add the message to
      * recycler view and scroll it to bottom
-     * */
+     */
     private void handlePushNotification(Intent intent) {
-        if(intent.hasExtra("user_id")){
-            String userId = intent.getStringExtra("user_id");
-            if (intent.hasExtra("message")){
-                Message message = (Message) intent.getSerializableExtra("message");
+        if (intent.hasExtra("type")) {
+            String type = intent.getStringExtra("type");
+            if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
 
-                if( this.user.getEmail() == userId){
-                    addNewMessage(message);
+                if (intent.hasExtra("chat_room_id")) {
+                    String chat_room_id = intent.getStringExtra("chat_room_id");
+                    if (intent.hasExtra("message_id")) {
+                        String message_id = intent.getStringExtra("message_id");
+                        if (intent.hasExtra("message")) {
+                            String messageBody = intent.getStringExtra("message");
+                            if (intent.hasExtra("created_at")) {
+                                String timestamp = intent.getStringExtra("created_at");
+
+                                Message message = new Message(message_id,messageBody,timestamp,Message.STATUS_UNREAD,"0");
+                                addNewMessage(message);
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+
 
     private void addNewMessage(Message message) {
         messageArrayList.add(message);
@@ -132,11 +173,12 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-                this.onBackPressed();
+            this.onBackPressed();
             return true;
-        };
+        }
+        ;
         return super.onOptionsItemSelected(item);
     }
 
@@ -149,7 +191,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     /**
      * Post de un nuevo mensaje
-     * */
+     */
     private void sendMessage() {
         final String message = this.inputMessage.getText().toString().trim();
 
@@ -157,8 +199,30 @@ public class ChatRoomActivity extends AppCompatActivity {
             return;
         }
 
-        this.inputMessage.setText("");
+        PostChatNewMessageRequest request = new PostChatNewMessageRequest(chatRoom.getUser().getId(),message) {
+            @Override
+            protected void onPostChatNewMessageRequestFailedDefaultError() {
+                //TODO tildar como no enviado con opción de volver a enviar
+            }
 
+            @Override
+            protected void onPostChatNewMessageRequestFailedUserConnectionError() {
+                //TODO tildar como no enviado con opción de volver a enviar
+            }
+
+            @Override
+            protected void onPostChatNewMessageRequestSuccess() {
+                //TODO tildar como enviado
+            }
+        };
+        request.make();
+        Message sentMessage = new Message();
+        sentMessage.setCreatedAt(Long.toString(System.currentTimeMillis() / 1000));
+        sentMessage.setMessage(message);
+        sentMessage.setStatus(Message.STATUS_UNSENT);
+        addNewMessage(sentMessage);
+
+        this.inputMessage.setText("");
 
 
     }
@@ -166,93 +230,53 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     /**
      * Fetch del historial de conversacion
-     * */
-    private void fetchChatThread() {
+     */
+    private void fetchChatThread(String messageId) {
 
-        Long tsLong = System.currentTimeMillis() / 1000;
-        String ts = tsLong.toString();
+        progressDialog.show();
+        contentRetry.setVisibility(View.GONE);
 
-        String commentId = "1";
-        String commentText = "hola";
-        String createdAt = ts;
+        GetChatHistoryRequest request = new GetChatHistoryRequest(chatRoom.getId(),messageId) {
+            @Override
+            protected void onGetChatHistoryRequestFailedDefaultError() {
+                progressDialog.hide();
+                contentRetry.setVisibility(View.VISIBLE);
+                Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
 
-        String userId = "1";
-        String userName = "camila";
-        User user = MyApplication.getInstance().getPrefManager().getUser();
+            }
 
-        Message message = new Message();
-        message.setId(commentId);
-        message.setMessage(commentText);
-        message.setCreatedAt(createdAt);
-        message.setUserId(user.getId());
+            @Override
+            protected void onGetChatHistoryRequestFailedUserConnectionError() {
+                progressDialog.hide();
+                contentRetry.setVisibility(View.VISIBLE);
+                Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
 
-        addNewMessage(message);
+            }
+
+            @Override
+            protected void onGetChatHistoryRequestSuccess(List<Message> chatHistory) {
+                progressDialog.hide();
+
+                ArrayList<Message> temp = new ArrayList<>();
+                temp.addAll(chatHistory);
+                temp.addAll(messageArrayList);
+                messageArrayList.clear();
+                messageArrayList.addAll(temp);
+
+                mAdapter.notifyDataSetChanged();
+                if (mAdapter.getItemCount() > 1) {
+                    recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+                }
+            }
+
+            @Override
+            protected void logout() {
+
+            }
+        };
+        request.make();
+
+
+
     }
-
-        /**
-         * Fetching all the messages of a single chat room
-         * */
-        /*private void fetchChatThread() {
-
-            String endPoint = RestAPIContract.CHAT_THREAD.replace("_ID_", chatRoomId);
-            Log.e(TAG, "endPoint: " + endPoint);
-
-            StringRequest strReq = new StringRequest(Request.Method.GET,
-                    endPoint, new Response.Listener<String>() {
-
-                @Override
-                public void onResponse(String response) {
-                    Log.e(TAG, "response: " + response);
-
-                    try {
-                        JSONObject obj = new JSONObject(response);
-
-                        // check for error
-                        if (obj.getBoolean("error") == false) {
-                            JSONArray commentsObj = obj.getJSONArray("messages");
-
-                            for (int i = 0; i < commentsObj.length(); i++) {
-                                JSONObject commentObj = (JSONObject) commentsObj.get(i);
-
-                                String commentId = commentObj.getString("message_id");
-                                String commentText = commentObj.getString("message");
-                                String createdAt = commentObj.getString("created_at");
-
-                                JSONObject userObj = commentObj.getJSONObject("user");
-                                String userId = userObj.getString("user_id");
-                                String userName = userObj.getString("username");
-                                User user = new User(userId, userName, null);
-
-                                Message message = new Message();
-                                message.setId(commentId);
-                                message.setMessage(commentText);
-                                message.setCreatedAt(createdAt);
-                                message.setUser(user);
-
-                                messageArrayList.add(message);
-                            }
-
-                            mAdapter.notifyDataSetChanged();
-                            if (mAdapter.getItemCount() > 1) {
-                                recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
-                            }
-
-                        }
-                    } catch (JSONException e) {
-                        Log.e(TAG, "json parsing error: " + e.getMessage());
-                    }
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    NetworkResponse networkResponse = error.networkResponse;
-                    Log.e(TAG, "Volley error: " + error.getMessage() + ", code: " + networkResponse);
-                }
-            });
-
-            //Adding request to request queue
-            MyApplication.getInstance().addToRequestQueue(strReq);
-        }
-        */
 }

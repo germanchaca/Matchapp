@@ -51,6 +51,8 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_chat_room" />
+    <include layout="@layout/background_retry_layout"/>
+
 
 </android.support.design.widget.CoordinatorLayout>
 

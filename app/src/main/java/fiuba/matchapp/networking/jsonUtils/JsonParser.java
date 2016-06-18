@@ -47,7 +47,7 @@ public class JsonParser {
 
             int unread = chatRoomObj.getInt("Unread");
 
-            ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage.getMessage(),lastMessage.getCreatedAt(), unread);
+            ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage,lastMessage.getCreatedAt(), unread);
 
             return  chatRoom;
         } catch (JSONException e) {
@@ -56,7 +56,7 @@ public class JsonParser {
         return null;
     }
 
-    public static List<Message> getMessagesFromJSONResponse(JSONObject response, String messageId){
+    public static List<Message> getMessagesFromJSONResponse(JSONObject response){
         ArrayList<Message> messages= new ArrayList<>();
 
         try {
