@@ -22,7 +22,6 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
 import fiuba.matchapp.networking.httpRequests.PostMatchRequest;
-import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
 import fiuba.matchapp.view.RippleAnimation;
 
 public class fragmentPlayMatching extends Fragment {
@@ -69,8 +68,6 @@ public class fragmentPlayMatching extends Fragment {
         builder.show();
     }
     private void initCardstack(){
-
-        //agregarCandidatosDePrueba();
 
         GetMatchCandidatesRequest request = new GetMatchCandidatesRequest() {
             @Override

@@ -49,10 +49,6 @@ public class MainActivity extends GetLocationActivity {
         initFragments();
           //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();
-        //para el getLocationActivity
-
-        //locationServiceConnect();
-
 
     }
 
@@ -74,7 +70,7 @@ public class MainActivity extends GetLocationActivity {
         fragmentChats = new OpenChatsFragment();
         fragmentPlayMatching = new fragmentPlayMatching();
         setCurrentTabFragment(1);
-        super.initUserLastLocation();
+        //super.initUserLastLocation();
     }
 
     @Override
