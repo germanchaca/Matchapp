@@ -3,6 +3,7 @@ package fiuba.matchapp.networking.gcm;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -88,6 +89,7 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             pushNotification.putExtra("user_id", userId);
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+            Log.d(TAG,"New match received from user_id: " + userId );
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
             notificationUtils.playNotificationSound();
         }else {

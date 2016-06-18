@@ -7,14 +7,18 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.pkmmte.view.CircularImageView;
+
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.utils.ImageBase64;
 
 /**
  * Created by german on 5/23/2016.
@@ -39,6 +43,17 @@ public class NewMatchActivity extends AppCompatActivity {
         User user = MyApplication.getInstance().getPrefManager().getUser();
 
         setContentView(R.layout.activity_new_match);
+
+        CircularImageView profile_img_left = (CircularImageView) findViewById(R.id.profile_img_left);
+
+        if(!TextUtils.isEmpty(user.getPhotoProfile())){
+            profile_img_left.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
+        }
+
+        CircularImageView profile_img_right = (CircularImageView) findViewById(R.id.profile_img_right);
+        if(!TextUtils.isEmpty(user.getPhotoProfile())){
+            profile_img_right.setImageBitmap(ImageBase64.Base64ToBitmap(userMatched.getPhotoProfile()));
+        }
 
         initButtonStartChatConversation();
 

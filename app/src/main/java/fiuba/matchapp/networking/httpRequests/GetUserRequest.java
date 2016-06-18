@@ -83,8 +83,8 @@ public abstract class GetUserRequest {
                         String response = new String(error.networkResponse.data, "utf-8");
                         try {
                             JSONObject obj = new JSONObject(response);
-                            String message = obj.getString("Mensaje");
-                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
+                            //String message = obj.getString("Mensaje");
+                            Log.e(TAG, "Volley error: "  + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
                                 onGetUserRequestFailedUserConnectionError();
