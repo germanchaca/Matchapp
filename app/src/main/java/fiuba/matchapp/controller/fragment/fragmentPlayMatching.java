@@ -21,6 +21,8 @@ import fiuba.matchapp.adapter.SwipeDeckAdapter;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
+import fiuba.matchapp.networking.httpRequests.PostMatchRequest;
+import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
 import fiuba.matchapp.view.RippleAnimation;
 
 public class fragmentPlayMatching extends Fragment {
@@ -87,10 +89,7 @@ public class fragmentPlayMatching extends Fragment {
             protected void onGetMatchCandidatesRequestSuccess(List<User> user) {
                 if(user.size() == 0){
                     stopAnimation();
-
                     showLimitDayErrorDialog();
-
-                    //TODO mostrar no hay candidatos
                 }else {
 
                     adapter = new SwipeDeckAdapter(user, getActivity(),buttonInfo);
@@ -143,11 +142,30 @@ public class fragmentPlayMatching extends Fragment {
             @Override
             public void cardSwipedLeft(int position) {
                 Log.i("MainActivity", "card was swiped left, position in adapter: " + position);
+
             }
 
             @Override
             public void cardSwipedRight(int position) {
                 Log.i("MainActivity", "card was swiped right, position in adapter: " + position);
+                User user = (User) adapter.getItem(position);
+                PostMatchRequest request = new PostMatchRequest(user.getId()) {
+                    @Override
+                    protected void onPostMatchRequestFailedDefaultError() {
+                        showConnectionError();
+                    }
+
+                    @Override
+                    protected void onPostMatchRequestFailedUserConnectionError() {
+                        showConnectionError();
+                    }
+
+                    @Override
+                    protected void onPostMatchRequestSuccess() {
+                        showConnectionError();
+                    }
+                };
+                request.make();
             }
 
             @Override
