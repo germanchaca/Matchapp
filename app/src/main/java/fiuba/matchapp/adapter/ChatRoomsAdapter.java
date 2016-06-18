@@ -2,6 +2,7 @@ package fiuba.matchapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -9,12 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.pkmmte.view.CircularImageView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.model.DateHelper;
 import fiuba.matchapp.model.ChatRoom;
+import fiuba.matchapp.utils.ImageBase64;
 
 public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.ViewHolder> {
     private Context mContext;
@@ -23,6 +27,8 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name, message, timestamp, count;
+        private  CircularImageView circleImageProfile;
+
 
         public ViewHolder(View view) {
             super(view);
@@ -30,6 +36,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
             message = (TextView) view.findViewById(R.id.message);
             timestamp = (TextView) view.findViewById(R.id.timestamp);
             count = (TextView) view.findViewById(R.id.count);
+            circleImageProfile = (CircularImageView) view.findViewById(R.id.profile_img);
         }
     }
 
@@ -46,6 +53,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_rooms_list_row, parent, false);
+
 
         return new ViewHolder(itemView);
     }
@@ -65,6 +73,9 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
         }
 
         holder.timestamp.setText(DateHelper.getTimeStamp(chatRoom.getTimestamp(), mContext));
+        if (!TextUtils.isEmpty(chatRoom.getUser().getPhotoProfile())){
+            holder.circleImageProfile.setImageBitmap(ImageBase64.Base64ToBitmap(chatRoom.getUser().getPhotoProfile()));
+        }
     }
 
     @Override
