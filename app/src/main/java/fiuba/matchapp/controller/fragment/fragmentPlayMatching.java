@@ -88,15 +88,7 @@ public class fragmentPlayMatching extends Fragment {
                 if(user.size() == 0){
                     stopAnimation();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(getResources().getString(R.string.swipe_no_more));
-                    builder.setPositiveButton(getResources().getString(R.string.swipe_no_more_ok), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            showRetryButtonEnabled();
-                        }
-                    });
-
-                    builder.show();
+                    showLimitDayErrorDialog();
 
                     //TODO mostrar no hay candidatos
                 }else {
@@ -109,6 +101,12 @@ public class fragmentPlayMatching extends Fragment {
             }
 
             @Override
+            protected void onLimitDayError() {
+                showLimitDayErrorDialog();
+
+            }
+
+            @Override
             protected void logout() {
                 stopAnimation();
                 MyApplication.getInstance().logout();
@@ -117,6 +115,18 @@ public class fragmentPlayMatching extends Fragment {
         startAnimation();
         request.make();
 
+    }
+
+    private void showLimitDayErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getResources().getString(R.string.swipe_no_more));
+        builder.setPositiveButton(getResources().getString(R.string.swipe_no_more_ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                showRetryButtonEnabled();
+            }
+        });
+
+        builder.show();
     }
 
     private void showRetryButtonEnabled() {

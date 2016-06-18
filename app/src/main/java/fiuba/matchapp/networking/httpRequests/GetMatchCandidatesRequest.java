@@ -92,7 +92,10 @@ public abstract class GetMatchCandidatesRequest {
                         }else if (error.networkResponse.statusCode == 401) {
                             onErrorNoAuth();
                             return;
-                        }else {
+                        }else if (error.networkResponse.statusCode == 403) {
+                            onLimitDayError();
+                            return;
+                        } else{
                             onGetMatchCandidatesRequestFailedDefaultError();
                         }
 
@@ -108,6 +111,8 @@ public abstract class GetMatchCandidatesRequest {
         };
         return errorListener;
     }
+
+    protected abstract void onLimitDayError();
 
 
     private void onSuccessResponse(String response) throws JSONException {
