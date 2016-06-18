@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
@@ -123,7 +124,7 @@ public class MainActivity extends GetLocationActivity {
                         protected void onGetUserRequestSuccess(User user) {
                             Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
 
-                            i.putExtra("new_match_user", (Serializable) user);
+                            i.putExtra("new_match_user", (Parcelable) user);
 
                             startActivity(i);
                             finish();

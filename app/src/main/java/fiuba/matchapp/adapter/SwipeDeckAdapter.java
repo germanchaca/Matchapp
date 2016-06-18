@@ -2,6 +2,7 @@ package fiuba.matchapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.util.Log;
@@ -63,9 +64,9 @@ public class SwipeDeckAdapter extends BaseAdapter {
         }
         ImageView imageView = (ImageView) v.findViewById(R.id.offer_image);
         TextView textView = (TextView) v.findViewById(R.id.sample_text);
-        TextView subtitleView = (TextView) v.findViewById(R.id.subtitle);
+        TextView subtitleView = (TextView) v.findViewById(R.id.subtitle_text);
 
-        final User user = data.get(position);
+        final User user = (User) getItem(position);
 
         if(!TextUtils.isEmpty(user.getPhotoProfile())){
             imageView.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
@@ -97,7 +98,7 @@ public class SwipeDeckAdapter extends BaseAdapter {
 
     private void startProfileActivity(View v,User user) {
         Intent i = new Intent(v.getContext(), ProfileActivity.class);
-        i.putExtra("user", (Serializable) user);
+        i.putExtra("user", (Parcelable) user);
         v.getContext().startActivity(i);
     }
 }

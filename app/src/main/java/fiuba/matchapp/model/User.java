@@ -26,11 +26,8 @@ public class User implements Serializable, Parcelable {
     public void setAge(int age) {
         this.age = age;
     }
+    public User(){
 
-    public User() {
-        this.id = "0";
-        this.photoProfile = "";
-        this.interests = new ArrayList<>();
     }
 
     protected User(Parcel in) {
@@ -42,6 +39,9 @@ public class User implements Serializable, Parcelable {
         genre = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        age = in.readInt();
+        photoProfile = in.readString();
+        //in.readTypedList(interests,UserInterest.CREATOR);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -150,7 +150,8 @@ public class User implements Serializable, Parcelable {
         dest.writeString(this.genre);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
+        dest.writeInt(this.age);
         dest.writeString(this.photoProfile);
-        dest.writeTypedList(this.interests);
+        //dest.writeTypedList(this.interests);
     }
 }

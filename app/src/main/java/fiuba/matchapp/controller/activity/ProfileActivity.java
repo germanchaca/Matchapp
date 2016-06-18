@@ -6,6 +6,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ import me.gujun.android.taggroup.TagGroup;
  * Created by german on 4/19/2016.
  */
 public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = "ProfileActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,39 +40,38 @@ public class ProfileActivity extends AppCompatActivity {
         CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         ImageView imageView = (ImageView) findViewById(R.id.user_image);
 
-        EditText txtName = (EditText) findViewById(R.id.txtName);
-        EditText txtAlias = (EditText) findViewById(R.id.txtAlias);
-        EditText txtAge = (EditText) findViewById(R.id.txtAge);
+        TextView txtName = (TextView) findViewById(R.id.txtName);
+        TextView txtAge = (TextView) findViewById(R.id.txtAge);
         TextView txtEditAddress = (TextView) findViewById(R.id.txtLocation);
 
         setSupportActionBar(toolbar);
 
         Intent i = getIntent();
-        User user = (User) i.getSerializableExtra("user");
+        User user = i.getParcelableExtra("user");
+        Log.d(TAG, user.getAlias());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbarLayout.setTitle(user.getAlias());
 
-        Map<String, List<UserInterest>> commonInterests = InterestsUtils.getCommonInterests(user.getInterests(), MyApplication.getInstance().getPrefManager().getUser().getInterests());
+        //Map<String, List<UserInterest>> commonInterests = InterestsUtils.getCommonInterests(user.getInterests(), MyApplication.getInstance().getPrefManager().getUser().getInterests());
 
-        List<UserInterest> commonInterestsLst = commonInterests.get(InterestsUtils.COMMON_INTERESTS);
-        List<UserInterest> moreInterestsLst = commonInterests.get(InterestsUtils.MORE_INTERESTS);
+        //List<UserInterest> commonInterestsLst = commonInterests.get(InterestsUtils.COMMON_INTERESTS);
+        //List<UserInterest> moreInterestsLst = commonInterests.get(InterestsUtils.MORE_INTERESTS);
 
-        String[] commonTagGroup  = commonInterestsLst.toArray(new String[0]);
-        String[] moreTagGroup  = moreInterestsLst.toArray(new String[0]);
+        //String[] commonTagGroup  = commonInterestsLst.toArray(new String[0]);
+        //String[] moreTagGroup  = moreInterestsLst.toArray(new String[0]);
 
-        TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
-        mTagGroup.setTags(commonTagGroup);
+        //TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        //mTagGroup.setTags(commonTagGroup);
 
-        TagGroup mTagGroupMore = (TagGroup) findViewById(R.id.tag_group_more);
-        mTagGroupMore.setTags(moreTagGroup);
+        //TagGroup mTagGroupMore = (TagGroup) findViewById(R.id.tag_group_more);
+        //mTagGroupMore.setTags(moreTagGroup);
 
         if(!TextUtils.isEmpty(user.getPhotoProfile())){
             imageView.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
         }
         txtName.setText(user.getName());
-        txtAlias.setText(user.getAlias());
-        txtAge.setText(user.getAge());
+        txtAge.setText( Integer.toString(user.getAge()));
 
         try {
             txtEditAddress.setText(AdressUtils.getParsedAddress(user.getLatitude(),user.getLongitude()));

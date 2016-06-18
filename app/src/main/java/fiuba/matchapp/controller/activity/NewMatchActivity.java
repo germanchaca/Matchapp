@@ -31,8 +31,8 @@ public class NewMatchActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        userMatched = (User) intent.getSerializableExtra("new_match_user");
-        chatRoomId = intent.getStringExtra("chat_room_id");
+        userMatched = intent.getParcelableExtra("new_match_user");
+        //chatRoomId = intent.getStringExtra("chat_room_id");
 
         //setear la foto en base 64 guardada
         User user = MyApplication.getInstance().getPrefManager().getUser();
@@ -59,7 +59,7 @@ public class NewMatchActivity extends AppCompatActivity {
 
     private void startChatting() {
         Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
-        intent.putExtra("chat_room_id", chatRoomId);
+        //intent.putExtra("chat_room_id", chatRoomId);
         intent.putExtra("name", userMatched.getName());
         startActivity(intent);
         finish();

@@ -88,8 +88,8 @@ public class fragmentPlayMatching extends Fragment {
                 if(user.size() == 0){
                     //TODO mostrar no hay candidatos
                 }else {
-                    ArrayList<User> users = (ArrayList<User>) user;
-                    adapter = new SwipeDeckAdapter(users, getActivity(),buttonInfo);
+
+                    adapter = new SwipeDeckAdapter(user, getActivity(),buttonInfo);
                     fillCardStack();
                 }
                 stopAnimation();

@@ -53,7 +53,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/icName"
                 android:layout_toRightOf="@id/icName"
-                android:text="Kevin Otero"
+                android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content" />
 
@@ -97,7 +97,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/icEdad"
                 android:layout_toRightOf="@id/icEdad"
-                android:text="34"
+
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content" />
 
@@ -141,7 +141,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/icLocation"
                 android:layout_toRightOf="@id/icLocation"
-                android:text="Buenos aires (6.0km) "
+
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/profile_text_content" />
 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 
 /**
@@ -119,6 +120,10 @@ public abstract class GetMatchCandidatesRequest {
             JSONArray obj = objJSon.getJSONArray("users");
             users = JsonParser.getUsersFromJSONresponse(obj);
         }
+/*
+        for(User use: users){
+            Log.d(TAG, use.getName());
+        }*/
         onGetMatchCandidatesRequestSuccess(users);
     }
     private void onErrorNoAuth() {
