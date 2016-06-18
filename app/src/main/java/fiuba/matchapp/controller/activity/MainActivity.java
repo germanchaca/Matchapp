@@ -24,6 +24,7 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.controller.fragment.OpenChatsFragment;
 import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
+import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
@@ -100,6 +101,24 @@ public class MainActivity extends GetLocationActivity {
         if (intent.hasExtra("type")) {
             String type = intent.getStringExtra("type");
             if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
+
+                if (intent.hasExtra("chat_room_id")) {
+                    String chat_room_id = intent.getStringExtra("chat_room_id");
+                    if (intent.hasExtra("message_id")) {
+                        String message_id = intent.getStringExtra("message_id");
+                        if (intent.hasExtra("message")) {
+                            String messageBody = intent.getStringExtra("message");
+                            if (intent.hasExtra("created_at")) {
+                                String timestamp = intent.getStringExtra("created_at");
+
+                                Message message = new Message(message_id,messageBody,timestamp,Message.STATUS_UNREAD,"0");
+                                fragmentChats.updateRow(chat_room_id,message);
+                            }
+                        }
+                    }
+                }
+
+
                 //TODO cambiar de color un icono o poner un badge
 
             }else if(type == Config.PUSH_TYPE_NEW_MATCH){

@@ -7,11 +7,6 @@ public class ChatRoom implements Serializable {
     String lastMessage;
     String timestamp;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    String name;
     int unreadCount;
     User user;
 
@@ -35,7 +30,7 @@ public class ChatRoom implements Serializable {
     }
 
     public String getName() {
-        return this.name;
+        return this.user.getName();
     }
 
 

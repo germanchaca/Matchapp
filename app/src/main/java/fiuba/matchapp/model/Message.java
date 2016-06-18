@@ -3,6 +3,8 @@ package fiuba.matchapp.model;
 import java.io.Serializable;
 
 public class Message implements Serializable {
+
+    public static final String STATUS_UNREAD = "D";
     String id;
     String message;
     String createdAt;
