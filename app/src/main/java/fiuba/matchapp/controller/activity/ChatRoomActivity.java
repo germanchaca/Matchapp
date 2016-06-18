@@ -80,9 +80,23 @@ public class ChatRoomActivity extends AppCompatActivity {
         mAdapter = new ChatRoomThreadAdapter(this, messageArrayList, selfUserId);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+
         recyclerView.setLayoutManager(layoutManager);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(isLastItemDisplaying(recyclerView)){
+                    loadMore();
+                }
+            }
+        });
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -109,6 +123,19 @@ public class ChatRoomActivity extends AppCompatActivity {
             fetchChatThread(chatRoom.getId());
         }
 
+    }
+
+    private void loadMore() {
+        fetchChatThread(this.chatRoom.getLastMessage().getId());
+    }
+
+    private boolean isLastItemDisplaying(RecyclerView recyclerView) {
+        if (recyclerView.getAdapter().getItemCount() != 0) {
+            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            if (lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition == recyclerView.getAdapter().getItemCount() - 1)
+                return true;
+        }
+        return false;
     }
 
     private void initViews() {
@@ -270,21 +297,24 @@ public class ChatRoomActivity extends AppCompatActivity {
             protected void onGetChatHistoryRequestSuccess(List<Message> chatHistory) {
                 progressDialog.hide();
 
-                ArrayList<Message> temp = new ArrayList<>();
-                temp.addAll(chatHistory);
-                temp.addAll(messageArrayList);
-                messageArrayList.clear();
-                messageArrayList.addAll(temp);
+                if(chatHistory.size() > 0) {
+                    ArrayList<Message> temp = new ArrayList<>();
+                    temp.addAll(chatHistory);
+                    temp.addAll(messageArrayList);
+                    messageArrayList.clear();
+                    messageArrayList.addAll(temp);
 
-                mAdapter.notifyDataSetChanged();
-                if (mAdapter.getItemCount() > 1) {
-                    recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+                    mAdapter.notifyDataSetChanged();
+                    if (mAdapter.getItemCount() > 1) {
+                        recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+                    }
                 }
             }
 
+
             @Override
             protected void logout() {
-
+                MyApplication.getInstance().logout();
             }
         };
         request.make();

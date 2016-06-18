@@ -54,7 +54,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatRoom chatRoom = chatRoomArrayList.get(position);
         holder.name.setText(chatRoom.getName());
-        holder.message.setText(chatRoom.getLastMessage());
+        holder.message.setText(chatRoom.getLastMessage().getMessage());
 
         //Ahow
         if (chatRoom.getUnreadCount() > 0) {
