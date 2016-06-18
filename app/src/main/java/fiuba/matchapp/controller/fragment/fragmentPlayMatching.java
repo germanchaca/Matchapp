@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -35,6 +36,8 @@ public class fragmentPlayMatching extends Fragment {
     RelativeLayout btnSwipeRight;
     private FrameLayout container;
     private FloatingActionButton buttonInfo;
+    private RelativeLayout containerRetry;
+    private ImageView retryImage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class fragmentPlayMatching extends Fragment {
         });
         builder.setNegativeButton(getResources().getString(R.string.connection_problem_candidates_later), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                //TODO show retryButton
+                showRetryButtonEnabled();
             }
         });
 
@@ -86,6 +89,18 @@ public class fragmentPlayMatching extends Fragment {
             @Override
             protected void onGetMatchCandidatesRequestSuccess(List<User> user) {
                 if(user.size() == 0){
+                    stopAnimation();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(getResources().getString(R.string.swipe_no_more));
+                    builder.setPositiveButton(getResources().getString(R.string.swipe_no_more_ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            showRetryButtonEnabled();
+                        }
+                    });
+
+                    builder.show();
+
                     //TODO mostrar no hay candidatos
                 }else {
 
@@ -105,6 +120,14 @@ public class fragmentPlayMatching extends Fragment {
         startAnimation();
         request.make();
 
+    }
+
+    private void showRetryButtonEnabled() {
+        container.setVisibility(View.GONE);
+        rippleBackground1.setVisibility(View.GONE);
+        btnSwipeLeft.setVisibility(View.GONE);
+        btnSwipeRight.setVisibility(View.GONE);
+        containerRetry.setVisibility(View.VISIBLE);
     }
 
     private void fillCardStack() {
@@ -168,11 +191,22 @@ public class fragmentPlayMatching extends Fragment {
                 cardStack.swipeTopCardRight(180);
             }
         });
+
+        containerRetry = (RelativeLayout) view.findViewById(R.id.contentRetry);
+        containerRetry.setVisibility(View.GONE);
+        retryImage = (ImageView) view.findViewById(R.id.retryImage);
+        retryImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initCardstack();
+            }
+        });
     }
 
     private void startAnimation() {
         //if it's not running
         if (!rippleBackground1.isRippleAnimationRunning()) {
+            containerRetry.setVisibility(View.GONE);
             container.setVisibility(View.GONE);
             rippleBackground1.setVisibility(View.VISIBLE);
             btnSwipeLeft.setVisibility(View.GONE);
@@ -183,6 +217,7 @@ public class fragmentPlayMatching extends Fragment {
 
     private void stopAnimation() {
         if (rippleBackground1.isRippleAnimationRunning()) {
+            containerRetry.setVisibility(View.GONE);
             rippleBackground1.stopRippleAnimation();
             rippleBackground1.setVisibility(View.GONE);
             btnSwipeLeft.setVisibility(View.VISIBLE);

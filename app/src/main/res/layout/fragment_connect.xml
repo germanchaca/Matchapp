@@ -12,5 +12,5 @@ and CardStack-->
 
     <include layout="@layout/background_ripple_layout"/>
 
-
+    <include layout="@layout/background_retry_layout"/>
 </FrameLayout>

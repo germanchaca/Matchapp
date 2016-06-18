@@ -133,4 +133,8 @@
     <string name="swipe_dislike">No</string>
 
     <string name="signing_out">Cerrando sesión...</string>
+
+    <string name="swipe_no_more">Alcanzaste el límite de candidatos por día, vuelve a intentar más tarde</string>
+    <string name="swipe_no_more_ok">Ok</string>
+    <string name="retry">Buscar candidatos</string>
 </resources>

@@ -50,6 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/card_top_shadow_margin_bottom"
+                    android:background="@drawable/top_shadow"
                     >
                     <TextView
                         android:id="@+id/sample_text"

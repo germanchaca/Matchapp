@@ -125,7 +125,11 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     @Override
     public void onBackPressed() {
-        onServerConnectionFailedBackPressed();
+        if(btnCommitChanges.getVisibility() == View.VISIBLE){
+            onServerConnectionFailedBackPressed();
+        }else{
+            back();
+        }
     }
 
     private void initViews(final User user) {

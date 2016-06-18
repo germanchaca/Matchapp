@@ -1,0 +1,34 @@
+<!--this layout contains ripple background animation and Imageview
+In ripple animation tag we have set some properties -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contentRetry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    >
+     <ImageView
+                android:id="@+id/retryImage"
+
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_autorenew_24dp"
+                android:background="?attr/selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/subtitleRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/ripple_subtitle"
+                android:layout_below="@+id/retryImage"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="@string/retry"/>
+
+
+</RelativeLayout>
+
+

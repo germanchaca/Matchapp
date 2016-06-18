@@ -53,19 +53,19 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbarLayout.setTitle(user.getAlias());
 
-        //Map<String, List<UserInterest>> commonInterests = InterestsUtils.getCommonInterests(user.getInterests(), MyApplication.getInstance().getPrefManager().getUser().getInterests());
+        Map<String, List<UserInterest>> commonInterests = InterestsUtils.getCommonInterests(user.getInterests(), MyApplication.getInstance().getPrefManager().getUser().getInterests());
 
-        //List<UserInterest> commonInterestsLst = commonInterests.get(InterestsUtils.COMMON_INTERESTS);
-        //List<UserInterest> moreInterestsLst = commonInterests.get(InterestsUtils.MORE_INTERESTS);
+        List<UserInterest> commonInterestsLst = commonInterests.get(InterestsUtils.COMMON_INTERESTS);
+        List<UserInterest> moreInterestsLst = commonInterests.get(InterestsUtils.MORE_INTERESTS);
 
-        //String[] commonTagGroup  = commonInterestsLst.toArray(new String[0]);
-        //String[] moreTagGroup  = moreInterestsLst.toArray(new String[0]);
+        String[] commonTagGroup  = commonInterestsLst.toArray(new String[0]);
+        String[] moreTagGroup  = moreInterestsLst.toArray(new String[0]);
 
-        //TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
-        //mTagGroup.setTags(commonTagGroup);
+        TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
+        mTagGroup.setTags(commonTagGroup);
 
-        //TagGroup mTagGroupMore = (TagGroup) findViewById(R.id.tag_group_more);
-        //mTagGroupMore.setTags(moreTagGroup);
+        TagGroup mTagGroupMore = (TagGroup) findViewById(R.id.tag_group_more);
+        mTagGroupMore.setTags(moreTagGroup);
 
         if(!TextUtils.isEmpty(user.getPhotoProfile())){
             imageView.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
