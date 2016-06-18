@@ -30,14 +30,12 @@ import fiuba.matchapp.utils.ImageBase64;
  */
 public class SwipeDeckAdapter extends BaseAdapter {
 
-    private final FloatingActionButton btnInfo;
     private List<User> data;
     private Context context;
 
-    public SwipeDeckAdapter(List<User> data, Context context, FloatingActionButton btnInfo) {
+    public SwipeDeckAdapter(List<User> data, Context context) {
         this.data = data;
         this.context = context;
-        this.btnInfo = btnInfo;
     }
 
     @Override
@@ -66,7 +64,7 @@ public class SwipeDeckAdapter extends BaseAdapter {
         TextView textView = (TextView) v.findViewById(R.id.sample_text);
         TextView subtitleView = (TextView) v.findViewById(R.id.subtitle_text);
 
-        final User user = (User) getItem(position);
+        User user = (User) getItem(position);
 
         if(!TextUtils.isEmpty(user.getPhotoProfile())){
             imageView.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
@@ -84,20 +82,16 @@ public class SwipeDeckAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Log.i("Layer type: ", Integer.toString(v.getLayerType()));
                 Log.i("Hwardware Accel type:", Integer.toString(View.LAYER_TYPE_HARDWARE));
-                startProfileActivity(v,user);
+                startProfileActivity(v,position);
             }
         });
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startProfileActivity(v,user);
-            }
-        });
+
         return v;
     }
 
-    private void startProfileActivity(View v,User user) {
+    private void startProfileActivity(View v,int position) {
         Intent i = new Intent(v.getContext(), ProfileActivity.class);
+        User user = (User) getItem(position);
         i.putExtra("user", (Parcelable) user);
         v.getContext().startActivity(i);
     }

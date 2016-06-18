@@ -100,7 +100,9 @@ public abstract class GetMatchCandidatesRequest {
                         }
 
                     }else {
+
                         make();
+                        //onGetMatchCandidatesRequestFailedUserConnectionError();
                     }
 
                 } catch (UnsupportedEncodingException e) {
