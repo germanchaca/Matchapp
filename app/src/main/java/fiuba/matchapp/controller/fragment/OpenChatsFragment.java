@@ -52,7 +52,7 @@ public class OpenChatsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_open_chats, container, false);
         init(view);
 
-        fetchChatRooms();
+        //fetchChatRooms();
 
         return view;
     }

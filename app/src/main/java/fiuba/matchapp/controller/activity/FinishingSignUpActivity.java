@@ -154,6 +154,7 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
 
         final User user = MyApplication.getInstance().getPrefManager().getUser();
 
+        Log.d(TAG,user.getName());
         final List<UserInterest> selectedInterests = user.getInterests();
 
         for(Interest interest : data){
