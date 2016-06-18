@@ -802,7 +802,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     private void displayAlertDialog() {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder alert = new AlertDialog.Builder(EditableProfileActivity.this);
         alert.setMessage(getResources().getString(R.string.connection_problem));
         alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
             @Override
