@@ -80,7 +80,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         }else {
             titleChat.setText(this.userMatched.getAlias());
-            if(!TextUtils.isEmpty(this.chatRoom.getUser().getPhotoProfile())){
+            if(!TextUtils.isEmpty(this.userMatched.getPhotoProfile())){
                 circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.userMatched.getPhotoProfile()));
             }
         }

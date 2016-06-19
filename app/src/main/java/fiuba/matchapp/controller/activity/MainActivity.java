@@ -147,9 +147,7 @@ public class MainActivity extends GetLocationActivity {
                             Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
 
                             i.putExtra("new_match_user", (Parcelable) user);
-
                             startActivity(i);
-                            finish();
                         }
 
                         @Override

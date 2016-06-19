@@ -85,8 +85,8 @@ public abstract class GetChatOpenRoomsRequest {
                         String response = new String(error.networkResponse.data, "utf-8");
                         try {
                             JSONObject obj = new JSONObject(response);
-                            String message = obj.getString("Mensaje");
-                            Log.e(TAG, "Volley error: " + message + ", code: " + error.networkResponse.statusCode);
+                            //String message = obj.getString("Mensaje");
+                            Log.e(TAG, "Volley error: " + ", code: " + error.networkResponse.statusCode);
 
                             if  (error instanceof NoConnectionError) {
                                 onGetChatOpenRoomsRequestFailedUserConnectionError();
@@ -117,7 +117,7 @@ public abstract class GetChatOpenRoomsRequest {
 
     private void onSuccessResponse(String response) throws JSONException {
 
-        JSONArray jsonResponse = new JSONArray(response);
+        JSONObject jsonResponse = new JSONObject(response);
 
         List<ChatRoom> chatRooms = JsonParser.getChatRoomsFromJSONResponse(jsonResponse);
 
