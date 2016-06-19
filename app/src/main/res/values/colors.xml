@@ -42,7 +42,7 @@
   <color name="login_icon">@color/white</color>
   <color name="intro_icon">@color/white</color>
 
-  <color name="traslusentBackground">#7f000000</color>
+  <color name="traslusentBackground">#bb000000</color>
   <color name="deckButtonsColor">#ff21272b</color>
   <color name="trasparent">#00ffffff</color>
 

@@ -21,8 +21,10 @@ import fiuba.matchapp.model.Message;
 public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static String TAG = ChatRoomThreadAdapter.class.getSimpleName();
+    private final LoadEarlierMessages mLoadEarlierMessages;
 
     private String userId;
+    private int MORE = 200;
     private int SELF = 100;
     private static String today;
 
@@ -43,6 +45,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.mContext = mContext;
         this.messageArrayList = messageArrayList;
         this.userId = userId;
+        mLoadEarlierMessages = (LoadEarlierMessages) mContext;
 
         Calendar calendar = Calendar.getInstance();
         today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
@@ -52,7 +55,9 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
 
-        if (viewType == SELF) {
+        if(viewType == MORE){
+            itemView =LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_loadmore, parent, false);
+        } else if (viewType == SELF) {
             // mi mensaje
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chat_item_self, parent, false);
@@ -72,6 +77,8 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Message message = messageArrayList.get(position);
         if (message.getUserId().equals(userId)) {
             return SELF;
+        }else if (position == 0) {
+            return MORE;
         }
 
         return position;
