@@ -58,6 +58,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private ImageView retryImage;
     private TextView subtitleRetry;
     private User userMatched;
+    private boolean hasChatRoomId = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         Intent intent = getIntent();
         if(intent.hasExtra("chatroom")){
             this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
+            this.userMatched = chatRoom.getUser();
+            hasChatRoomId = true;
         }
         if(intent.hasExtra("user")){
             this.userMatched = intent.getParcelableExtra("user");
@@ -74,17 +77,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
 
-        if(chatRoom != null){
-            titleChat.setText(this.chatRoom.getUser().getAlias());
-            if(!TextUtils.isEmpty(this.chatRoom.getUser().getPhotoProfile())){
-                circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.chatRoom.getUser().getPhotoProfile()));
-            }
-        }else {
-            titleChat.setText(this.userMatched.getAlias());
-            if(!TextUtils.isEmpty(this.userMatched.getPhotoProfile())){
-                circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.userMatched.getPhotoProfile()));
-            }
+
+        titleChat.setText(this.userMatched.getAlias());
+        if(!TextUtils.isEmpty(this.userMatched.getPhotoProfile())){
+            circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.userMatched.getPhotoProfile()));
         }
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -99,16 +97,6 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(isLastItemDisplaying(recyclerView)){
-                    loadMore();
-                }
-            }
-        });
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -131,23 +119,18 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         progressDialog = new LockedProgressDialog(ChatRoomActivity.this, R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
-        if (this.chatRoom != null){
+        if (hasChatRoomId){
             fetchChatThread(chatRoom.getId());
         }
 
     }
 
     private void loadMore() {
-        fetchChatThread(this.chatRoom.getLastMessage().getId());
-    }
-
-    private boolean isLastItemDisplaying(RecyclerView recyclerView) {
-        if (recyclerView.getAdapter().getItemCount() != 0) {
-            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-            if (lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition == recyclerView.getAdapter().getItemCount() - 1)
-                return true;
+        if (hasChatRoomId) {
+            if(this.chatRoom.getLastMessage() != null){
+                fetchChatThread(this.chatRoom.getLastMessage().getId());
+            }
         }
-        return false;
     }
 
     private void initViews() {
@@ -326,6 +309,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
             @Override
             protected void logout() {
+                progressDialog.hide();
                 MyApplication.getInstance().logout();
             }
         };
@@ -337,6 +321,6 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
     @Override
     public void onLoadMore() {
-        fetchChatThread(chatRoom.getLastMessage().getId());
+        loadMore();
     }
 }
