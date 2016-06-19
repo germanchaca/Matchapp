@@ -48,9 +48,9 @@ public abstract class PutUpdateUserData {
 
         BaseStringRequest updateUserDataRequest = new BaseStringRequest(RestAPIContract.PUT_USER(user.getEmail()), getHeaders(), getBody() ,getResponseListener(), getErrorListener(), Request.Method.PUT);
 
-        updateUserDataRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+       // updateUserDataRequest.setRetryPolicy(new DefaultRetryPolicy(MY_SOCKET_TIMEOUT_MS,
+                //DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                //DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         MyApplication.getInstance().addToRequestQueue(updateUserDataRequest);
     }

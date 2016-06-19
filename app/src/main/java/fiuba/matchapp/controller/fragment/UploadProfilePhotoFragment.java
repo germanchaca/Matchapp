@@ -49,6 +49,7 @@ import fiuba.matchapp.controller.activity.MainActivity;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
+import fiuba.matchapp.networking.httpRequests.okhttp.PutPhotoProfileOkHttp;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.view.LockedProgressDialog;
 
@@ -265,7 +266,30 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
 
     private void sendPhotoToAppServer(final String profilePhoto) {
         progressDialog.show();
+        PutPhotoProfileOkHttp request = new PutPhotoProfileOkHttp(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
+            @Override
+            protected void onSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setPhotoProfile(profilePhoto);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+                launchMainActivity();
+            }
 
+            @Override
+            protected void onAuthError() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+
+            @Override
+            protected void onConnectionError() {
+                progressDialog.dismiss();
+                displayAlertDialog();
+            }
+        };
+        request.makeRequest();
+/*
         PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
             protected void onUpdatePhotoProfileSuccess() {
@@ -298,7 +322,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
 
 
         };
-        request.make();
+        request.make();*/
 
         Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
     }

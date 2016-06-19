@@ -3,11 +3,15 @@ package fiuba.matchapp.networking.httpRequests;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.HttpHeaderParser;
+
+import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -28,7 +32,12 @@ public class BaseStringRequest extends Request<String> {
                              Response.Listener<String> reponseListener, Response.ErrorListener errorListener, int method) {
         super(method, url, errorListener);
 
-        this.setShouldCache(Boolean.FALSE);
+
+        /*if(method != Request.Method.GET) {
+            this.setShouldCache(Boolean.FALSE);
+        }else {
+            this.setShouldCache(Boolean.TRUE);
+        }*/
 
         this.listener = reponseListener;
         this.params = params;
@@ -46,6 +55,10 @@ public class BaseStringRequest extends Request<String> {
         byte[] bodyArray =  this.body.getBytes(Charset.forName("UTF-8"));
         return bodyArray;
     }
+    protected Map<String, String> getParams()
+            throws com.android.volley.AuthFailureError {
+        return params;
+    };
 
     @Override
     public HashMap<String, String> getHeaders() {
@@ -55,6 +68,7 @@ public class BaseStringRequest extends Request<String> {
 
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
+        Log.d("BaseString", "entra");
         try {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers));
@@ -71,6 +85,8 @@ public class BaseStringRequest extends Request<String> {
     }
     @Override
     protected void deliverResponse(String response) {
+        Log.d("BaseString", "entraRes");
+
         listener.onResponse(response);
     }
 
