@@ -210,7 +210,7 @@ public abstract class PutUpdateUserData {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                onAppServerDefaultError();
+                make();
                 return;
             }
         };
