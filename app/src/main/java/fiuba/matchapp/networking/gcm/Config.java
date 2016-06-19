@@ -7,7 +7,7 @@ public class Config {
 
     // flag to identify whether to show single line
     // or multi line text in push notification tray
-    public static boolean appendNotificationMessages = true;
+    public static boolean appendNotificationMessages = false;
 
     // broadcast receiver intent filters
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
