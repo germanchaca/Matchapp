@@ -27,6 +27,7 @@ import java.util.List;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.ChatRoomThreadAdapter;
+import fiuba.matchapp.adapter.LoadEarlierMessages;
 import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
@@ -37,7 +38,7 @@ import fiuba.matchapp.networking.httpRequests.PostChatNewMessageRequest;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.view.LockedProgressDialog;
 
-public class ChatRoomActivity extends AppCompatActivity {
+public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMessages {
 
     private String TAG = ChatRoomActivity.class.getSimpleName();
 
@@ -332,5 +333,10 @@ public class ChatRoomActivity extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public void onLoadMore() {
+        fetchChatThread(chatRoom.getLastMessage().getId());
     }
 }

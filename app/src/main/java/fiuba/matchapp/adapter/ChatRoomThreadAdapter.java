@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,6 +31,11 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private Context mContext;
     private ArrayList<Message> messageArrayList;
+    private boolean isLoadEarlierMsgs = true;
+
+    public void setLoadEarlierMsgs(boolean isLoadEarlierMsgs) {
+        this.isLoadEarlierMsgs = isLoadEarlierMsgs;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView message, timestamp;
@@ -38,6 +44,14 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(view);
             message = (TextView) itemView.findViewById(R.id.message);
             timestamp = (TextView) itemView.findViewById(R.id.timestamp);
+        }
+    }
+    public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
+        private RelativeLayout btnLoadMore;
+
+        public LoadMoreViewHolder(View view) {
+            super(view);
+            btnLoadMore = (RelativeLayout) itemView.findViewById(R.id.containerLoadMore);
         }
     }
 
@@ -57,6 +71,8 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         if(viewType == MORE){
             itemView =LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_loadmore, parent, false);
+            return new LoadMoreViewHolder(itemView);
+
         } else if (viewType == SELF) {
             // mi mensaje
             itemView = LayoutInflater.from(parent.getContext())
@@ -86,15 +102,32 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        Message message = messageArrayList.get(position);
-        ((ViewHolder) holder).message.setText(message.getMessage());
 
-        String timestamp = DateHelper.getTimeStamp(message.getCreatedAt(), mContext);
+        if(getItemViewType(position) == MORE) {
+            if (isLoadEarlierMsgs) {
+                ((LoadMoreViewHolder) holder).btnLoadMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mLoadEarlierMessages != null) {
+                            mLoadEarlierMessages.onLoadMore();
+                        }
+                    }
+                });
+            }else {
+                ((LoadMoreViewHolder) holder).btnLoadMore.setVisibility(View.GONE);
+            }
+        }else {
+            Message message = messageArrayList.get(position);
+
+            ((ViewHolder) holder).message.setText(message.getMessage());
+
+            String timestamp = DateHelper.getTimeStamp(message.getCreatedAt(), mContext);
 
         /*if (message.getUserId() != null)
             timestamp = message.getUser().getName() + ", " + timestamp;*/
 
-        ((ViewHolder) holder).timestamp.setText(timestamp);
+            ((ViewHolder) holder).timestamp.setText(timestamp);
+        }
     }
 
     @Override
