@@ -71,7 +71,6 @@ public class fragmentPlayMatching extends Fragment {
         builder.show();
     }
     private void initCardstack(){
-        cardStack.setVisibility(View.VISIBLE);
         GetMatchCandidatesRequest request = new GetMatchCandidatesRequest() {
             @Override
             protected void onGetMatchCandidatesRequestFailedDefaultError() {
@@ -87,6 +86,8 @@ public class fragmentPlayMatching extends Fragment {
 
             @Override
             protected void onGetMatchCandidatesRequestSuccess(List<User> user) {
+                cardStack.setVisibility(View.VISIBLE);
+
                 if(user.size() == 0){
                     stopAnimation();
                     showLimitDayErrorDialog();
@@ -132,8 +133,8 @@ public class fragmentPlayMatching extends Fragment {
         rippleBackground1.setVisibility(View.GONE);
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeRight.setVisibility(View.GONE);
-        containerRetry.setVisibility(View.VISIBLE);
         cardStack.setVisibility(View.GONE);
+        containerRetry.setVisibility(View.VISIBLE);
     }
     private void startProfileActivity(View v,int position) {
         Intent i = new Intent(v.getContext(), ProfileActivity.class);
