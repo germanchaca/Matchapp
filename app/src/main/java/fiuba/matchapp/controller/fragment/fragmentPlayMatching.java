@@ -3,7 +3,9 @@ package fiuba.matchapp.controller.fragment;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import fiuba.cardstack.SwipeDeck;
 import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.SwipeDeckAdapter;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.controller.activity.ProfileActivity;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
 import fiuba.matchapp.networking.httpRequests.PostMatchRequest;
@@ -68,7 +71,7 @@ public class fragmentPlayMatching extends Fragment {
         builder.show();
     }
     private void initCardstack(){
-
+        cardStack.setVisibility(View.VISIBLE);
         GetMatchCandidatesRequest request = new GetMatchCandidatesRequest() {
             @Override
             protected void onGetMatchCandidatesRequestFailedDefaultError() {
@@ -89,11 +92,10 @@ public class fragmentPlayMatching extends Fragment {
                     showLimitDayErrorDialog();
                 }else {
 
-                    adapter = new SwipeDeckAdapter(user, getActivity(),buttonInfo);
+                    adapter = new SwipeDeckAdapter(user, getActivity());
                     fillCardStack();
                 }
                 stopAnimation();
-
             }
 
             @Override
@@ -131,22 +133,53 @@ public class fragmentPlayMatching extends Fragment {
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeRight.setVisibility(View.GONE);
         containerRetry.setVisibility(View.VISIBLE);
+        cardStack.setVisibility(View.GONE);
     }
-
+    private void startProfileActivity(View v,int position) {
+        Intent i = new Intent(v.getContext(), ProfileActivity.class);
+        User user = (User) adapter.getItem(position);
+        i.putExtra("user", (Parcelable) user);
+        v.getContext().startActivity(i);
+    }
     private void fillCardStack() {
         cardStack.setAdapter(adapter);
+
+        buttonInfo.setEnabled(true);
+
+        buttonInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfileActivity(v,0);
+            }
+        });
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
-            public void cardSwipedLeft(int position) {
+            public void cardSwipedLeft(final int position) {
                 Log.i("MainActivity", "card was swiped left, position in adapter: " + position);
-
+                if(position < adapter.getCount()){
+                    buttonInfo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startProfileActivity(v,position+1);
+                        }
+                    });
+                }
             }
 
             @Override
-            public void cardSwipedRight(int position) {
+            public void cardSwipedRight(final int position) {
                 Log.i("MainActivity", "card was swiped right, position in adapter: " + position);
+                if(position < adapter.getCount()){
+                    buttonInfo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startProfileActivity(v,position+1);
+                        }
+                    });
+                }
                 User user = (User) adapter.getItem(position);
-                PostMatchRequest request = new PostMatchRequest(user.getId()) {
+                Log.d("Swiped right:",user.getEmail());
+                PostMatchRequest request = new PostMatchRequest(user.getEmail()) {
                     @Override
                     protected void onPostMatchRequestFailedDefaultError() {
                         showConnectionError();
@@ -159,7 +192,7 @@ public class fragmentPlayMatching extends Fragment {
 
                     @Override
                     protected void onPostMatchRequestSuccess() {
-                        showConnectionError();
+                        //showConnectionError();
                     }
                 };
                 request.make();
@@ -168,6 +201,7 @@ public class fragmentPlayMatching extends Fragment {
             @Override
             public void cardsDepleted() {
                 Log.i("MainActivity", "no more cards");
+                buttonInfo.setEnabled(false);
                 initCardstack();
             }
 
@@ -189,6 +223,7 @@ public class fragmentPlayMatching extends Fragment {
         rippleBackground1.setVisibility(View.VISIBLE);
         container = (FrameLayout) view.findViewById(R.id.container);
         buttonInfo = (FloatingActionButton) view.findViewById(R.id.fb_info);
+        buttonInfo.setEnabled(false);
 
         cardStack = (SwipeDeck) view.findViewById(R.id.swipe_deck);
         cardStack.setHardwareAccelerationEnabled(true);
@@ -234,6 +269,7 @@ public class fragmentPlayMatching extends Fragment {
             btnSwipeLeft.setVisibility(View.GONE);
             btnSwipeRight.setVisibility(View.GONE);
             rippleBackground1.startRippleAnimation();
+            buttonInfo.setEnabled(false);
         }
     }
 

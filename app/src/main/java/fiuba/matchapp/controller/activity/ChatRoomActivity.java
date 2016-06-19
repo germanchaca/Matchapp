@@ -34,6 +34,7 @@ import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetChatHistoryRequest;
 import fiuba.matchapp.networking.httpRequests.PostChatNewMessageRequest;
+import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.view.LockedProgressDialog;
 
 public class ChatRoomActivity extends AppCompatActivity {
@@ -72,7 +73,17 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
 
-        titleChat.setText(this.chatRoom.getUser().getAlias());
+        if(chatRoom != null){
+            titleChat.setText(this.chatRoom.getUser().getAlias());
+            if(!TextUtils.isEmpty(this.chatRoom.getUser().getPhotoProfile())){
+                circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.chatRoom.getUser().getPhotoProfile()));
+            }
+        }else {
+            titleChat.setText(this.userMatched.getAlias());
+            if(!TextUtils.isEmpty(this.userMatched.getPhotoProfile())){
+                circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.userMatched.getPhotoProfile()));
+            }
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 

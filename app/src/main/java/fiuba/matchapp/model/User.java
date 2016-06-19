@@ -27,7 +27,9 @@ public class User implements Serializable, Parcelable {
         this.age = age;
     }
     public User(){
-
+        this.id = "0";
+        photoProfile = "";
+        this.interests = new ArrayList<>();
     }
 
     protected User(Parcel in) {

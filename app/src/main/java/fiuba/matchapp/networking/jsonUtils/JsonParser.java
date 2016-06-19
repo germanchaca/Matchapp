@@ -18,37 +18,45 @@ import fiuba.matchapp.model.UserInterest;
 
 public class JsonParser {
 
-    public static List<ChatRoom> getChatRoomsFromJSONResponse(JSONArray response){
+    public static List<ChatRoom> getChatRoomsFromJSONResponse(JSONObject response){
         ArrayList<ChatRoom> chatrooms= new ArrayList<>();
 
-        for(int i = 0; i < response.length(); i++) {
             try {
-                JSONObject chatRoomObj = response.getJSONObject(i);
-                ChatRoom chatRoom = getChatRoomFromJSONresponse(chatRoomObj);
-                if(chatRoom != null){
-                    chatrooms.add(chatRoom);
+                JSONArray chats = response.getJSONArray("chats");
+                for(int i = 0; i < chats.length(); i++) {
+                    try {
+                        Log.d("PUTO", response.toString());
+                        JSONObject chatRoomObj = chats.getJSONObject(i);
+                        ChatRoom chatRoom = getChatRoomFromJSONresponse(chatRoomObj);
+                        if (chatRoom != null) {
+                            chatrooms.add(chatRoom);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+
         return chatrooms;
     }
 
     private static ChatRoom getChatRoomFromJSONresponse(JSONObject chatRoomObj) {
         try {
             String chatRoomId = chatRoomObj.getString("chatroom_id");
-
-            JSONObject lastMessageJsonObj = chatRoomObj.getJSONObject("LastMessage");
-            String lastMessageId = chatRoomObj.getString("message_id");
-            Message lastMessage = getMessageFromJSONresponse(lastMessageJsonObj,lastMessageId );
-
             User user = getUserFromJSONresponse(chatRoomObj);
-
             int unread = chatRoomObj.getInt("Unread");
 
-            ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage,lastMessage.getCreatedAt(), unread);
 
+            if(chatRoomObj.has("LastMessage")){
+                JSONObject lastMessageJsonObj = chatRoomObj.getJSONObject("LastMessage");
+                String lastMessageId = chatRoomObj.getString("message_id");
+                Message lastMessage = getMessageFromJSONresponse(lastMessageJsonObj,lastMessageId );
+                ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage,lastMessage.getCreatedAt(), unread);
+                return  chatRoom;
+            }
+            ChatRoom chatRoom = new ChatRoom(chatRoomId,user,null,null, unread);
             return  chatRoom;
         } catch (JSONException e) {
             e.printStackTrace();

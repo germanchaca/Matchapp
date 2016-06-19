@@ -28,6 +28,7 @@ public abstract class PostMatchRequest {
     private static final String TAG = "PostMatchRequest";
     private static final int MY_SOCKET_TIMEOUT_MS = 200000 ;
     private final String userId;
+    private boolean retry = true;
 
     protected abstract void onPostMatchRequestFailedDefaultError();
 
@@ -109,7 +110,12 @@ public abstract class PostMatchRequest {
                     }else {
                         Log.d(TAG, "Network Response == null " );
                         //Retry
-                        make();
+                        if(retry){
+                            make();
+                            retry = false;
+                            onPostMatchRequestFailedUserConnectionError();
+                        }
+
                     }
 
                 } catch (UnsupportedEncodingException e) {

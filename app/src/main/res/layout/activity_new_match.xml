@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="90dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/p1"
+            android:src="@drawable/empty_profile_phd_350x350"
             />
 
         <com.pkmmte.view.CircularImageView
@@ -30,7 +30,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="90dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/p2"
+            android:src="@drawable/empty_profile_phd_350x350"
             />
 
         <ImageView

@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.io.Serializable;
 
 import fiuba.matchapp.R;
@@ -27,6 +29,7 @@ import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
+import fiuba.matchapp.networking.gcm.MyInstanceIDListenerService;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.GetUserRequest;
 import fiuba.matchapp.networking.httpRequests.SignOutRequest;
@@ -50,6 +53,8 @@ public class MainActivity extends GetLocationActivity {
         initFragments();
           //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();
+
+        Log.d(TAG, FirebaseInstanceId.getInstance().getToken());
 
     }
 
@@ -104,6 +109,7 @@ public class MainActivity extends GetLocationActivity {
 
                 if (intent.hasExtra("chat_room_id")) {
                     String chat_room_id = intent.getStringExtra("chat_room_id");
+                    Log.d(TAG,"New message received from chatRoom_id: " + chat_room_id );
                     if (intent.hasExtra("message_id")) {
                         String message_id = intent.getStringExtra("message_id");
                         if (intent.hasExtra("message")) {
@@ -124,6 +130,7 @@ public class MainActivity extends GetLocationActivity {
             }else if(type == Config.PUSH_TYPE_NEW_MATCH){
                 if (intent.hasExtra("user_id")) {
                     String userId = intent.getStringExtra("user_id");
+                    Log.d(TAG,"New match received from user_id: " + userId );
                     GetUserRequest request = new GetUserRequest(userId) {
                         @Override
                         protected void onGetUserRequestFailedDefaultError() {
@@ -140,9 +147,7 @@ public class MainActivity extends GetLocationActivity {
                             Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
 
                             i.putExtra("new_match_user", (Parcelable) user);
-
                             startActivity(i);
-                            finish();
                         }
 
                         @Override
@@ -255,6 +260,7 @@ public class MainActivity extends GetLocationActivity {
             public void onReceive(Context context, Intent intent) {
 
                 if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    Log.d(TAG,"handlePushNotification: " );
                     handlePushNotification(intent);
                 }
 

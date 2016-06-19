@@ -310,7 +310,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         getActivity().finish();
     }
     public void displayAlertDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         alert.setMessage(getResources().getString(R.string.connection_problem));
         alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
             @Override

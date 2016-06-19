@@ -20,8 +20,14 @@ public class ImageBase64 {
 
     public static Bitmap Base64ToBitmap(String myImageData)
     {
-        byte[] imageAsBytes = Base64.decode(myImageData.getBytes(),Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+
+        try {
+            byte[] imageAsBytes = Base64.decode(myImageData.getBytes(),Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+        }catch (IllegalArgumentException e){
+            //e.printStackTrace();
+            return null;
+        }
     }
 }
 

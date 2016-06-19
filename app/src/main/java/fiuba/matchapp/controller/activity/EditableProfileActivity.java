@@ -177,12 +177,12 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 }
             }
         });
-        layoutEditName.setOnClickListener(new View.OnClickListener() {
+        layoutEditAge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 txtName.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(txtName, InputMethod.SHOW_FORCED);
+                imm.showSoftInput(txtAge, InputMethod.SHOW_FORCED);
                 showBtnCommitChanges();
             }
         });
@@ -426,12 +426,12 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             txtAge.setText(user.getAge());
         }else if( Integer.parseInt(age) < 16) {
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+            AlertDialog.Builder alert = new AlertDialog.Builder(EditableProfileActivity.this);
             alert.setMessage(getResources().getString(R.string.age_menor));
             alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    txtAge.setText(user.getAge());
+                    txtAge.setText(Integer.toString(user.getAge()));
                     dialog.dismiss();
                 }
             });
@@ -802,7 +802,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     private void displayAlertDialog() {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder alert = new AlertDialog.Builder(EditableProfileActivity.this);
         alert.setMessage(getResources().getString(R.string.connection_problem));
         alert.setPositiveButton(getResources().getString(R.string.connection_problem_ok), new DialogInterface.OnClickListener() {
             @Override

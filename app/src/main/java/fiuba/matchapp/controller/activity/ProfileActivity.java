@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,10 +57,28 @@ public class ProfileActivity extends AppCompatActivity {
         Map<String, List<UserInterest>> commonInterests = InterestsUtils.getCommonInterests(user.getInterests(), MyApplication.getInstance().getPrefManager().getUser().getInterests());
 
         List<UserInterest> commonInterestsLst = commonInterests.get(InterestsUtils.COMMON_INTERESTS);
-        List<UserInterest> moreInterestsLst = commonInterests.get(InterestsUtils.MORE_INTERESTS);
+        List<UserInterest> moreInterestsLst;
+        if(commonInterests.containsKey(InterestsUtils.MORE_INTERESTS)){
+            moreInterestsLst = commonInterests.get(InterestsUtils.MORE_INTERESTS);
+        }else{
+            moreInterestsLst = new ArrayList<>();
+        }
 
-        String[] commonTagGroup  = commonInterestsLst.toArray(new String[0]);
-        String[] moreTagGroup  = moreInterestsLst.toArray(new String[0]);
+        for(UserInterest c:commonInterestsLst){
+            Log.d("COMMON",c.getCategory() + " " + c.getDescription());
+        }
+        for(UserInterest c:moreInterestsLst){
+            Log.d("UNCOMMON",c.getCategory() + " " + c.getDescription());
+        }
+
+        String[] commonTagGroup = new String[commonInterestsLst.size()];
+        for (int j=0; j < commonInterestsLst.size(); j++) {
+            commonTagGroup[j] = commonInterestsLst.get(j).getDescription().toString();
+        }
+        String[] moreTagGroup = new String[moreInterestsLst.size()];
+        for (int j=0; j < moreInterestsLst.size(); j++) {
+            moreTagGroup[j] = moreInterestsLst.get(j).getDescription().toString();
+        }
 
         TagGroup mTagGroup = (TagGroup) findViewById(R.id.tag_group);
         mTagGroup.setTags(commonTagGroup);

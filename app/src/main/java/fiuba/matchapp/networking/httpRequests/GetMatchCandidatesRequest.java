@@ -92,7 +92,7 @@ public abstract class GetMatchCandidatesRequest {
                         }else if (error.networkResponse.statusCode == 401) {
                             onErrorNoAuth();
                             return;
-                        }else if (error.networkResponse.statusCode == 403) {
+                        }else if (error.networkResponse.statusCode == 402) {
                             onLimitDayError();
                             return;
                         } else{
@@ -100,7 +100,9 @@ public abstract class GetMatchCandidatesRequest {
                         }
 
                     }else {
+
                         make();
+                        //onGetMatchCandidatesRequestFailedUserConnectionError();
                     }
 
                 } catch (UnsupportedEncodingException e) {
