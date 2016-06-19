@@ -62,7 +62,15 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatRoom chatRoom = chatRoomArrayList.get(position);
         holder.name.setText(chatRoom.getName());
-        holder.message.setText(chatRoom.getLastMessage().getMessage());
+        if(chatRoom.getLastMessage() != null){
+            holder.message.setText(chatRoom.getLastMessage().getMessage());
+            holder.timestamp.setText(DateHelper.getTimeStamp(chatRoom.getTimestamp(), mContext));
+            holder.message.setVisibility(View.VISIBLE);
+            holder.timestamp.setVisibility(View.VISIBLE);
+        }else {
+            holder.message.setVisibility(View.GONE);
+            holder.timestamp.setVisibility(View.GONE);
+        }
 
         //Ahow
         if (chatRoom.getUnreadCount() > 0) {
@@ -72,7 +80,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
             holder.count.setVisibility(View.GONE);
         }
 
-        holder.timestamp.setText(DateHelper.getTimeStamp(chatRoom.getTimestamp(), mContext));
+
         if (!TextUtils.isEmpty(chatRoom.getUser().getPhotoProfile())){
             holder.circleImageProfile.setImageBitmap(ImageBase64.Base64ToBitmap(chatRoom.getUser().getPhotoProfile()));
         }
