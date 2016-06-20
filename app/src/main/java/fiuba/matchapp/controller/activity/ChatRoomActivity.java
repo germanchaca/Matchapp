@@ -235,9 +235,9 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         }
         String userId;
         if(userMatched == null){
-            userId = chatRoom.getUser().getId();
+            userId = chatRoom.getUser().getEmail();
         }else{
-            userId = userMatched.getId();
+            userId = userMatched.getEmail();
         }
 
         PostNewMessageOkHttp request = new PostNewMessageOkHttp(userId,message) {

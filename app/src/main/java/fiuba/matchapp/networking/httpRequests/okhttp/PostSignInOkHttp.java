@@ -44,7 +44,7 @@ public abstract class PostSignInOkHttp {
         this.password = hashedPassword;
     }
 
-    public void makeRequest(){
+    public Call makeRequest(){
         JSONObject paramsJson = new JSONObject();
         JSONObject userJson = new JSONObject();
         try {
@@ -93,12 +93,13 @@ public abstract class PostSignInOkHttp {
         };
 
         try {
-            post(url,json,callBack);
+            return post(url,json,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
 

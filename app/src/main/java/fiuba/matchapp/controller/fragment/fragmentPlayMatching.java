@@ -26,6 +26,7 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetCandidatesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostMatchOkHttp;
 import fiuba.matchapp.view.RippleAnimation;
+import okhttp3.Call;
 
 public class fragmentPlayMatching extends Fragment {
     private static final String TAG = "Connect_fragment";
@@ -40,10 +41,23 @@ public class fragmentPlayMatching extends Fragment {
     private RelativeLayout containerRetry;
     private ImageView retryImage;
     private RelativeLayout containerNoMoreCandidates;
+    private Call getCandidatesCall;
+    private Call postMatchCall;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(this.getCandidatesCall != null){
+            getCandidatesCall.cancel();
+        }
+        if(this.postMatchCall != null){
+            postMatchCall.cancel();
+        }
     }
 
     @Override
@@ -123,7 +137,7 @@ public class fragmentPlayMatching extends Fragment {
             }
         };
         startAnimation();
-        request.makeRequest();
+        getCandidatesCall = request.makeRequest();
     }
 
     private void showLimitDayErrorDialog() {
@@ -222,7 +236,7 @@ public class fragmentPlayMatching extends Fragment {
                         MyApplication.getInstance().logout();
                     }
                 };
-                request.makeRequest();
+                postMatchCall = request.makeRequest();
 
 
             }

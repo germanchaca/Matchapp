@@ -43,7 +43,7 @@ public abstract class PostNewMessageOkHttp {
         this.msg = msg;
     }
 
-    public void makeRequest(){
+    public Call makeRequest(){
         JSONObject paramsJson = new JSONObject();
         try {
 
@@ -89,12 +89,13 @@ public abstract class PostNewMessageOkHttp {
         };
 
         try {
-            post(url,json,callBack);
+            return post(url,json,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     private void onErrorNoAuthRequest() {

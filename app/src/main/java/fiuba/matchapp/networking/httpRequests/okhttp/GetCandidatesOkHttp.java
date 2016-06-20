@@ -41,10 +41,9 @@ public abstract class GetCandidatesOkHttp {
                 .writeTimeout(200, TimeUnit.SECONDS)
                 .readTimeout(200, TimeUnit.SECONDS)
                 .build();
-
     }
 
-    public void makeRequest(){
+    public Call makeRequest(){
 
 
         String url = RestAPIContract.GET_MATCH;
@@ -83,12 +82,13 @@ public abstract class GetCandidatesOkHttp {
         };
 
         try {
-            get(url,callBack);
+            return get(url,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
 

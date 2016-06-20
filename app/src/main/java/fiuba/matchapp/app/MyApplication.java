@@ -46,6 +46,7 @@ public class MyApplication extends Application {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
     public void deletteAccount() {
         this.logout();
     }

@@ -43,7 +43,7 @@ public abstract class PostRefreshTokenOkHttp {
         this.myPassword = MyApplication.getInstance().getPrefManager().getUserCredentials();
     }
 
-    public void makeRefreshRequest(){
+    public Call makeRefreshRequest(){
         JSONObject paramsJson = new JSONObject();
         JSONObject userJson = new JSONObject();
         try {
@@ -97,12 +97,13 @@ public abstract class PostRefreshTokenOkHttp {
         };
 
         try {
-            post(url,json,callBack);
+            return post(url,json,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
 

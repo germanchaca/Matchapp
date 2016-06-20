@@ -41,7 +41,7 @@ public abstract class GetUserOkHttp {
         this.userId = userId;
     }
 
-    public void makeRequest(){
+    public Call makeRequest(){
         String url = RestAPIContract.GET_USER(userId);
 
         Callback callBack = new Callback() {
@@ -76,12 +76,13 @@ public abstract class GetUserOkHttp {
         };
 
         try {
-            get(url,callBack);
+            return get(url,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
 

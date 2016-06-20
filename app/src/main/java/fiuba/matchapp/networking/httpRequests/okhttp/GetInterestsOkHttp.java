@@ -42,7 +42,7 @@ public abstract class GetInterestsOkHttp {
 
     }
 
-    public void makeRequest(){
+    public Call makeRequest(){
 
 
         String url = RestAPIContract.GET_INTERESTS;
@@ -79,12 +79,13 @@ public abstract class GetInterestsOkHttp {
         };
 
         try {
-            get(url,callBack);
+            return get(url,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     private void onErrorNoAuthRequest() {

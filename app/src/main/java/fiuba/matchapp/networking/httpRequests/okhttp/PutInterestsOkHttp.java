@@ -47,7 +47,7 @@ public abstract class PutInterestsOkHttp {
         this.interestsToChange = interests;
     }
 
-    public void makeRequest(){
+    public Call makeRequest(){
         JSONObject paramsJson = new JSONObject();
         JSONObject userJson = new JSONObject();
         try {
@@ -104,12 +104,14 @@ public abstract class PutInterestsOkHttp {
         };
 
         try {
-            put(url,json,callBack);
+
+            return put(url,json,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     private void onErrorNoAuthRequest() {
