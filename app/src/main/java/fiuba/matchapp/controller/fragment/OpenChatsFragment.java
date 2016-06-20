@@ -23,6 +23,7 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.activity.ChatRoomActivity;
 import fiuba.matchapp.adapter.ChatRoomsAdapter;
 import fiuba.matchapp.networking.httpRequests.GetChatOpenRoomsRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.GetChatRoomsOkHttp;
 import fiuba.matchapp.view.LockedProgressDialog;
 import fiuba.matchapp.view.SimpleDividerItemDecoration;
 import fiuba.matchapp.model.ChatRoom;
@@ -45,6 +46,7 @@ public class OpenChatsFragment extends Fragment {
     private RelativeLayout contentRetry;
     private ImageView retryImage;
     private TextView subtitleRetry;
+    private RelativeLayout containerNoChatRooms;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +89,8 @@ public class OpenChatsFragment extends Fragment {
         }));
 
         containerChats = (RelativeLayout) view.findViewById(R.id.containerChats);
+        containerNoChatRooms = (RelativeLayout) view.findViewById(R.id.contentNoChatRooms);
+        containerNoChatRooms.setVisibility(View.GONE);
 
         contentRetry = (RelativeLayout) view.findViewById(R.id.contentRetry);
         contentRetry.setVisibility(View.GONE);
@@ -127,8 +131,51 @@ public class OpenChatsFragment extends Fragment {
     private void fetchChatRooms() {
         progressDialog.show();
         contentRetry.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
 
-        GetChatOpenRoomsRequest request = new GetChatOpenRoomsRequest() {
+
+        GetChatRoomsOkHttp request = new GetChatRoomsOkHttp() {
+            @Override
+            protected void logout() {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        MyApplication.getInstance().logout();
+                    }
+                });
+            }
+
+            @Override
+            protected void onGetChatOpenRoomsRequestFailedUserConnectionError() {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        recyclerView.setVisibility(View.GONE);
+                        contentRetry.setVisibility(View.VISIBLE);
+                        Snackbar.make(containerChats,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            protected void onGetChatRoomsRequestSuccess(final List<ChatRoom> chatRooms) {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        if(chatRooms.size() == 0){
+                            recyclerView.setVisibility(View.GONE);
+                            containerNoChatRooms.setVisibility(View.VISIBLE);
+                        }
+                        chatRoomArrayList.addAll(chatRooms);
+                        mAdapter.notifyDataSetChanged();
+
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        };
+        request.makeRequest();
+
+        /*GetChatOpenRoomsRequest request = new GetChatOpenRoomsRequest() {
             @Override
             protected void onGetChatOpenRoomsRequestFailedDefaultError() {
                 progressDialog.dismiss();
@@ -162,7 +209,7 @@ public class OpenChatsFragment extends Fragment {
             }
         };
 
-        request.make();
+        request.make();*/
 
     }
 }

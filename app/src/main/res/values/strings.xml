@@ -141,5 +141,6 @@
     <string name="fetching_all_chats">Cargando</string>
     <string name="retry_fetching_chat_history">Volver a cargar conversación</string>
     <string name="retry_fetching_all_chatrooms">Volver a cargar conversaciones</string>
+    <string name="no_chat_room_open">Todavía no hay ningún match</string>
     <string name="load_more">CARGAR MENSAJES ANTERIORES</string>
 </resources>

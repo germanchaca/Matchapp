@@ -1,0 +1,29 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contentNoChatRooms"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    >
+    <ImageView
+        android:id="@+id/noChatRoomOpen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/empty_state_no_photos_illustration"
+        android:background="?attr/selectableItemBackground"/>
+
+    <TextView
+        android:id="@+id/subtitleRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/ripple_subtitle"
+        android:layout_below="@+id/noChatRoomOpen"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/no_chat_room_open"/>
+
+
+</RelativeLayout>

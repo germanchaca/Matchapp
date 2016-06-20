@@ -16,5 +16,6 @@
         android:scrollbars="vertical"/>
 
     <include layout="@layout/background_retry_layout"/>
+    <include layout="@layout/background_no_chat_rooms"/>
 
 </RelativeLayout>
