@@ -28,8 +28,8 @@ import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
-import fiuba.matchapp.networking.httpRequests.GetUserRequest;
 import fiuba.matchapp.networking.httpRequests.okhttp.DeleteSingOutOkHttp;
+import fiuba.matchapp.networking.httpRequests.okhttp.GetUserOkHttp;
 import fiuba.matchapp.view.LockedProgressDialog;
 
 public class MainActivity extends GetLocationActivity {
@@ -128,33 +128,34 @@ public class MainActivity extends GetLocationActivity {
                 if (intent.hasExtra("user_id")) {
                     String userId = intent.getStringExtra("user_id");
                     Log.d(TAG,"New match received from user_id: " + userId );
-                    GetUserRequest request = new GetUserRequest(userId) {
-                        @Override
-                        protected void onGetUserRequestFailedDefaultError() {
 
+                    GetUserOkHttp request = new GetUserOkHttp(userId) {
+                        @Override
+                        protected void onSuccess(final User user) {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
+
+                                    i.putExtra("new_match_user", (Parcelable) user);
+                                    startActivity(i);
+                                }
+                            });
                         }
 
                         @Override
-                        protected void onGetUserRequestFailedUserConnectionError() {
-
-                        }
-
-                        @Override
-                        protected void onGetUserRequestSuccess(User user) {
-                            Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
-
-                            i.putExtra("new_match_user", (Parcelable) user);
-                            startActivity(i);
+                        protected void onConnectionError() {
                         }
 
                         @Override
                         protected void logout() {
-                            MyApplication.getInstance().logout();
-
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    MyApplication.getInstance().logout();
+                                }
+                            });
                         }
                     };
-                    request.make();
-
+                    request.makeRequest();
                 }
             }
         }

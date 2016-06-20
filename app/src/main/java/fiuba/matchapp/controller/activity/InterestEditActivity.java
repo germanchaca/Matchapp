@@ -24,7 +24,6 @@ import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
-import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetInterestsOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutInterestsOkHttp;
 import fiuba.matchapp.utils.InterestsUtils;
@@ -114,59 +113,7 @@ public class InterestEditActivity extends AppCompatActivity {
             };
             request.makeRequest();
 
-            /*GetInterestsRequest request = new GetInterestsRequest() {
-                @Override
-                protected void onGetInterestsSuccess(List<Interest> interests) {
 
-                    Map<String,List<Interest>> mapInterestsByCategory = InterestsUtils.getStringListMap(interests);
-                    //todos los intereses
-                    for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
-                    {
-                        if(TextUtils.equals(entry.getKey(), category)){
-                            //intereses ya seleccionados por el usuario
-                            mapUserInterestsByCategory = InterestsUtils.getStringUserInterestsListMap(MyApplication.getInstance().getPrefManager().getUser().getInterests());
-                            for (Map.Entry<String, List<UserInterest>> entryUser : mapUserInterestsByCategory.entrySet())
-                            {
-                                progressDialog.dismiss();
-                                if (TextUtils.equals(entryUser.getKey(),category)){
-                                    //tengo en entryUser.getValue() la lista de intereses ya seleccionados por el usuario
-                                    fragment = InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue(),entryUser.getValue());
-
-                                    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-                                    android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
-                                    ft.replace(R.id.contentFragment, fragment);
-                                    ft.commit();
-
-                                    Log.d(TAG,"Lanza fragment");
-                                }
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                protected void onGetInterestsDefaultError() {
-                    progressDialog.dismiss();
-                    showConnectionError();
-                }
-
-                @Override
-                protected void onGetInterestsConnectionError() {
-                    progressDialog.dismiss();
-                    showConnectionError();
-                }
-
-                @Override
-                protected void logout() {
-                    progressDialog.dismiss();
-                    MyApplication.getInstance().logout();
-                }
-            };
-            progressDialog = new LockedProgressDialog(InterestEditActivity.this, R.style.AppTheme_Dark_Dialog);
-
-            progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
-            progressDialog.show();
-            request.make();*/
         }
 
     }

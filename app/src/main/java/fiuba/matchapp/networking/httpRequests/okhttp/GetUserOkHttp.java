@@ -2,15 +2,16 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.ChatRoom;
-import fiuba.matchapp.model.Message;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import okhttp3.Call;
@@ -23,30 +24,25 @@ import okhttp3.Response;
 /**
  * Created by ger on 19/06/16.
  */
-public abstract class GetChatMessagesOkHttp {
+public abstract class GetUserOkHttp {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private static final String TAG = "GetChatMessagesOkHttp" ;
+    private static final String TAG = "GetUserOkHttp" ;
     private final OkHttpClient client;
-    private final String idChat;
-    private final String idMessage;
+    private final String userId;
 
-
+    protected abstract void onSuccess(User user);
+    protected abstract void onConnectionError();
     protected abstract void logout();
 
-    protected abstract void onConnectionError();
-
-    protected abstract void onSuccess(List<Message> messages);
-
-    public GetChatMessagesOkHttp(String idChat, String idMessage){
+    public GetUserOkHttp(String userId){
         client = new OkHttpClient();
-        this.idChat = idChat;
-        this.idMessage = idMessage;
+        this.userId = userId;
     }
 
     public void makeRequest(){
 
 
-        String url = RestAPIContract.GET_CHAT_HISTORY(idChat,idMessage);
+        String url = RestAPIContract.GET_USER(userId);
 
         Callback callBack = new Callback() {
             @Override
@@ -72,7 +68,7 @@ public abstract class GetChatMessagesOkHttp {
                     if (response.code() == 401){
                         Log.e(TAG, "Error 401");
                         onErrorNoAuthRequest();
-                    }else {
+                    }else{
                         onConnectionError();
                     }
                 }
@@ -87,6 +83,7 @@ public abstract class GetChatMessagesOkHttp {
         }
 
     }
+
 
     private void onErrorNoAuthRequest() {
         PostRefreshTokenOkHttp request = new PostRefreshTokenOkHttp() {
@@ -123,10 +120,9 @@ public abstract class GetChatMessagesOkHttp {
 
     private void onSuccessResponse(String response) throws JSONException {
 
-        JSONObject jsonResponse = new JSONObject(response);
+        JSONObject obj = new JSONObject(response);
+        User user = JsonParser.getUserFromJSONresponse(obj);
 
-        List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse);
-
-        onSuccess(messages);
+        onSuccess(user);
     }
 }

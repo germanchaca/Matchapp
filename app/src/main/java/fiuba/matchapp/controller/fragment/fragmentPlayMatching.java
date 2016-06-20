@@ -23,7 +23,7 @@ import fiuba.matchapp.adapter.SwipeDeckAdapter;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.activity.ProfileActivity;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.GetCandidatesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostMatchOkHttp;
 import fiuba.matchapp.view.RippleAnimation;
 
@@ -72,49 +72,58 @@ public class fragmentPlayMatching extends Fragment {
         builder.show();
     }
     private void initCardstack(){
-        GetMatchCandidatesRequest request = new GetMatchCandidatesRequest() {
+
+        GetCandidatesOkHttp request = new GetCandidatesOkHttp() {
             @Override
-            protected void onGetMatchCandidatesRequestFailedDefaultError() {
-                stopAnimation();
-                showConnectionError();
+            protected void onSuccess(final List<User> candidates) {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        cardStack.setVisibility(View.VISIBLE);
+
+                        if(candidates.size() == 0){
+                            stopAnimation();
+                            showNoMoreCandidatesView();
+                        }else {
+
+                            adapter = new SwipeDeckAdapter(candidates, getActivity());
+                            fillCardStack();
+                        }
+                        stopAnimation();
+                    }
+                });
             }
 
             @Override
-            protected void onGetMatchCandidatesRequestFailedUserConnectionError() {
-                stopAnimation();
-                showConnectionError();
+            protected void onConnectionError() {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        stopAnimation();
+                        showConnectionError();
+                    }
+                });
             }
 
             @Override
-            protected void onGetMatchCandidatesRequestSuccess(List<User> user) {
-                cardStack.setVisibility(View.VISIBLE);
-
-                if(user.size() == 0){
-                    stopAnimation();
-                    showNoMoreCandidatesView();
-                }else {
-
-                    adapter = new SwipeDeckAdapter(user, getActivity());
-                    fillCardStack();
-                }
-                stopAnimation();
-            }
-
-            @Override
-            protected void onLimitDayError() {
-                showLimitDayErrorDialog();
-
+            protected void onLimitDayReached() {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        showLimitDayErrorDialog();
+                    }
+                });
             }
 
             @Override
             protected void logout() {
-                stopAnimation();
-                MyApplication.getInstance().logout();
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        stopAnimation();
+                        MyApplication.getInstance().logout();
+                    }
+                });
             }
         };
         startAnimation();
-        request.make();
-
+        request.makeRequest();
     }
 
     private void showLimitDayErrorDialog() {

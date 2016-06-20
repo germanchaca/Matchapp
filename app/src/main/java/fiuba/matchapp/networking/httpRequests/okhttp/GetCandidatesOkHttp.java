@@ -2,15 +2,17 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.model.Message;
+import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import okhttp3.Call;
@@ -23,30 +25,25 @@ import okhttp3.Response;
 /**
  * Created by ger on 19/06/16.
  */
-public abstract class GetChatMessagesOkHttp {
+public abstract class GetCandidatesOkHttp {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private static final String TAG = "GetChatMessagesOkHttp" ;
+    private static final String TAG = "GetCandidatesOkHttp" ;
     private final OkHttpClient client;
-    private final String idChat;
-    private final String idMessage;
 
-
+    protected abstract void onSuccess(List<User> candidates);
+    protected abstract void onConnectionError();
+    protected abstract void onLimitDayReached();
     protected abstract void logout();
 
-    protected abstract void onConnectionError();
-
-    protected abstract void onSuccess(List<Message> messages);
-
-    public GetChatMessagesOkHttp(String idChat, String idMessage){
+    public GetCandidatesOkHttp(){
         client = new OkHttpClient();
-        this.idChat = idChat;
-        this.idMessage = idMessage;
+
     }
 
     public void makeRequest(){
 
 
-        String url = RestAPIContract.GET_CHAT_HISTORY(idChat,idMessage);
+        String url = RestAPIContract.GET_MATCH;
 
         Callback callBack = new Callback() {
             @Override
@@ -72,8 +69,10 @@ public abstract class GetChatMessagesOkHttp {
                     if (response.code() == 401){
                         Log.e(TAG, "Error 401");
                         onErrorNoAuthRequest();
-                    }else {
-                        onConnectionError();
+                    }else if(response.code() == 402) {
+                        onLimitDayReached();
+                    }else{
+                            onConnectionError();
                     }
                 }
             }
@@ -87,6 +86,7 @@ public abstract class GetChatMessagesOkHttp {
         }
 
     }
+
 
     private void onErrorNoAuthRequest() {
         PostRefreshTokenOkHttp request = new PostRefreshTokenOkHttp() {
@@ -123,10 +123,14 @@ public abstract class GetChatMessagesOkHttp {
 
     private void onSuccessResponse(String response) throws JSONException {
 
-        JSONObject jsonResponse = new JSONObject(response);
-
-        List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse);
-
-        onSuccess(messages);
+        JSONObject objJSon = new JSONObject(response);
+        JSONObject metadata = objJSon.getJSONObject("metadata");
+        int count = metadata.getInt("count");
+        List<User> users = new ArrayList<>();
+        if( count > 0){
+            JSONArray obj = objJSon.getJSONArray("users");
+            users = JsonParser.getUsersFromJSONresponse(obj);
+        }
+        onSuccess(users);
     }
 }
