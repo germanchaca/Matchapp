@@ -25,7 +25,7 @@ public class JsonParser {
                 JSONArray chats = response.getJSONArray("chats");
                 for(int i = 0; i < chats.length(); i++) {
                     try {
-                        Log.d("PUTO", response.toString());
+                        Log.d("JsonParser", response.toString());
                         JSONObject chatRoomObj = chats.getJSONObject(i);
                         ChatRoom chatRoom = getChatRoomFromJSONresponse(chatRoomObj);
                         if (chatRoom != null) {
@@ -36,6 +36,7 @@ public class JsonParser {
                     }
                 }
             } catch (JSONException e) {
+
                 e.printStackTrace();
             }
 
