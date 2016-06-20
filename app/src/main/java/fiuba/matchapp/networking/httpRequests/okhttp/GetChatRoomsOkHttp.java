@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.ChatRoom;
@@ -36,14 +37,16 @@ public abstract class GetChatRoomsOkHttp {
     protected abstract void onGetChatRoomsRequestSuccess(List<ChatRoom> chatRooms);
 
     public GetChatRoomsOkHttp(){
-        client = new OkHttpClient();
-
+        client = new OkHttpClient.Builder()
+                .connectTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
+                .readTimeout(200, TimeUnit.SECONDS)
+                .build();
     }
 
     public void makeRequest(){
 
-
-        String url = RestAPIContract.GET_INTERESTS;
+        String url = RestAPIContract.GET_CHATROOMS;
 
         Callback callBack = new Callback() {
             @Override

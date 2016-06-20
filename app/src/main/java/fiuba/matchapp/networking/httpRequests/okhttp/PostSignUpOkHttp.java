@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Interest;
@@ -43,8 +44,11 @@ public abstract class PostSignUpOkHttp {
     protected abstract void onLogOutError();
 
     public PostSignUpOkHttp(User user, String password){
-        client = new OkHttpClient();
-        this.user = user;
+        client = new OkHttpClient.Builder()
+                .connectTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
+                .readTimeout(200, TimeUnit.SECONDS)
+                .build();        this.user = user;
         this.password = password;
     }
 

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
@@ -37,7 +38,11 @@ public abstract class PutInterestsOkHttp {
     protected abstract void logout();
 
     public PutInterestsOkHttp(User myUser,List<UserInterest> interests){
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
+                .readTimeout(200, TimeUnit.SECONDS)
+                .build();
         this.myUser = myUser;
         this.interestsToChange = interests;
     }
