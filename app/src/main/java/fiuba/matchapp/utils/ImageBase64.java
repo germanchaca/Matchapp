@@ -11,7 +11,7 @@ public class ImageBase64 {
     public static String getEncoded64ImageStringFromBitmap (Bitmap bitmap){
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
         byte[] byteFormat = stream.toByteArray();
         String imgString = Base64.encodeToString(byteFormat, Base64.DEFAULT);
 

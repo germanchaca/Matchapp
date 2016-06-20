@@ -119,22 +119,34 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         PutPhotoProfileOkHttp request = new PutPhotoProfileOkHttp(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
             protected void logout() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        MyApplication.getInstance().logout();
+                    }
+                });
             }
 
             @Override
             protected void onSuccess() {
-                User user = MyApplication.getInstance().getPrefManager().getUser();
-                user.setPhotoProfile(profilePhoto);
-                MyApplication.getInstance().getPrefManager().storeUser(user);
-                progressDialog.dismiss();
-                launchMainActivity();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        User user = MyApplication.getInstance().getPrefManager().getUser();
+                        user.setPhotoProfile(profilePhoto);
+                        MyApplication.getInstance().getPrefManager().storeUser(user);
+                        progressDialog.dismiss();
+                        launchMainActivity();
+                    }
+                });
             }
 
             @Override
             protected void onConnectionError() {
-                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                    }
+                });
             }
         };
         request.makeRequest();
@@ -227,21 +239,33 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
         PutInterestsOkHttp request = new PutInterestsOkHttp(MyApplication.getInstance().getPrefManager().getUser(),selectedInterests) {
             @Override
             protected void onAppServerConnectionError() {
-                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
-                progressDialog.dismiss();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                        progressDialog.dismiss();
+                    }
+                });
             }
 
             @Override
             protected void onUpdateDataSuccess() {
-                user.setInterests(selectedInterests);
-                MyApplication.getInstance().getPrefManager().storeUser(user);
-                progressDialog.dismiss();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        user.setInterests(selectedInterests);
+                        MyApplication.getInstance().getPrefManager().storeUser(user);
+                        progressDialog.dismiss();
+                    }
+                });
             }
 
             @Override
             protected void logout() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
                 progressDialog.dismiss();
                 MyApplication.getInstance().logout();
+                    }
+                });
             }
         };
         request.makeRequest();

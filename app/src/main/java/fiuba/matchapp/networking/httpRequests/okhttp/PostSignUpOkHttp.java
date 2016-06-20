@@ -111,6 +111,7 @@ public abstract class PostSignUpOkHttp {
                     Log.e(TAG, "Unexpected code " + response.code());
                     if (response.code() == 400){
                         Log.e(TAG, "Error 400");
+
                         onSignUpFailedUserInvalidError();
                     }else {
                         onSignUpFailedUserConnectionError();

@@ -93,18 +93,30 @@ public class LoginActivity extends AppCompatActivity {
         PostSignInOkHttp request = new PostSignInOkHttp(email, MD5.getHashedPassword(password)) {
             @Override
             protected void onSignInFailedUserConnectionError() {
-                onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
+                    }
+                });
             }
 
             @Override
             protected void onSignInFailedUserNotCorrect() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
                 onLoginFailed(getResources().getString(R.string.internet_problem));
+                    }
+                });
             }
 
             @Override
             protected void onSignInSuccess() {
-                progressDialog.dismiss();
-                launchMainActivity();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        launchMainActivity();
+                    }
+                });
             }
         };
         request.makeRequest();

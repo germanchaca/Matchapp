@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -160,27 +161,39 @@ public class SignupActivity extends GetLocationActivity {
 
         PostSignUpOkHttp request = new PostSignUpOkHttp(user,userPassword) {
             @Override
-            protected void onSignupSuccess(List<Interest> interests) {
-                onRequestSignupSuccess((ArrayList<Interest>) interests);
+            protected void onSignupSuccess(final List<Interest> interests) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        onRequestSignupSuccess((ArrayList<Interest>) interests);
+                    }
+                });
             }
 
             @Override
             protected void onSignUpFailedUserInvalidError() {
-                String errorMessage = getResources().getString(R.string.username_used);
-                _emailText.setError(errorMessage);
-                onSignupFailed(errorMessage);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        OnUserInvalidError();
+                    }
+                });
             }
 
             @Override
             protected void onSignUpFailedUserConnectionError() {
-                String errorMessage = getResources().getString(R.string.internet_problem);
-                onSignupFailed(errorMessage);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                onConnectionError();
+                    }
+                });
             }
 
             @Override
             protected void onLogOutError() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                logOut();
+                    }
+                });
             }
         };
         request.makeRequest();
@@ -212,6 +225,22 @@ public class SignupActivity extends GetLocationActivity {
         };
 
         postSignUpRequest.make();*/
+    }
+
+    private void onConnectionError() {
+        String errorMessage = getResources().getString(R.string.internet_problem);
+        onSignupFailed(errorMessage);
+    }
+
+    private void logOut() {
+        progressDialog.dismiss();
+        MyApplication.getInstance().logout();
+    }
+
+    private void OnUserInvalidError() {
+        String errorMessage = getResources().getString(R.string.username_used);
+        _emailText.setError(errorMessage);
+        onSignupFailed(errorMessage);
     }
 
     public void onRequestSignupSuccess(ArrayList<Interest> interests) {
