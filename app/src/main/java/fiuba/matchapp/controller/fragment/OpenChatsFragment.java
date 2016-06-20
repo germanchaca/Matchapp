@@ -102,7 +102,7 @@ public class OpenChatsFragment extends Fragment {
 
         progressDialog = new LockedProgressDialog(getActivity(), R.style.AppTheme_Dark_Dialog);
 
-        progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
+        progressDialog.setMessage(getResources().getString(R.string.fetching_all_chats));
 
     }
 

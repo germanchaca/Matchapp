@@ -138,6 +138,7 @@
     <string name="swipe_no_more_ok">Ok</string>
     <string name="retry">Buscar candidatos</string>
     <string name="fetching_chat_history">Cargando conversación</string>
+    <string name="fetching_all_chats">Cargando</string>
     <string name="retry_fetching_chat_history">Volver a cargar conversación</string>
     <string name="retry_fetching_all_chatrooms">Volver a cargar conversaciones</string>
     <string name="load_more">CARGAR MENSAJES ANTERIORES</string>
