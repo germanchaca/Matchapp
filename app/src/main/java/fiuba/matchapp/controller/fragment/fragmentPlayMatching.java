@@ -185,7 +185,11 @@ public class fragmentPlayMatching extends Fragment {
                 PostMatchOkHttp request = new PostMatchOkHttp(user.getEmail()) {
                     @Override
                     protected void onPostMatchRequestFailedUserConnectionError() {
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
                         showConnectionError();
+                            }
+                        });
                     }
 
                     @Override
