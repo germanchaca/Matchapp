@@ -25,6 +25,7 @@ import fiuba.matchapp.controller.activity.ProfileActivity;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
 import fiuba.matchapp.networking.httpRequests.PostMatchRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.PostMatchOkHttp;
 import fiuba.matchapp.view.RippleAnimation;
 
 public class fragmentPlayMatching extends Fragment {
@@ -180,6 +181,26 @@ public class fragmentPlayMatching extends Fragment {
                 }
                 User user = (User) adapter.getItem(position);
                 Log.d("Swiped right:",user.getEmail());
+
+                PostMatchOkHttp request = new PostMatchOkHttp(user.getEmail()) {
+                    @Override
+                    protected void onPostMatchRequestFailedUserConnectionError() {
+                        showConnectionError();
+                    }
+
+                    @Override
+                    protected void onPostMatchRequestSuccess() {
+
+                    }
+
+                    @Override
+                    protected void logout() {
+                        MyApplication.getInstance().logout();
+                    }
+                };
+                request.makeRequest();
+
+                /*
                 PostMatchRequest request = new PostMatchRequest(user.getEmail()) {
                     @Override
                     protected void onPostMatchRequestFailedDefaultError() {
@@ -196,7 +217,7 @@ public class fragmentPlayMatching extends Fragment {
                         //showConnectionError();
                     }
                 };
-                request.make();
+                request.make();*/
             }
 
             @Override

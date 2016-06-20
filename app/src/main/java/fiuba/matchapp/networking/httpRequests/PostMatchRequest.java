@@ -83,7 +83,6 @@ public abstract class PostMatchRequest {
             public void onResponse(String response) {
                 Log.d(TAG, "Success response: " + response);
                 onPostMatchRequestSuccess();
-
             }
         };
     }
