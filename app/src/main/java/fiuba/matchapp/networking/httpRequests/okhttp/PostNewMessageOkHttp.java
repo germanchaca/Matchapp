@@ -38,7 +38,8 @@ public abstract class PostNewMessageOkHttp {
                 .connectTimeout(200, TimeUnit.SECONDS)
                 .writeTimeout(200, TimeUnit.SECONDS)
                 .readTimeout(200, TimeUnit.SECONDS)
-                .build();        this.userId = userId;
+                .build();
+        this.userId = userId;
         this.msg = msg;
     }
 
@@ -110,13 +111,11 @@ public abstract class PostNewMessageOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRequest();
+                makeRefreshRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
-
-
 
     Call post(String url, String json, Callback callback) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);

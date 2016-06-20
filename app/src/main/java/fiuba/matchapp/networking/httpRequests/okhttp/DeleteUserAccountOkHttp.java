@@ -2,17 +2,11 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.List;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
-import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -95,10 +89,10 @@ public abstract class DeleteUserAccountOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRequest();
+                makeRefreshRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

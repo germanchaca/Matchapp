@@ -2,13 +2,10 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
@@ -40,12 +37,11 @@ public abstract class GetUserOkHttp {
                 .connectTimeout(200, TimeUnit.SECONDS)
                 .writeTimeout(200, TimeUnit.SECONDS)
                 .readTimeout(200, TimeUnit.SECONDS)
-                .build();        this.userId = userId;
+                .build();
+        this.userId = userId;
     }
 
     public void makeRequest(){
-
-
         String url = RestAPIContract.GET_USER(userId);
 
         Callback callBack = new Callback() {
@@ -106,7 +102,7 @@ public abstract class GetUserOkHttp {
                 makeRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

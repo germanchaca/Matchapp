@@ -2,17 +2,13 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.User;
-import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import okhttp3.Call;
@@ -114,7 +110,7 @@ public abstract class PostMatchOkHttp {
                 makeRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

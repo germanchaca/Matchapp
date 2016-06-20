@@ -2,20 +2,15 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
-import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -88,10 +83,10 @@ public abstract class DeleteSingOutOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRequest();
+                makeRefreshRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

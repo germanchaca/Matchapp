@@ -2,6 +2,7 @@ package fiuba.matchapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,8 +95,8 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (position == 0) {
             return MORE;
         }else {
-            Message message = messageArrayList.get(position - 1);
-            if (message.getUserId().equals(userId)){
+            Message message = messageArrayList.get(position-1);
+            if (TextUtils.equals(message.getUserId(),userId)){
                 return SELF;
             }
         }
@@ -120,7 +121,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((LoadMoreViewHolder) holder).btnLoadMore.setVisibility(View.GONE);
             }
         }else {
-            Message message = messageArrayList.get(position - 1);
+            Message message = messageArrayList.get(position-1);
 
             ((ViewHolder) holder).message.setText(message.getMessage());
 

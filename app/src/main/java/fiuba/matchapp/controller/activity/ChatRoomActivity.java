@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -69,10 +70,13 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if(intent.hasExtra("chatroom")){
             this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
             this.userMatched = chatRoom.getUser();
+            Log.d(TAG, "Conversacion con " + chatRoom.getUser().getEmail());
             hasChatRoomId = true;
         }
         if(intent.hasExtra("user")){
             this.userMatched = intent.getParcelableExtra("user");
+            Log.d(TAG, "Conversacion con " + userMatched.getEmail());
+
         }
 
         selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
@@ -120,7 +124,9 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
         if (hasChatRoomId){
-            fetchChatThread(chatRoom.getId());
+            if(chatRoom.getLastMessage() != null){
+                fetchChatThread(chatRoom.getId());
+            }
         }
 
     }
@@ -252,6 +258,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         };
         request.makeRequest();
         Message sentMessage = new Message();
+        sentMessage.setUserId(MyApplication.getInstance().getPrefManager().getUser().getEmail());
         sentMessage.setCreatedAt(Long.toString(System.currentTimeMillis() / 1000));
         sentMessage.setMessage(message);
         sentMessage.setStatus(Message.STATUS_UNSENT);

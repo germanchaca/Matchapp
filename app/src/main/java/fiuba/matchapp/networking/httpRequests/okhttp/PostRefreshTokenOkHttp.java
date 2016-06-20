@@ -43,7 +43,7 @@ public abstract class PostRefreshTokenOkHttp {
         this.myPassword = MyApplication.getInstance().getPrefManager().getUserCredentials();
     }
 
-    public void makeRequest(){
+    public void makeRefreshRequest(){
         JSONObject paramsJson = new JSONObject();
         JSONObject userJson = new JSONObject();
         try {

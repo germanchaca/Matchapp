@@ -51,7 +51,7 @@ public class NewMatchActivity extends AppCompatActivity {
         }
 
         CircularImageView profile_img_right = (CircularImageView) findViewById(R.id.profile_img_right);
-        if(!TextUtils.isEmpty(user.getPhotoProfile())){
+        if(!TextUtils.isEmpty(userMatched.getPhotoProfile())){
             profile_img_right.setImageBitmap(ImageBase64.Base64ToBitmap(userMatched.getPhotoProfile()));
         }
 

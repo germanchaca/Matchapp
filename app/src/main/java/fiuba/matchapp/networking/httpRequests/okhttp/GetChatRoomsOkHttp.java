@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.ChatRoom;
-import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import okhttp3.Call;
@@ -102,10 +101,10 @@ public abstract class GetChatRoomsOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRequest();
+                makeRefreshRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

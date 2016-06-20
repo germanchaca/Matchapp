@@ -129,7 +129,7 @@ public abstract class PutInterestsOkHttp {
                 makeRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

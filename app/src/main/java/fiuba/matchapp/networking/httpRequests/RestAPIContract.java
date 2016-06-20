@@ -68,7 +68,7 @@ public class RestAPIContract {
     //Chat get chat rooms
     public static final String GET_CHATROOMS = BASE_URL + "/chat/";
     //Chat fetch chat history paginado (identifico la conversación por IdChat y MessageId es el ultimo que tenia yo
-    private static final String GET_CHAT_HISTORY = BASE_URL + "/match/_IDCHAT_-_IDMESSAGE_/";
+    private static final String GET_CHAT_HISTORY = BASE_URL + "/chat/_IDCHAT_-_IDMESSAGE_/";
     public static String GET_CHAT_HISTORY(String chatId, String messageId) {
         String temp = GET_CHAT_HISTORY.replace("_IDCHAT_", chatId);
         return  temp.replace("_IDMESSAGE_", messageId

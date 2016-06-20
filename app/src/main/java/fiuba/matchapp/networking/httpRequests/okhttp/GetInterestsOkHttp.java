@@ -7,20 +7,17 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Interest;
-import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
-import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
-import fiuba.matchapp.networking.jsonUtils.JsonUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -37,7 +34,11 @@ public abstract class GetInterestsOkHttp {
     protected abstract void logout();
 
     public GetInterestsOkHttp(){
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
+                .readTimeout(200, TimeUnit.SECONDS)
+                .build();
 
     }
 
@@ -103,7 +104,7 @@ public abstract class GetInterestsOkHttp {
                 makeRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

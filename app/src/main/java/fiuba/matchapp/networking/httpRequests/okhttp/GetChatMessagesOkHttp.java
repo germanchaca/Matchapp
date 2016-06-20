@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
@@ -107,10 +106,10 @@ public abstract class GetChatMessagesOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRequest();
+                makeRefreshRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 

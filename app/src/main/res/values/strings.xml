@@ -144,5 +144,6 @@
     <string name="no_chat_room_open">Todavía no tienes chats abiertos</string>
     <string name="no_more_candidates">Por el momento no hay candidatos,</string>
     <string name="came_back_later">vuele más tarde</string>
+    <string name="no_messages_yet">No seas tímido y comienza la conversación</string>
     <string name="load_more">CARGAR MENSAJES ANTERIORES</string>
 </resources>

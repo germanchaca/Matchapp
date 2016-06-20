@@ -2,17 +2,14 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import fiuba.matchapp.networking.jsonUtils.JsonUtils;
@@ -45,6 +42,8 @@ public abstract class PutUserDataOkHttp {
                 .writeTimeout(200, TimeUnit.SECONDS)
                 .readTimeout(200, TimeUnit.SECONDS)
                 .build();
+
+
         this.myUser = myUser;
         paramsJson = new JSONObject();
         userJson = new JSONObject();
@@ -87,7 +86,7 @@ public abstract class PutUserDataOkHttp {
             e.printStackTrace();
         }
     }
-    public void makeRequest(){
+    public Call makeRequest(){
         try {
             paramsJson.put("user",userJson);
             JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
@@ -128,12 +127,13 @@ public abstract class PutUserDataOkHttp {
         };
 
         try {
-            put(url,json,callBack);
+            return put(url,json,callBack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     private void onErrorNoAuthRequest() {
@@ -153,7 +153,7 @@ public abstract class PutUserDataOkHttp {
                 makeRequest();
             }
         };
-        request.makeRequest();
+        request.makeRefreshRequest();
     }
 
 
