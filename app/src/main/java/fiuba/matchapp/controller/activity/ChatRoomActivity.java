@@ -33,7 +33,7 @@ import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.httpRequests.GetChatHistoryRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.GetChatMessagesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostNewMessageOkHttp;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.view.LockedProgressDialog;
@@ -271,52 +271,51 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         progressDialog.show();
         contentRetry.setVisibility(View.GONE);
 
-        GetChatHistoryRequest request = new GetChatHistoryRequest(chatRoom.getId(),messageId) {
-            @Override
-            protected void onGetChatHistoryRequestFailedDefaultError() {
-                progressDialog.hide();
-                contentRetry.setVisibility(View.VISIBLE);
-                Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            protected void onGetChatHistoryRequestFailedUserConnectionError() {
-                progressDialog.hide();
-                contentRetry.setVisibility(View.VISIBLE);
-                Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            protected void onGetChatHistoryRequestSuccess(List<Message> chatHistory) {
-                progressDialog.hide();
-
-                if(chatHistory.size() > 0) {
-                    ArrayList<Message> temp = new ArrayList<>();
-                    temp.addAll(chatHistory);
-                    temp.addAll(messageArrayList);
-                    messageArrayList.clear();
-                    messageArrayList.addAll(temp);
-
-                    mAdapter.notifyDataSetChanged();
-                    if (mAdapter.getItemCount() > 1) {
-                        recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
-                    }
-                }
-            }
-
-
+        GetChatMessagesOkHttp request = new GetChatMessagesOkHttp(chatRoom.getId(),messageId) {
             @Override
             protected void logout() {
-                progressDialog.hide();
-                MyApplication.getInstance().logout();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.hide();
+                        MyApplication.getInstance().logout();
+                    }
+                });
+            }
+
+            @Override
+            protected void onConnectionError() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.hide();
+                        contentRetry.setVisibility(View.VISIBLE);
+                        Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            protected void onSuccess(final List<Message> messages) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.hide();
+
+                        if(messages.size() > 0) {
+                            ArrayList<Message> temp = new ArrayList<>();
+                            temp.addAll(messages);
+                            temp.addAll(messageArrayList);
+                            messageArrayList.clear();
+                            messageArrayList.addAll(temp);
+
+                            mAdapter.notifyDataSetChanged();
+                            if (mAdapter.getItemCount() > 1) {
+                                recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+                            }
+                        }
+                    }
+                });
             }
         };
-        request.make();
-
-
-
+        request.makeRequest();
     }
 
     @Override
