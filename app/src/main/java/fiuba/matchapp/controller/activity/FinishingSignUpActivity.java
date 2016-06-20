@@ -118,18 +118,18 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
 
         PutPhotoProfileOkHttp request = new PutPhotoProfileOkHttp(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+
+            @Override
             protected void onSuccess() {
                 User user = MyApplication.getInstance().getPrefManager().getUser();
                 user.setPhotoProfile(profilePhoto);
                 MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
                 launchMainActivity();
-            }
-
-            @Override
-            protected void onAuthError() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
             }
 
             @Override
@@ -236,6 +236,12 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
                 user.setInterests(selectedInterests);
                 MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
+            }
+
+            @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
             }
         };
         request.makeRequest();

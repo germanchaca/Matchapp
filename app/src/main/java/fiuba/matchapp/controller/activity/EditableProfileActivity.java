@@ -57,6 +57,8 @@ import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
 import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
 import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
+import fiuba.matchapp.networking.httpRequests.okhttp.PutPhotoProfileOkHttp;
+import fiuba.matchapp.networking.httpRequests.okhttp.PutUserDataOkHttp;
 import fiuba.matchapp.utils.AdressUtils;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.utils.InterestsUtils;
@@ -280,8 +282,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             }
         });
     }
-
-
 
     private void onServerConnectionFailedBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -522,7 +522,35 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         final String alias = txtAlias.getText().toString();
         final int age = Integer.parseInt(txtAge.getText().toString());
 
-        PutUpdateUserData request = new PutUpdateUserData(user) {
+        PutUserDataOkHttp request = new PutUserDataOkHttp(user) {
+            @Override
+            protected void onUpdateDataSuccess() {
+                user.setName(name);
+                user.setAge(age);
+                user.setAlias(alias);
+
+                if (!((latitude == 0) && (longitude == 0)) && (( (latitude != user.getLatitude()) || (longitude!= user.getLongitude()) ))) {
+                    user.setLatitude(latitude);
+                    user.setLongitude(longitude);
+                }
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                hideProgressDialog();
+                successCommitChanges();
+            }
+
+            @Override
+            protected void onAppServerConnectionError() {
+                hideProgressDialog();
+                onServerConnectionFailedBackPressed();
+            }
+
+            @Override
+            protected void logout() {
+                hideProgressDialog();
+                MyApplication.getInstance().logout();
+            }
+        };
+        /*PutUpdateUserData request = new PutUpdateUserData(user) {
             @Override
             protected void onUpdateDataSuccess() {
 
@@ -557,7 +585,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 hideProgressDialog();
                 MyApplication.getInstance().logout();
             }
-        };
+        };*/
 
         if(!TextUtils.equals(user.getName(),name)){
             request.changeName(name);
@@ -576,7 +604,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
             makeRequest=true;
         }
         if(makeRequest){
-            request.make();
+            request.makeRequest();
         }else{
             successCommitChanges();
         }
@@ -765,7 +793,31 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     private void sendPhotoToAppServer(final String profilePhoto) {
         showProgressDialog();
-        PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
+
+        progressDialog.show();
+        PutPhotoProfileOkHttp request = new PutPhotoProfileOkHttp(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
+            @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+
+            @Override
+            protected void onSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setPhotoProfile(profilePhoto);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+            }
+            @Override
+            protected void onConnectionError() {
+                progressDialog.dismiss();
+                displayAlertDialog();
+            }
+        };
+        request.makeRequest();
+
+        /*PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
             protected void onUpdatePhotoProfileSuccess() {
                 User user = MyApplication.getInstance().getPrefManager().getUser();
@@ -795,7 +847,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
 
         };
-        request.make();
+        request.make();*/
 
         Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
     }

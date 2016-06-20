@@ -18,10 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 import fiuba.matchapp.R;
+import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.controller.fragment.DatePickerFragment;
+import fiuba.matchapp.networking.httpRequests.okhttp.PostSignUpOkHttp;
 import fiuba.matchapp.view.LockedProgressDialog;
 import fiuba.matchapp.view.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.view.clickToSelectEditText.Item;
@@ -156,7 +158,34 @@ public class SignupActivity extends GetLocationActivity {
 
         String userPassword = MD5.getHashedPassword(_passwordText.getText().toString());
 
-        PostSingUpRequest postSignUpRequest = new PostSingUpRequest(user, userPassword) {
+        PostSignUpOkHttp request = new PostSignUpOkHttp(user,userPassword) {
+            @Override
+            protected void onSignupSuccess(List<Interest> interests) {
+                onRequestSignupSuccess((ArrayList<Interest>) interests);
+            }
+
+            @Override
+            protected void onSignUpFailedUserInvalidError() {
+                String errorMessage = getResources().getString(R.string.username_used);
+                _emailText.setError(errorMessage);
+                onSignupFailed(errorMessage);
+            }
+
+            @Override
+            protected void onSignUpFailedUserConnectionError() {
+                String errorMessage = getResources().getString(R.string.internet_problem);
+                onSignupFailed(errorMessage);
+            }
+
+            @Override
+            protected void onLogOutError() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+        };
+        request.makeRequest();
+
+        /*PostSingUpRequest postSignUpRequest = new PostSingUpRequest(user, userPassword) {
             @Override
             protected void onSignupSuccess(List<Interest> interests) {
                 onRequestSignupSuccess((ArrayList<Interest>) interests);
@@ -182,7 +211,7 @@ public class SignupActivity extends GetLocationActivity {
             }
         };
 
-        postSignUpRequest.make();
+        postSignUpRequest.make();*/
     }
 
     public void onRequestSignupSuccess(ArrayList<Interest> interests) {

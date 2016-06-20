@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.networking.httpRequests.PostSingInRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.PostSignInOkHttp;
 import fiuba.matchapp.utils.MD5;
 import fiuba.matchapp.view.LockedProgressDialog;
 
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
 
 
-        PostSingInRequest request = new PostSingInRequest(email, MD5.getHashedPassword(password)) {
+        /*PostSingInRequest request = new PostSingInRequest(email, MD5.getHashedPassword(password)) {
             @Override
             protected void onSignInFailedDefaultError() {
 
@@ -87,7 +88,26 @@ public class LoginActivity extends AppCompatActivity {
                 launchMainActivity();
             }
         };
-        request.make();
+        request.make();*/
+
+        PostSignInOkHttp request = new PostSignInOkHttp(email, MD5.getHashedPassword(password)) {
+            @Override
+            protected void onSignInFailedUserConnectionError() {
+                onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
+            }
+
+            @Override
+            protected void onSignInFailedUserNotCorrect() {
+                onLoginFailed(getResources().getString(R.string.internet_problem));
+            }
+
+            @Override
+            protected void onSignInSuccess() {
+                progressDialog.dismiss();
+                launchMainActivity();
+            }
+        };
+        request.makeRequest();
 
     }
     @Override
