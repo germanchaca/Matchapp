@@ -4,13 +4,13 @@
     android:id="@+id/contentNoChatRooms"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerInParent="true"
+    android:gravity="center"
     >
     <ImageView
         android:id="@+id/noChatRoomOpen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/empty_state_no_photos_illustration"
         android:background="?attr/selectableItemBackground"/>
 
