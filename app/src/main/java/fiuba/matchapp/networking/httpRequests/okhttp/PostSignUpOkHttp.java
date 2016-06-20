@@ -178,30 +178,7 @@ public abstract class PostSignUpOkHttp {
             }
         };
         request.makeRequest();
-        /*
-        GetInterestsRequest request = new GetInterestsRequest() {
-            @Override
-            protected void onGetInterestsSuccess(List<Interest> interests) {
-                onSignupSuccess(interests);
-            }
 
-            @Override
-            protected void onGetInterestsDefaultError() {
-                onSignUpFailedUserConnectionError();
-            }
-
-            @Override
-            protected void onGetInterestsConnectionError() {
-                onSignUpFailedUserConnectionError();
-            }
-
-            @Override
-            protected void logout() {
-                onLogOutError();
-            }
-
-        };
-        request.make();*/
     }
 
 

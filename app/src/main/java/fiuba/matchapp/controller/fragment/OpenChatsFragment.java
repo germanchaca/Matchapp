@@ -22,7 +22,6 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.activity.ChatRoomActivity;
 import fiuba.matchapp.adapter.ChatRoomsAdapter;
-import fiuba.matchapp.networking.httpRequests.GetChatOpenRoomsRequest;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetChatRoomsOkHttp;
 import fiuba.matchapp.view.LockedProgressDialog;
 import fiuba.matchapp.view.SimpleDividerItemDecoration;
@@ -175,41 +174,6 @@ public class OpenChatsFragment extends Fragment {
         };
         request.makeRequest();
 
-        /*GetChatOpenRoomsRequest request = new GetChatOpenRoomsRequest() {
-            @Override
-            protected void onGetChatOpenRoomsRequestFailedDefaultError() {
-                progressDialog.dismiss();
-                contentRetry.setVisibility(View.VISIBLE);
-
-                Snackbar.make(containerChats,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            protected void onGetChatOpenRoomsRequestFailedUserConnectionError() {
-                progressDialog.dismiss();
-                contentRetry.setVisibility(View.VISIBLE);
-                Snackbar.make(containerChats,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected void onGetChatOpenRoomsRequestSuccess(List<ChatRoom> chatRooms) {
-                chatRoomArrayList.addAll(chatRooms);
-                mAdapter.notifyDataSetChanged();
-
-                progressDialog.dismiss();
-
-                //cr.setTimestamp("1460090232");
-            }
-
-            @Override
-            protected void logout() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
-            }
-        };
-
-        request.make();*/
 
     }
 }

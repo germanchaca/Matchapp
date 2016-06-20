@@ -3,7 +3,6 @@ package fiuba.matchapp.controller.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -11,12 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
@@ -29,7 +25,6 @@ import fiuba.matchapp.view.LockedProgressDialog;
 import fiuba.matchapp.view.clickToSelectEditText.ClickToSelectEditText;
 import fiuba.matchapp.view.clickToSelectEditText.Item;
 import fiuba.matchapp.model.UserInterest;
-import fiuba.matchapp.networking.httpRequests.PostSingUpRequest;
 import fiuba.matchapp.utils.AgeUtils;
 import fiuba.matchapp.utils.FacebookUtils;
 import fiuba.matchapp.utils.MD5;
@@ -198,33 +193,7 @@ public class SignupActivity extends GetLocationActivity {
         };
         request.makeRequest();
 
-        /*PostSingUpRequest postSignUpRequest = new PostSingUpRequest(user, userPassword) {
-            @Override
-            protected void onSignupSuccess(List<Interest> interests) {
-                onRequestSignupSuccess((ArrayList<Interest>) interests);
-            }
 
-            @Override
-            protected void onSignUpFailedUserInvalidError() {
-                String errorMessage = getResources().getString(R.string.username_used);
-                _emailText.setError(errorMessage);
-                onSignupFailed(errorMessage);
-            }
-
-            @Override
-            protected void onSignUpFailedUserConnectionError() {
-                String errorMessage = getResources().getString(R.string.internet_problem);
-                onSignupFailed(errorMessage);
-            }
-
-            @Override
-            protected void onSignUpFailedDefaultError() {
-                String errorMessage = getResources().getString(R.string.signup_failed);
-                onSignupFailed(errorMessage);
-            }
-        };
-
-        postSignUpRequest.make();*/
     }
 
     private void onConnectionError() {

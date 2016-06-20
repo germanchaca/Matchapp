@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,11 +21,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ChosenImages;
@@ -34,21 +28,13 @@ import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.controller.activity.FinishingSignUpActivity;
 import fiuba.matchapp.controller.activity.MainActivity;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
-import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutPhotoProfileOkHttp;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.view.LockedProgressDialog;
@@ -300,40 +286,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             }
         };
         request.makeRequest();
-/*
-        PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
-            @Override
-            protected void onUpdatePhotoProfileSuccess() {
-                User user = MyApplication.getInstance().getPrefManager().getUser();
-                user.setPhotoProfile(profilePhoto);
-                MyApplication.getInstance().getPrefManager().storeUser(user);
-                progressDialog.dismiss();
-                launchMainActivity();
-            }
 
-            @Override
-            protected void onAppServerUpdatePhotoProfileDefaultError() {
-                progressDialog.dismiss();
-
-                displayAlertDialog();
-            }
-
-            @Override
-            protected void onAppServerConnectionError() {
-                progressDialog.dismiss();
-
-                displayAlertDialog();
-            }
-
-            @Override
-            protected void logOut() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
-            }
-
-
-        };
-        request.make();*/
 
         Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
     }

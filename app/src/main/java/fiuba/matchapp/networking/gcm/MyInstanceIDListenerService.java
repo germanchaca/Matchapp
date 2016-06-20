@@ -2,25 +2,11 @@ package fiuba.matchapp.networking.gcm;
 
 import android.util.Log;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
-import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
-import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutUserDataOkHttp;
 
 /**
@@ -66,29 +52,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
         };
         request.changeGcmRegistrationId(token);
         request.makeRequest();
-        /*PutUpdateUserData request = new PutUpdateUserData(user) {
-            @Override
-            protected void onUpdateDataSuccess() {
 
-            }
-
-            @Override
-            protected void onAppServerDefaultError() {
-
-            }
-
-            @Override
-            protected void onAppServerConnectionError() {
-
-            }
-
-            @Override
-            protected void logout() {
-                MyApplication.getInstance().logout();
-            }
-        };
-        request.changeGcmRegistrationId(token);
-        request.make();*/
 
     }
 }

@@ -25,7 +25,7 @@ import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
-import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
+import fiuba.matchapp.networking.httpRequests.okhttp.GetInterestsOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutInterestsOkHttp;
 import fiuba.matchapp.utils.InterestsUtils;
 import fiuba.matchapp.view.LockedProgressDialog;
@@ -54,7 +54,67 @@ public class InterestEditActivity extends AppCompatActivity {
             category = intent.getStringExtra("category");
             Log.d(TAG,"Lanza fragment:" + category);
 
-            GetInterestsRequest request = new GetInterestsRequest() {
+            progressDialog = new LockedProgressDialog(InterestEditActivity.this, R.style.AppTheme_Dark_Dialog);
+
+            progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
+            progressDialog.show();
+
+            GetInterestsOkHttp request = new GetInterestsOkHttp() {
+                @Override
+                protected void onAppServerConnectionError() {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            progressDialog.dismiss();
+                            showConnectionError();
+                        }
+                    });
+                }
+
+                @Override
+                protected void onGetInterestsSuccess(final List<Interest> interests) {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Map<String,List<Interest>> mapInterestsByCategory = InterestsUtils.getStringListMap(interests);
+                            //todos los intereses
+                            for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
+                            {
+                                if(TextUtils.equals(entry.getKey(), category)){
+                                    //intereses ya seleccionados por el usuario
+                                    mapUserInterestsByCategory = InterestsUtils.getStringUserInterestsListMap(MyApplication.getInstance().getPrefManager().getUser().getInterests());
+                                    for (Map.Entry<String, List<UserInterest>> entryUser : mapUserInterestsByCategory.entrySet())
+                                    {
+                                        progressDialog.dismiss();
+                                        if (TextUtils.equals(entryUser.getKey(),category)){
+                                            //tengo en entryUser.getValue() la lista de intereses ya seleccionados por el usuario
+                                            fragment = InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue(),entryUser.getValue());
+
+                                            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                                            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                                            ft.replace(R.id.contentFragment, fragment);
+                                            ft.commit();
+
+                                            Log.d(TAG,"Lanza fragment");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                protected void logout() {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            progressDialog.dismiss();
+                            MyApplication.getInstance().logout();
+                        }
+                    });
+                }
+            };
+            request.makeRequest();
+
+            /*GetInterestsRequest request = new GetInterestsRequest() {
                 @Override
                 protected void onGetInterestsSuccess(List<Interest> interests) {
 
@@ -106,7 +166,7 @@ public class InterestEditActivity extends AppCompatActivity {
 
             progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
             progressDialog.show();
-            request.make();
+            request.make();*/
         }
 
     }
@@ -205,36 +265,6 @@ public class InterestEditActivity extends AppCompatActivity {
         };
         request.makeRequest();
 
-        /*PutUpdateUserData request = new PutUpdateUserData(MyApplication.getInstance().getPrefManager().getUser()) {
-            @Override
-            protected void onUpdateDataSuccess() {
-                User user = MyApplication.getInstance().getPrefManager().getUser();
-                user.setInterests(allUserInterests);
-                MyApplication.getInstance().getPrefManager().storeUser(user);
-                progressDialog.dismiss();
-                finish();
-            }
-
-            @Override
-            protected void onAppServerDefaultError() {
-                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
-                progressDialog.dismiss();
-            }
-
-            @Override
-            protected void onAppServerConnectionError() {
-                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
-                progressDialog.dismiss();
-            }
-
-            @Override
-            protected void logout() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
-            }
-        };
-        request.changeInterests(allUserInterests);
-        request.make();*/
 
     }
 

@@ -24,7 +24,6 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.activity.ProfileActivity;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetMatchCandidatesRequest;
-import fiuba.matchapp.networking.httpRequests.PostMatchRequest;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostMatchOkHttp;
 import fiuba.matchapp.view.RippleAnimation;
 
@@ -204,24 +203,7 @@ public class fragmentPlayMatching extends Fragment {
                 };
                 request.makeRequest();
 
-                /*
-                PostMatchRequest request = new PostMatchRequest(user.getEmail()) {
-                    @Override
-                    protected void onPostMatchRequestFailedDefaultError() {
-                        showConnectionError();
-                    }
 
-                    @Override
-                    protected void onPostMatchRequestFailedUserConnectionError() {
-                        showConnectionError();
-                    }
-
-                    @Override
-                    protected void onPostMatchRequestSuccess() {
-                        //showConnectionError();
-                    }
-                };
-                request.make();*/
             }
 
             @Override

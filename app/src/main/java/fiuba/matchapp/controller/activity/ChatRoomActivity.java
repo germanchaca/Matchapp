@@ -34,7 +34,6 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.GetChatHistoryRequest;
-import fiuba.matchapp.networking.httpRequests.PostChatNewMessageRequest;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostNewMessageOkHttp;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.view.LockedProgressDialog;
@@ -252,24 +251,6 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             }
         };
         request.makeRequest();
-/*
-        PostChatNewMessageRequest request = new PostChatNewMessageRequest(userId,message) {
-            @Override
-            protected void onPostChatNewMessageRequestFailedDefaultError() {
-                //TODO tildar como no enviado con opción de volver a enviar
-            }
-
-            @Override
-            protected void onPostChatNewMessageRequestFailedUserConnectionError() {
-                //TODO tildar como no enviado con opción de volver a enviar
-            }
-
-            @Override
-            protected void onPostChatNewMessageRequestSuccess() {
-                //TODO tildar como enviado
-            }
-        };
-        request.make();*/
         Message sentMessage = new Message();
         sentMessage.setCreatedAt(Long.toString(System.currentTimeMillis() / 1000));
         sentMessage.setMessage(message);

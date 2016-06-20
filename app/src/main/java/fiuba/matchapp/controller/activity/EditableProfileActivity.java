@@ -55,8 +55,6 @@ import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
-import fiuba.matchapp.networking.httpRequests.PutUpdatePhothoProfileUser;
-import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutPhotoProfileOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutUserDataOkHttp;
 import fiuba.matchapp.utils.AdressUtils;
@@ -558,42 +556,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 });
             }
         };
-        /*PutUpdateUserData request = new PutUpdateUserData(user) {
-            @Override
-            protected void onUpdateDataSuccess() {
 
-                user.setName(name);
-                user.setAge(age);
-                user.setAlias(alias);
-
-                if (!((latitude == 0) && (longitude == 0)) && (( (latitude != user.getLatitude()) || (longitude!= user.getLongitude()) ))) {
-                    user.setLatitude(latitude);
-                    user.setLongitude(longitude);
-                }
-                MyApplication.getInstance().getPrefManager().storeUser(user);
-                hideProgressDialog();
-                successCommitChanges();
-
-            }
-
-            @Override
-            protected void onAppServerDefaultError() {
-                hideProgressDialog();
-                onServerConnectionFailedBackPressed();
-            }
-
-            @Override
-            protected void onAppServerConnectionError() {
-                hideProgressDialog();
-                onServerConnectionFailedBackPressed();
-            }
-
-            @Override
-            protected void logout() {
-                hideProgressDialog();
-                MyApplication.getInstance().logout();
-            }
-        };*/
 
         if(!TextUtils.equals(user.getName(),name)){
             request.changeName(name);
@@ -837,37 +800,6 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         };
         request.makeRequest();
 
-        /*PutUpdatePhothoProfileUser request = new PutUpdatePhothoProfileUser(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
-            @Override
-            protected void onUpdatePhotoProfileSuccess() {
-                User user = MyApplication.getInstance().getPrefManager().getUser();
-                user.setPhotoProfile(profilePhoto);
-                MyApplication.getInstance().getPrefManager().storeUser(user);
-                progressDialog.dismiss();
-            }
-
-            @Override
-            protected void onAppServerUpdatePhotoProfileDefaultError() {
-                progressDialog.dismiss();
-
-                displayAlertDialog();
-            }
-
-            @Override
-            protected void onAppServerConnectionError() {
-                progressDialog.dismiss();
-                displayAlertDialog();
-            }
-
-            @Override
-            protected void logOut() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
-            }
-
-
-        };
-        request.make();*/
 
         Log.d(TAG, "ProfilePhoto to send: " + profilePhoto);
     }
