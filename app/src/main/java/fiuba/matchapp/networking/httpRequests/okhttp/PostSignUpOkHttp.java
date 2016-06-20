@@ -160,6 +160,25 @@ public abstract class PostSignUpOkHttp {
     }
 
     private void getAllInterestFromAppServer() {
+
+        GetInterestsOkHttp request = new GetInterestsOkHttp() {
+            @Override
+            protected void onAppServerConnectionError() {
+                onSignUpFailedUserConnectionError();
+            }
+
+            @Override
+            protected void onGetInterestsSuccess(List<Interest> interests) {
+                onSignupSuccess(interests);
+            }
+
+            @Override
+            protected void logout() {
+                onLogOutError();
+            }
+        };
+        request.makeRequest();
+        /*
         GetInterestsRequest request = new GetInterestsRequest() {
             @Override
             protected void onGetInterestsSuccess(List<Interest> interests) {
@@ -182,7 +201,7 @@ public abstract class PostSignUpOkHttp {
             }
 
         };
-        request.make();
+        request.make();*/
     }
 
 
