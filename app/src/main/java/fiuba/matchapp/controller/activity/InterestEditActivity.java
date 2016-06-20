@@ -172,23 +172,35 @@ public class InterestEditActivity extends AppCompatActivity {
         PutInterestsOkHttp request = new PutInterestsOkHttp(MyApplication.getInstance().getPrefManager().getUser(),allUserInterests) {
             @Override
             protected void onAppServerConnectionError() {
-                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
-                progressDialog.dismiss();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                        progressDialog.dismiss();
+                    }
+                });
             }
 
             @Override
             protected void onUpdateDataSuccess() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
                 User user = MyApplication.getInstance().getPrefManager().getUser();
                 user.setInterests(allUserInterests);
                 MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
                 finish();
+                    }
+                });
             }
 
             @Override
             protected void logout() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        MyApplication.getInstance().logout();
+                    }
+                });
             }
         };
         request.makeRequest();
