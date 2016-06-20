@@ -540,14 +540,22 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
             @Override
             protected void onAppServerConnectionError() {
-                hideProgressDialog();
-                onServerConnectionFailedBackPressed();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        hideProgressDialog();
+                        onServerConnectionFailedBackPressed();
+                    }
+                });
             }
 
             @Override
             protected void logout() {
-                hideProgressDialog();
-                MyApplication.getInstance().logout();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        hideProgressDialog();
+                        MyApplication.getInstance().logout();
+                    }
+                });
             }
         };
         /*PutUpdateUserData request = new PutUpdateUserData(user) {
@@ -798,21 +806,33 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         PutPhotoProfileOkHttp request = new PutPhotoProfileOkHttp(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
             protected void logout() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
                 progressDialog.dismiss();
                 MyApplication.getInstance().logout();
+                    }
+                });
             }
 
             @Override
             protected void onSuccess() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
                 User user = MyApplication.getInstance().getPrefManager().getUser();
                 user.setPhotoProfile(profilePhoto);
                 MyApplication.getInstance().getPrefManager().storeUser(user);
                 progressDialog.dismiss();
+                    }
+                });
             }
             @Override
             protected void onConnectionError() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
                 progressDialog.dismiss();
                 displayAlertDialog();
+                    }
+                });
             }
         };
         request.makeRequest();
