@@ -14,6 +14,7 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
+import fiuba.matchapp.networking.jsonUtils.JsonUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -25,48 +26,80 @@ import okhttp3.Response;
 /**
  * Created by ger on 19/06/16.
  */
-public abstract class PutPhotoProfileOkHttp {
+public abstract class PutUserDataOkHttp {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private static final String TAG = "PutPhotoProfileOkHttp" ;
+    private static final String TAG = "PutUserDataOkHttp" ;
     private final OkHttpClient client;
     private final User myUser;
-    private final String base64EncodedPhoto;
+    private JSONObject userJson;
+    private JSONObject paramsJson;
 
+    protected abstract void onAppServerConnectionError();
+    protected abstract void onUpdateDataSuccess();
     protected abstract void logout();
-    protected abstract void onSuccess();
-    protected abstract void onConnectionError();
 
-
-    public PutPhotoProfileOkHttp(User myUser, String base64EncodedPhoto){
+    public PutUserDataOkHttp(User myUser){
         client = new OkHttpClient();
         this.myUser = myUser;
-        this.base64EncodedPhoto = base64EncodedPhoto;
+        paramsJson = new JSONObject();
+        userJson = new JSONObject();
     }
-
-    public void makeRequest(){
-
-        String url = RestAPIContract.PUT_PHOTO_USER(myUser.getEmail());
-
-        JSONObject paramsJson = new JSONObject();
+    public void changeName(String name){
+        fillBody("name", name);
+    }
+    public void changeAlias(String alias){
+        fillBody("name", alias);
+    }
+    public void changeAge(int age){
+        fillBody("age", age);
+    }
+    public void changeLocation(double latitude,double longitude ){
+        fillBody( latitude,longitude);
+    }
+    public void changeGcmRegistrationId(String gcmId){
+        fillBody("gcm_registration_id", gcmId);
+    }
+    private void fillBody(String key, int changeValue) {
         try {
+            userJson.put(key, changeValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void fillBody( double latitude,double longitude) {
+        try {
+            JSONObject locationJson = JsonUtils.getJsonObjectFromLocation(latitude, longitude);
+            userJson.put("location", locationJson);
 
-            paramsJson.put("photo",base64EncodedPhoto);
-
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void fillBody(String key, String changeValue) {
+        try {
+            userJson.put(key, changeValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void makeRequest(){
+        try {
+            paramsJson.put("user",userJson);
             JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
             paramsJson.put("metadata", metadataJson);
-
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        String url = RestAPIContract.PUT_USER(myUser.getEmail());
         String json = paramsJson.toString();
 
         Callback callBack = new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "Unexpected error ");
-                onConnectionError();
+                Log.e(TAG, "Unexpected code ");
+                onAppServerConnectionError();
             }
 
             @Override
@@ -74,16 +107,16 @@ public abstract class PutPhotoProfileOkHttp {
                 if (response.isSuccessful()) {
                     String responseStr = response.body().string();
                     Log.d(TAG, "Success, response: " + responseStr + "code: " + response.code());
-                    onSuccess();
+                    onUpdateDataSuccess();
                     // Do what you want to do with the response.
                 } else {
                     // Request not successful
                     Log.e(TAG, "Unexpected code " + response.code());
                     if (response.code() == 401){
                         Log.e(TAG, "Error 401");
-                        onErrorNoAuth();
+                        onErrorNoAuthRequest();
                     }else {
-                        onConnectionError();
+                        onAppServerConnectionError();
                     }
                 }
             }
@@ -98,7 +131,7 @@ public abstract class PutPhotoProfileOkHttp {
 
     }
 
-    private void onErrorNoAuth() {
+    private void onErrorNoAuthRequest() {
         PostRefreshTokenOkHttp request = new PostRefreshTokenOkHttp() {
             @Override
             protected void onErrorNoAuth() {
@@ -107,7 +140,7 @@ public abstract class PutPhotoProfileOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenConnectionError() {
-                onConnectionError();
+                onAppServerConnectionError();
             }
 
             @Override
@@ -132,4 +165,6 @@ public abstract class PutPhotoProfileOkHttp {
         return call;
 
     }
+
+
 }

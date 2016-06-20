@@ -32,6 +32,10 @@ public abstract class PutInterestsOkHttp {
     private final User myUser;
     private final List<UserInterest> interestsToChange;
 
+    protected abstract void onAppServerConnectionError();
+    protected abstract void onUpdateDataSuccess();
+    protected abstract void logout();
+
     public PutInterestsOkHttp(User myUser,List<UserInterest> interests){
         client = new OkHttpClient();
         this.myUser = myUser;
@@ -86,7 +90,7 @@ public abstract class PutInterestsOkHttp {
                     Log.e(TAG, "Unexpected code " + response.code());
                     if (response.code() == 401){
                         Log.e(TAG, "Error 401");
-                        onAppServerConnectionError();
+                        onErrorNoAuthRequest();
                     }else {
                         onAppServerConnectionError();
                     }
@@ -102,6 +106,29 @@ public abstract class PutInterestsOkHttp {
         }
 
     }
+
+    private void onErrorNoAuthRequest() {
+        PostRefreshTokenOkHttp request = new PostRefreshTokenOkHttp() {
+            @Override
+            protected void onErrorNoAuth() {
+                logout();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenConnectionError() {
+                onAppServerConnectionError();
+            }
+
+            @Override
+            protected void onRefreshAppServerTokenSuccess() {
+                makeRequest();
+            }
+        };
+        request.makeRequest();
+    }
+
+
+
     Call put(String url, String json, Callback callback) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
@@ -115,7 +142,5 @@ public abstract class PutInterestsOkHttp {
 
     }
 
-    protected abstract void onAppServerConnectionError();
 
-    protected abstract void onUpdateDataSuccess();
 }
