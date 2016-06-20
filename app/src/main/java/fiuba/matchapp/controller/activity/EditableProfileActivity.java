@@ -54,7 +54,7 @@ import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
-import fiuba.matchapp.networking.httpRequests.DeleteUserRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.DeleteUserAccountOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutPhotoProfileOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PutUserDataOkHttp;
 import fiuba.matchapp.utils.AdressUtils;
@@ -250,33 +250,39 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
                 parentLinearLayout.requestFocus();
                 showProgressDialog();
 
-                DeleteUserRequest request = new DeleteUserRequest(MyApplication.getInstance().getPrefManager().getUser()) {
+                DeleteUserAccountOkHttp request = new DeleteUserAccountOkHttp(MyApplication.getInstance().getPrefManager().getUser()) {
                     @Override
-                    protected void onDeleteAppServerTokenSuccess() {
-                        hideProgressDialog();
-                        MyApplication.getInstance().deletteAccount();
+                    protected void onDeleteSuccess() {
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                hideProgressDialog();
+                                MyApplication.getInstance().deletteAccount();
+                            }
+                        });
                     }
 
                     @Override
-                    protected void onDeleteUserFailedDefaultError() {
-                        hideProgressDialog();
-                        Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
+                    protected void onDeleteConnectionError() {
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                hideProgressDialog();
+                                Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
+                            }
+                        });
                     }
 
                     @Override
-                    protected void onDeleteUserFailedUserConnectionError() {
-                        hideProgressDialog();
-                        Snackbar.make(parentLinearLayout,getResources().getString(R.string.internet_problem),Snackbar.LENGTH_LONG).show();
+                    protected void logout() {
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                hideProgressDialog();
+                                MyApplication.getInstance().logout();
+                            }
+                        });
                     }
-
-                    @Override
-                    protected void logOut() {
-                        hideProgressDialog();
-                        MyApplication.getInstance().logout();
-                    }
-
                 };
-                request.make();
+                request.makeRequest();
+
             }
         });
     }

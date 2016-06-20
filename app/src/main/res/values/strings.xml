@@ -141,6 +141,8 @@
     <string name="fetching_all_chats">Cargando</string>
     <string name="retry_fetching_chat_history">Volver a cargar conversación</string>
     <string name="retry_fetching_all_chatrooms">Volver a cargar conversaciones</string>
-    <string name="no_chat_room_open">Todavía no hay ningún match</string>
+    <string name="no_chat_room_open">Aquí aparecerán las conversaciones con tus matchs</string>
+    <string name="no_more_candidates">Por el momento no hay candidatos,</string>
+    <string name="came_back_later">vuele más tarde</string>
     <string name="load_more">CARGAR MENSAJES ANTERIORES</string>
 </resources>
