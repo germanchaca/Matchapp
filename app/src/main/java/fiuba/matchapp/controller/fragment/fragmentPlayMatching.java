@@ -39,6 +39,7 @@ public class fragmentPlayMatching extends Fragment {
     private FloatingActionButton buttonInfo;
     private RelativeLayout containerRetry;
     private ImageView retryImage;
+    private RelativeLayout containerNoMoreCandidates;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class fragmentPlayMatching extends Fragment {
 
                 if(user.size() == 0){
                     stopAnimation();
-                    showLimitDayErrorDialog();
+                    showNoMoreCandidatesView();
                 }else {
 
                     adapter = new SwipeDeckAdapter(user, getActivity());
@@ -127,10 +128,21 @@ public class fragmentPlayMatching extends Fragment {
 
         builder.show();
     }
+    private void showNoMoreCandidatesView() {
+        container.setVisibility(View.GONE);
+        rippleBackground1.setVisibility(View.GONE);
+        containerNoMoreCandidates.setVisibility(View.VISIBLE);
+        btnSwipeLeft.setVisibility(View.GONE);
+        btnSwipeRight.setVisibility(View.GONE);
+        cardStack.setVisibility(View.GONE);
+        containerRetry.setVisibility(View.GONE);
+    }
+
 
     private void showRetryButtonEnabled() {
         container.setVisibility(View.GONE);
         rippleBackground1.setVisibility(View.GONE);
+        containerNoMoreCandidates.setVisibility(View.GONE);
         btnSwipeLeft.setVisibility(View.GONE);
         btnSwipeRight.setVisibility(View.GONE);
         cardStack.setVisibility(View.GONE);
@@ -266,12 +278,16 @@ public class fragmentPlayMatching extends Fragment {
                 initCardstack();
             }
         });
+
+        containerNoMoreCandidates = (RelativeLayout) view.findViewById(R.id.contentNoMoreCandidates);
+        containerNoMoreCandidates.setVisibility(View.GONE);
     }
 
     private void startAnimation() {
         //if it's not running
         if (!rippleBackground1.isRippleAnimationRunning()) {
             containerRetry.setVisibility(View.GONE);
+            containerNoMoreCandidates.setVisibility(View.GONE);
             container.setVisibility(View.GONE);
             rippleBackground1.setVisibility(View.VISIBLE);
             btnSwipeLeft.setVisibility(View.GONE);
@@ -284,6 +300,7 @@ public class fragmentPlayMatching extends Fragment {
     private void stopAnimation() {
         if (rippleBackground1.isRippleAnimationRunning()) {
             containerRetry.setVisibility(View.GONE);
+            containerNoMoreCandidates.setVisibility(View.GONE);
             rippleBackground1.stopRippleAnimation();
             rippleBackground1.setVisibility(View.GONE);
             btnSwipeLeft.setVisibility(View.VISIBLE);
