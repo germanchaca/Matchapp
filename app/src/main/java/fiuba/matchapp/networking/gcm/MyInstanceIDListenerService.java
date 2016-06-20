@@ -21,6 +21,7 @@ import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
+import fiuba.matchapp.networking.httpRequests.okhttp.PutUserDataOkHttp;
 
 /**
  * Created by german on 4/21/2016.
@@ -46,7 +47,26 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
         if (user == null) {
             return;
         }
-        PutUpdateUserData request = new PutUpdateUserData(user) {
+
+        PutUserDataOkHttp request = new PutUserDataOkHttp(user) {
+            @Override
+            protected void onAppServerConnectionError() {
+
+            }
+
+            @Override
+            protected void onUpdateDataSuccess() {
+
+            }
+
+            @Override
+            protected void logout() {
+
+            }
+        };
+        request.changeGcmRegistrationId(token);
+        request.makeRequest();
+        /*PutUpdateUserData request = new PutUpdateUserData(user) {
             @Override
             protected void onUpdateDataSuccess() {
 
@@ -68,7 +88,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
             }
         };
         request.changeGcmRegistrationId(token);
-        request.make();
+        request.make();*/
 
     }
 }
