@@ -19,8 +19,6 @@ import android.widget.RelativeLayout;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.io.Serializable;
-
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
@@ -29,10 +27,9 @@ import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
-import fiuba.matchapp.networking.gcm.MyInstanceIDListenerService;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.GetUserRequest;
-import fiuba.matchapp.networking.httpRequests.SignOutRequest;
+import fiuba.matchapp.networking.httpRequests.okhttp.DeleteSingOutOkHttp;
 import fiuba.matchapp.view.LockedProgressDialog;
 
 public class MainActivity extends GetLocationActivity {
@@ -220,33 +217,36 @@ public class MainActivity extends GetLocationActivity {
 
         progressDialog.show();
         Log.d(TAG,"signOut");
-        SignOutRequest request = new SignOutRequest() {
+        DeleteSingOutOkHttp request = new DeleteSingOutOkHttp() {
             @Override
-            protected void onDeleteAppServerTokenSuccess() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
+            protected void onConnectionError() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        String errorMessage = getResources().getString(R.string.internet_problem);
+                        onDeleteTokenError(errorMessage);                    }
+                });
             }
 
             @Override
-            protected void onDeleteTokenFailedDefaultError() {
-                String errorMessage = getResources().getString(R.string.internet_problem);
-                onDeleteTokenError(errorMessage);
-            }
-
-            @Override
-            protected void onDeleteTokenFailedUserConnectionError() {
-                String errorMessage = getResources().getString(R.string.internet_problem);
-                onDeleteTokenError(errorMessage);
+            protected void onSuccess() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        MyApplication.getInstance().logout();                    }
+                });
             }
 
             @Override
             protected void logout() {
-                progressDialog.dismiss();
-                MyApplication.getInstance().logout();
-
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        MyApplication.getInstance().logout();                    }
+                });
             }
         };
-        request.make();
+        request.makeRequest();
+
     }
 
     private void onDeleteTokenError(String errorMessage) {
