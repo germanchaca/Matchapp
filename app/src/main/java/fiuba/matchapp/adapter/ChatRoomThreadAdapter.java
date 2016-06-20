@@ -90,11 +90,14 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        Message message = messageArrayList.get(position);
-        if (message.getUserId().equals(userId)) {
-            return SELF;
-        }else if (position == 0) {
+
+        if (position == 0) {
             return MORE;
+        }else {
+            Message message = messageArrayList.get(position - 1);
+            if (message.getUserId().equals(userId)){
+                return SELF;
+            }
         }
 
         return position;
@@ -117,7 +120,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((LoadMoreViewHolder) holder).btnLoadMore.setVisibility(View.GONE);
             }
         }else {
-            Message message = messageArrayList.get(position);
+            Message message = messageArrayList.get(position - 1);
 
             ((ViewHolder) holder).message.setText(message.getMessage());
 
@@ -132,7 +135,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return messageArrayList.size();
+        return messageArrayList.size() + 1;
     }
 
 }
