@@ -3,7 +3,6 @@ package fiuba.matchapp.networking.httpRequests;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -15,15 +14,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
-import fiuba.matchapp.controller.fragment.InterestsRecyclerViewFragment;
-import fiuba.matchapp.controller.fragment.UploadProfilePhotoFragment;
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
