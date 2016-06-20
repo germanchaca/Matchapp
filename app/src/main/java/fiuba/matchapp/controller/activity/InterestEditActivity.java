@@ -26,6 +26,7 @@ import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
 import fiuba.matchapp.networking.httpRequests.GetInterestsRequest;
 import fiuba.matchapp.networking.httpRequests.PutUpdateUserData;
+import fiuba.matchapp.networking.httpRequests.okhttp.PutInterestsOkHttp;
 import fiuba.matchapp.utils.InterestsUtils;
 import fiuba.matchapp.view.LockedProgressDialog;
 
@@ -167,7 +168,32 @@ public class InterestEditActivity extends AppCompatActivity {
         }
 
         progressDialog.show();
-        PutUpdateUserData request = new PutUpdateUserData(MyApplication.getInstance().getPrefManager().getUser()) {
+
+        PutInterestsOkHttp request = new PutInterestsOkHttp(MyApplication.getInstance().getPrefManager().getUser(),allUserInterests) {
+            @Override
+            protected void onAppServerConnectionError() {
+                showSnackBarError(getApplicationContext().getString(R.string.internet_problem));
+                progressDialog.dismiss();
+            }
+
+            @Override
+            protected void onUpdateDataSuccess() {
+                User user = MyApplication.getInstance().getPrefManager().getUser();
+                user.setInterests(allUserInterests);
+                MyApplication.getInstance().getPrefManager().storeUser(user);
+                progressDialog.dismiss();
+                finish();
+            }
+
+            @Override
+            protected void logout() {
+                progressDialog.dismiss();
+                MyApplication.getInstance().logout();
+            }
+        };
+        request.makeRequest();
+
+        /*PutUpdateUserData request = new PutUpdateUserData(MyApplication.getInstance().getPrefManager().getUser()) {
             @Override
             protected void onUpdateDataSuccess() {
                 User user = MyApplication.getInstance().getPrefManager().getUser();
@@ -196,7 +222,7 @@ public class InterestEditActivity extends AppCompatActivity {
             }
         };
         request.changeInterests(allUserInterests);
-        request.make();
+        request.make();*/
 
     }
 
