@@ -62,6 +62,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private boolean hasChatRoomId = false;
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        MyApplication.getInstance().cancelAllPendingAppServerRequests();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initViews();
@@ -79,7 +85,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         }
 
-        selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
+        selfUserId = MyApplication.getInstance().getPrefManager().getUser().getEmail();
 
 
         titleChat.setText(this.userMatched.getAlias());

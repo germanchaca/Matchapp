@@ -33,11 +33,8 @@ public abstract class PostMatchOkHttp {
     protected abstract void logout();
 
     public PostMatchOkHttp(String userId){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();        this.userId = userId;
+        client = MyApplication.getInstance().getAppServerClient();
+        this.userId = userId;
     }
 
     public Call makeRequest(){

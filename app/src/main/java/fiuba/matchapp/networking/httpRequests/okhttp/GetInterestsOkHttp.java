@@ -34,12 +34,7 @@ public abstract class GetInterestsOkHttp {
     protected abstract void logout();
 
     public GetInterestsOkHttp(){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();
-
+        client = MyApplication.getInstance().getAppServerClient();
     }
 
     public Call makeRequest(){

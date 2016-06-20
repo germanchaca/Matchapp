@@ -28,6 +28,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private String userId;
     private int MORE = 200;
     private int SELF = 100;
+    private int OTHER = 300;
     private static String today;
 
     private Context mContext;
@@ -99,9 +100,8 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (TextUtils.equals(message.getUserId(),userId)){
                 return SELF;
             }
+            return OTHER;
         }
-
-        return position;
     }
 
     @Override

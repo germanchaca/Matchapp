@@ -33,11 +33,8 @@ public abstract class GetUserOkHttp {
     protected abstract void logout();
 
     public GetUserOkHttp(String userId){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();
+        client = MyApplication.getInstance().getAppServerClient();
+
         this.userId = userId;
     }
 

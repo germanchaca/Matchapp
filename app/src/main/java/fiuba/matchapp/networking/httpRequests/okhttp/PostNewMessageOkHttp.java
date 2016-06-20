@@ -34,11 +34,8 @@ public abstract class PostNewMessageOkHttp {
     protected abstract void logout();
 
     public PostNewMessageOkHttp(String userId, String msg){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();
+        client = MyApplication.getInstance().getAppServerClient();
+
         this.userId = userId;
         this.msg = msg;
     }

@@ -36,11 +36,8 @@ public abstract class PutPhotoProfileOkHttp {
 
 
     public PutPhotoProfileOkHttp(User myUser, String base64EncodedPhoto){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();
+        client = MyApplication.getInstance().getAppServerClient();
+
         this.myUser = myUser;
         this.base64EncodedPhoto = base64EncodedPhoto;
     }

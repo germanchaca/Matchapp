@@ -48,6 +48,11 @@ public class OpenChatsFragment extends Fragment {
     private RelativeLayout containerNoChatRooms;
 
     @Override
+    public void onPause() {
+        super.onPause();
+        MyApplication.getInstance().cancelAllPendingAppServerRequests();
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_open_chats, container, false);

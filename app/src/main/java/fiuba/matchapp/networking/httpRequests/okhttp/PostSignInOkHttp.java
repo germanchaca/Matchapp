@@ -36,11 +36,8 @@ public abstract class PostSignInOkHttp {
     protected abstract void onSignInSuccess();
 
     public PostSignInOkHttp(String email, String hashedPassword){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();        this.email = email;
+        client = MyApplication.getInstance().getAppServerClient();
+        this.email = email;
         this.password = hashedPassword;
     }
 

@@ -41,8 +41,7 @@ public class fragmentPlayMatching extends Fragment {
     private RelativeLayout containerRetry;
     private ImageView retryImage;
     private RelativeLayout containerNoMoreCandidates;
-    private Call getCandidatesCall;
-    private Call postMatchCall;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +51,7 @@ public class fragmentPlayMatching extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(this.getCandidatesCall != null){
-            getCandidatesCall.cancel();
-        }
-        if(this.postMatchCall != null){
-            postMatchCall.cancel();
-        }
+        MyApplication.getInstance().cancelAllPendingAppServerRequests();
     }
 
     @Override
@@ -137,7 +131,7 @@ public class fragmentPlayMatching extends Fragment {
             }
         };
         startAnimation();
-        getCandidatesCall = request.makeRequest();
+        request.makeRequest();
     }
 
     private void showLimitDayErrorDialog() {
@@ -236,7 +230,7 @@ public class fragmentPlayMatching extends Fragment {
                         MyApplication.getInstance().logout();
                     }
                 };
-                postMatchCall = request.makeRequest();
+                request.makeRequest();
 
 
             }

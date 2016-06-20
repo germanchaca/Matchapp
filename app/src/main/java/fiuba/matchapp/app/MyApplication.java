@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 
+import java.util.concurrent.TimeUnit;
+
 import fiuba.matchapp.controller.activity.WelcomeActivity;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by german on 4/21/2016.
@@ -19,6 +22,7 @@ public class MyApplication extends Application {
     private static MyApplication mInstance;
 
     private MyPreferenceManager pref;
+    private OkHttpClient appServerClient;
 
     @Override
     public void onCreate() {
@@ -35,8 +39,24 @@ public class MyApplication extends Application {
         if (pref == null) {
             pref = new MyPreferenceManager(this);
         }
-
         return pref;
+    }
+
+    public OkHttpClient getAppServerClient(){
+        if(appServerClient == null){
+            appServerClient = new OkHttpClient.Builder()
+                    .connectTimeout(200, TimeUnit.SECONDS)
+                    .writeTimeout(200, TimeUnit.SECONDS)
+                    .readTimeout(200, TimeUnit.SECONDS)
+                    .build();
+        }
+        return appServerClient;
+    }
+
+    public void cancelAllPendingAppServerRequests(){
+        if(appServerClient != null){
+            appServerClient.dispatcher().cancelAll();
+        }
     }
 
 

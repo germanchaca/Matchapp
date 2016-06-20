@@ -37,13 +37,7 @@ public abstract class PutUserDataOkHttp {
     protected abstract void logout();
 
     public PutUserDataOkHttp(User myUser){
-        client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
-                .build();
-
-
+        client = MyApplication.getInstance().getAppServerClient();
         this.myUser = myUser;
         paramsJson = new JSONObject();
         userJson = new JSONObject();

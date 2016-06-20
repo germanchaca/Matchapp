@@ -38,7 +38,7 @@ public abstract class PostRefreshTokenOkHttp {
     protected abstract void onErrorNoAuth();
 
     public PostRefreshTokenOkHttp(){
-        client = new OkHttpClient();
+        client = MyApplication.getInstance().getAppServerClient();
         this.myUser = MyApplication.getInstance().getPrefManager().getUser();
         this.myPassword = MyApplication.getInstance().getPrefManager().getUserCredentials();
     }
