@@ -131,7 +131,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
         if (hasChatRoomId){
             if(chatRoom.getLastMessage() != null){
-                fetchChatThread(chatRoom.getId());
+                fetchChatThread(this.chatRoom.getLastMessage().getId());
             }
         }
 
