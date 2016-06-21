@@ -56,11 +56,6 @@ public class OpenChatsFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        MyApplication.getInstance().cancelAllPendingAppServerRequests();
-    }
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_open_chats, container, false);
@@ -146,6 +141,7 @@ public class OpenChatsFragment extends Fragment {
         GetChatRoomsOkHttp request = new GetChatRoomsOkHttp() {
             @Override
             protected void logout() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
@@ -156,6 +152,7 @@ public class OpenChatsFragment extends Fragment {
 
             @Override
             protected void onGetChatOpenRoomsRequestFailedUserConnectionError() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
@@ -168,6 +165,7 @@ public class OpenChatsFragment extends Fragment {
 
             @Override
             protected void onGetChatRoomsRequestSuccess(final List<ChatRoom> chatRooms) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         if(chatRooms.size() == 0){

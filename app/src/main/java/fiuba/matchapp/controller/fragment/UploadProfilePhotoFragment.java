@@ -255,6 +255,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         PutPhotoProfileOkHttp request = new PutPhotoProfileOkHttp(MyApplication.getInstance().getPrefManager().getUser(), profilePhoto) {
             @Override
             protected void logout() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
@@ -265,6 +266,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
 
             @Override
             protected void onSuccess() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         User user = MyApplication.getInstance().getPrefManager().getUser();
@@ -277,6 +279,7 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
             }
             @Override
             protected void onConnectionError() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();

@@ -78,6 +78,7 @@ public class fragmentPlayMatching extends Fragment {
         GetCandidatesOkHttp request = new GetCandidatesOkHttp() {
             @Override
             protected void onSuccess(final List<User> candidates) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         cardStack.setVisibility(View.VISIBLE);
@@ -97,6 +98,7 @@ public class fragmentPlayMatching extends Fragment {
 
             @Override
             protected void onConnectionError() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         stopAnimation();
@@ -107,6 +109,7 @@ public class fragmentPlayMatching extends Fragment {
 
             @Override
             protected void onLimitDayReached() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         showLimitDayErrorDialog();
@@ -116,6 +119,7 @@ public class fragmentPlayMatching extends Fragment {
 
             @Override
             protected void logout() {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         stopAnimation();
@@ -207,6 +211,7 @@ public class fragmentPlayMatching extends Fragment {
                 PostMatchOkHttp request = new PostMatchOkHttp(user.getEmail()) {
                     @Override
                     protected void onPostMatchRequestFailedUserConnectionError() {
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
                         showConnectionError();
@@ -221,6 +226,7 @@ public class fragmentPlayMatching extends Fragment {
 
                     @Override
                     protected void logout() {
+                        if (getActivity() == null) return;
                         MyApplication.getInstance().logout();
                     }
                 };
