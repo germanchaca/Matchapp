@@ -308,6 +308,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                     public void run() {
                         progressDialog.hide();
                         contentRetry.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
                         Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
                     }
                 });
@@ -318,7 +319,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                 runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.hide();
-
+                        recyclerView.setVisibility(View.VISIBLE);
                         if(messages.size() > 0) {
                             ArrayList<Message> temp = new ArrayList<>();
                             temp.addAll(messages);

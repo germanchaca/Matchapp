@@ -26,13 +26,14 @@
                 android:id="@+id/linBang"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:orientation="horizontal" >
                 <com.pkmmte.view.CircularImageView
                     android:id="@+id/profile_img_toolbar"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="left"
-                    android:layout_margin="3dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+
+                    android:layout_gravity="left|center_vertical"
                     android:scaleType="centerCrop"
                     android:src="@drawable/user_dummy_thumbnail_male"
                     />

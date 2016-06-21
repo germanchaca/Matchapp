@@ -65,9 +65,6 @@ public class OpenChatsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_open_chats, container, false);
         init(view);
-
-        fetchChatRooms();
-
         return view;
     }
 
