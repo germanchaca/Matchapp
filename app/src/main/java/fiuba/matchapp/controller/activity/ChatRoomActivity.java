@@ -60,6 +60,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private TextView subtitleRetry;
     private User userMatched;
     private boolean hasChatRoomId = false;
+    private String lastMsgId;
 
     @Override
     protected void onStop() {
@@ -78,6 +79,10 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             this.userMatched = chatRoom.getUser();
             Log.d(TAG, "Conversacion con " + chatRoom.getUser().getEmail());
             hasChatRoomId = true;
+            if(this.chatRoom.getLastMessage() != null){
+                this.lastMsgId = this.chatRoom.getLastMessage().getId();
+            }
+
         }
         if(intent.hasExtra("user")){
             this.userMatched = intent.getParcelableExtra("user");
@@ -106,7 +111,9 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter.setLoadEarlierMsgs(true);
         recyclerView.setAdapter(mAdapter);
+
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -139,8 +146,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
     private void loadMore() {
         if (hasChatRoomId) {
-            if(this.chatRoom.getLastMessage() != null){
-                fetchChatThread(this.chatRoom.getLastMessage().getId());
+            if((this.chatRoom.getLastMessage() != null)&& (Integer.parseInt(this.lastMsgId) > 0 )){
+                fetchChatThread(this.lastMsgId);
             }
         }
     }
@@ -307,7 +314,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             }
 
             @Override
-            protected void onSuccess(final List<Message> messages) {
+            protected void onSuccess(final List<Message> messages, final int lastMessageId) {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.hide();
@@ -318,6 +325,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             temp.addAll(messageArrayList);
                             messageArrayList.clear();
                             messageArrayList.addAll(temp);
+
+                            lastMsgId = Integer.toString(lastMessageId);
 
                             mAdapter.notifyDataSetChanged();
                             if (mAdapter.getItemCount() > 1) {

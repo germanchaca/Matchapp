@@ -35,7 +35,7 @@ public abstract class GetChatMessagesOkHttp {
 
     protected abstract void onConnectionError();
 
-    protected abstract void onSuccess(List<Message> messages);
+    protected abstract void onSuccess(List<Message> messages, int lastMessageId);
 
     public GetChatMessagesOkHttp(String idChat, String idMessage){
         client = new OkHttpClient.Builder()
@@ -129,8 +129,10 @@ public abstract class GetChatMessagesOkHttp {
 
         JSONObject jsonResponse = new JSONObject(response);
 
+        int olderMessage = jsonResponse.getInt("LastMessageId");
+
         List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse);
 
-        onSuccess(messages);
+        onSuccess(messages,olderMessage);
     }
 }

@@ -67,20 +67,26 @@ public class JsonParser {
 
     public static List<Message> getMessagesFromJSONResponse(JSONObject response){
         ArrayList<Message> messages= new ArrayList<>();
-
         try {
-            int olderMessage = response.getInt("LastMessageId");
-            for(int i = olderMessage; i < response.length(); i++) {
-                JSONObject messajeJsonObj = response.getJSONObject(Integer.toString(i));
+            JSONArray msgs = response.getJSONArray("messages");
+            for(int i = 0; i < msgs.length(); i++) {
+                try {
+                    Log.d("JsonParser", response.toString());
+                    JSONObject messajeJsonObj = msgs.getJSONObject(i);
 
-                Message message = getMessageFromJSONresponse(messajeJsonObj,Integer.toString(i));
-                if (message != null){
-                    messages.add(message);
+                    Message message = getMessageFromJSONresponse(messajeJsonObj,"0");
+                    if (message != null) {
+                        messages.add(message);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         } catch (JSONException e) {
+
             e.printStackTrace();
         }
+
         return messages;
     }
 

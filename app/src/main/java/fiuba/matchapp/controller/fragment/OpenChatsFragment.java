@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,13 @@ public class OpenChatsFragment extends Fragment {
     private ImageView retryImage;
     private TextView subtitleRetry;
     private RelativeLayout containerNoChatRooms;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResumeActivity");
+        fetchChatRooms();
+    }
 
     @Override
     public void onPause() {
@@ -169,6 +177,7 @@ public class OpenChatsFragment extends Fragment {
                             recyclerView.setVisibility(View.GONE);
                             containerNoChatRooms.setVisibility(View.VISIBLE);
                         }
+                        chatRoomArrayList.clear();
                         chatRoomArrayList.addAll(chatRooms);
                         mAdapter.notifyDataSetChanged();
 
