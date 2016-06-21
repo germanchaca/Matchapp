@@ -12,6 +12,7 @@ import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +26,14 @@ import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
 import fiuba.matchapp.controller.fragment.OpenChatsFragment;
 import fiuba.matchapp.controller.fragment.fragmentPlayMatching;
 import fiuba.matchapp.model.Message;
+import fiuba.matchapp.model.ReceivedMessage;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.okhttp.DeleteSingOutOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetUserOkHttp;
+import fiuba.matchapp.utils.NewMatchNotificationHandler;
+import fiuba.matchapp.utils.NewMessageNotificationHandler;
 import fiuba.matchapp.view.LockedProgressDialog;
 
 public class MainActivity extends GetLocationActivity {
@@ -48,9 +52,10 @@ public class MainActivity extends GetLocationActivity {
 
         initViews();
         initFragments();
-          //Broadcast receiver calls when new push notification is received
         initNotificationBroadcastReceiver();
 
+        //super.initUserLastLocation();
+        //super.locationServiceConnect();
         Log.d(TAG, FirebaseInstanceId.getInstance().getToken());
 
     }
@@ -73,7 +78,7 @@ public class MainActivity extends GetLocationActivity {
         fragmentChats = new OpenChatsFragment();
         fragmentPlayMatching = new fragmentPlayMatching();
         setCurrentTabFragment(1);
-        //super.initUserLastLocation();
+        //
     }
 
     @Override
@@ -102,63 +107,61 @@ public class MainActivity extends GetLocationActivity {
     private void handlePushNotification( Intent intent) {
         if (intent.hasExtra("type")) {
             String type = intent.getStringExtra("type");
+
             if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
 
-                if (intent.hasExtra("chat_room_id")) {
-                    String chat_room_id = intent.getStringExtra("chat_room_id");
-                    Log.d(TAG,"New message received from chatRoom_id: " + chat_room_id );
-                    if (intent.hasExtra("message_id")) {
-                        String message_id = intent.getStringExtra("message_id");
-                        if (intent.hasExtra("message")) {
-                            String messageBody = intent.getStringExtra("message");
-                            if (intent.hasExtra("created_at")) {
-                                String timestamp = intent.getStringExtra("created_at");
+                String chat_room_id = NewMessageNotificationHandler.getChatRoomId(intent);
+                ReceivedMessage message = NewMessageNotificationHandler.getMessage(intent);
+                fragmentChats.updateRow(chat_room_id,message);
 
-                                Message message = new Message(message_id,messageBody,timestamp,Message.STATUS_UNREAD,"0");
-                                fragmentChats.updateRow(chat_room_id,message);
-                            }
-                        }
-                    }
-                }
-
+                Log.d(TAG, "New message received from chatRoom_id: " + chat_room_id);
 
                 //TODO cambiar de color un icono o poner un badge
 
             }else if(type == Config.PUSH_TYPE_NEW_MATCH){
-                if (intent.hasExtra("user_id")) {
-                    String userId = intent.getStringExtra("user_id");
-                    Log.d(TAG,"New match received from user_id: " + userId );
 
-                    GetUserOkHttp request = new GetUserOkHttp(userId) {
-                        @Override
-                        protected void onSuccess(final User user) {
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
+                String userId = NewMatchNotificationHandler.getUserMatchedId(intent);
+                String chat_room_id = NewMatchNotificationHandler.getChatRoomId(intent);
 
-                                    i.putExtra("new_match_user", (Parcelable) user);
-                                    startActivity(i);
-                                }
-                            });
-                        }
+                Log.d(TAG,"New match received from user_id: " + userId );
 
-                        @Override
-                        protected void onConnectionError() {
-                        }
+                if (TextUtils.equals(userId,"")) return;
 
-                        @Override
-                        protected void logout() {
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    MyApplication.getInstance().logout();
-                                }
-                            });
-                        }
-                    };
-                    request.makeRequest();
-                }
+                launchNewMatchActivity(userId,chat_room_id);
             }
         }
+
+    }
+
+    private void launchNewMatchActivity(final String userId,final String chat_room_id) {
+        GetUserOkHttp request = new GetUserOkHttp(userId) {
+            @Override
+            protected void onSuccess(final User user) {
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Intent i = new Intent(MainActivity.this, NewMatchActivity.class);
+                        i.putExtra("new_match_user", (Parcelable) user);
+                        i.putExtra("chat_room_id", chat_room_id);
+                        startActivity(i);
+                    }
+                });
+            }
+
+            @Override
+            protected void onConnectionError() {
+            }
+
+            @Override
+            protected void logout() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        MyApplication.getInstance().logout();
+                    }
+                });
+            }
+        };
+        request.makeRequest();
     }
 
     @Override

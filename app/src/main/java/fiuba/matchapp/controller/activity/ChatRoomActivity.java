@@ -31,6 +31,7 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.ChatRoomThreadAdapter;
 import fiuba.matchapp.adapter.LoadEarlierMessages;
 import fiuba.matchapp.model.ChatRoom;
+import fiuba.matchapp.model.ReceivedMessage;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
@@ -39,6 +40,7 @@ import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetChatMessagesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostNewMessageOkHttp;
 import fiuba.matchapp.utils.ImageBase64;
+import fiuba.matchapp.utils.NewMessageNotificationHandler;
 import fiuba.matchapp.view.LockedProgressDialog;
 
 public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMessages {
@@ -192,22 +194,14 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if (intent.hasExtra("type")) {
             String type = intent.getStringExtra("type");
             if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
-                Log.d(TAG, "entra handler new masseage");
-                if (intent.hasExtra("chat_room_id")) {
-                    String chat_room_id = intent.getStringExtra("chat_room_id");
-                    if (intent.hasExtra("message_id")) {
-                        String message_id = intent.getStringExtra("message_id");
-                        if (intent.hasExtra("message")) {
-                            String messageBody = intent.getStringExtra("message");
-                            if (intent.hasExtra("created_at")) {
-                                String timestamp = intent.getStringExtra("created_at");
-                                //TODO checkear que el chatRoomId sea el de esta conver
-                                Message message = new Message(message_id,messageBody,timestamp,Message.STATUS_UNREAD,"0");
-                                addNewMessage(message);
-                            }
-                        }
-                    }
+
+                String chat_room_id = NewMessageNotificationHandler.getChatRoomId(intent);
+                ReceivedMessage message = NewMessageNotificationHandler.getMessage(intent);
+
+                if ((TextUtils.equals(chat_room_id,chatRoom.getId()) && (message != null) )){
+                    addNewMessage(message);
                 }
+
             }
         }
     }
@@ -283,8 +277,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         };
         request.makeRequest();
         Message sentMessage = new Message();
-        sentMessage.setUserId(MyApplication.getInstance().getPrefManager().getUser().getEmail());
-        sentMessage.setCreatedAt(Long.toString(System.currentTimeMillis() / 1000));
+        sentMessage.setOwnerUserMail(MyApplication.getInstance().getPrefManager().getUser().getEmail());
+        sentMessage.setTimestamp(Long.toString(System.currentTimeMillis() / 1000));
         sentMessage.setMessage(message);
         sentMessage.setStatus(Message.STATUS_UNSENT);
         addNewMessage(sentMessage);

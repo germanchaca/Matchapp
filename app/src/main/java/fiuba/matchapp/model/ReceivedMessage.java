@@ -1,27 +1,15 @@
 package fiuba.matchapp.model;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
-public abstract class Message implements Serializable {
+public class ReceivedMessage extends  Message implements Serializable {
 
-    String id;
-    String message;
-    String timestamp;
 
-    public boolean isMine() {
-        return mine;
-    }
-
-    protected void setMine(boolean mine) {
-        this.mine = mine;
-    }
-
-    boolean mine;
-
-    public Message(String id, String message, String timestamp){
-        this.id = id;
-        this.message = message;
-        this.timestamp = timestamp;
+    public ReceivedMessage(String id, String message, String timestamp) {
+        super(id,message,timestamp);
+        super.setMine(false);
     }
 
     public String getId() {

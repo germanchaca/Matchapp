@@ -5,29 +5,26 @@ import java.io.Serializable;
 public class ChatRoom implements Serializable {
     String id;
     Message lastMessage;
-    String timestamp;
-
     int unreadCount;
+    User otherUser;
 
-    public User getUser() {
-        return user;
+
+    public User getOtherUser() {
+        return otherUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOtheUser(User otherUser) {
+        this.otherUser = otherUser;
     }
 
-    User user;
 
-    public ChatRoom() {
+    public ChatRoom(String id, User otherUser){
+        this(id,otherUser,0);
     }
-
-    public ChatRoom(String id, User user, Message lastMessage, String timestamp, int unreadCount) {
+    public ChatRoom(String id, User otherUser, int unreadCount) {
         this.id = id;
-        this.lastMessage = lastMessage;
-        this.timestamp = timestamp;
+        this.otherUser = otherUser;
         this.unreadCount = unreadCount;
-        this.user = user;
     }
 
     public String getId() {
@@ -38,11 +35,6 @@ public class ChatRoom implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return this.user.getName();
-    }
-
-
     public Message getLastMessage() {
         return lastMessage;
     }
@@ -51,19 +43,18 @@ public class ChatRoom implements Serializable {
         this.lastMessage = lastMessage;
     }
 
+    public boolean hasMessages(){
+        if(this.getLastMessage() == null){
+            return false;
+        }
+        return true;
+    }
+
     public int getUnreadCount() {
         return unreadCount;
     }
 
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 }

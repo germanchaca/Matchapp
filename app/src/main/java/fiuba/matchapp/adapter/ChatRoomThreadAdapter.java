@@ -97,7 +97,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return MORE;
         }else {
             Message message = messageArrayList.get(position-1);
-            if (TextUtils.equals(message.getUserId(),userId)){
+            if (TextUtils.equals(message.getOwnerUserMail(),userId)){
                 return SELF;
             }
             return OTHER;
@@ -125,9 +125,9 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             ((ViewHolder) holder).message.setText(message.getMessage());
 
-            String timestamp = DateHelper.getTimeStamp(message.getCreatedAt(), mContext);
+            String timestamp = DateHelper.getTimeStamp(message.getTimestamp(), mContext);
 
-        /*if (message.getUserId() != null)
+        /*if (message.getOwnerUserMail() != null)
             timestamp = message.getUser().getName() + ", " + timestamp;*/
 
             ((ViewHolder) holder).timestamp.setText(timestamp);

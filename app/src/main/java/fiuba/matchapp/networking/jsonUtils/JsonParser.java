@@ -54,7 +54,7 @@ public class JsonParser {
                 JSONObject lastMessageJsonObj = chatRoomObj.getJSONObject("LastMessage");
                 String lastMessageId = chatRoomObj.getString("message_id");
                 Message lastMessage = getMessageFromJSONresponse(lastMessageJsonObj,lastMessageId );
-                ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage,lastMessage.getCreatedAt(), unread);
+                ChatRoom chatRoom = new ChatRoom(chatRoomId,user,lastMessage,lastMessage.getTimestamp(), unread);
                 return  chatRoom;
             }
             ChatRoom chatRoom = new ChatRoom(chatRoomId,user,null,null, unread);
