@@ -22,9 +22,13 @@ public class ChatRoom implements Serializable {
         this(id,otherUser,0);
     }
     public ChatRoom(String id, User otherUser, int unreadCount) {
+        this(id,otherUser,unreadCount,null);
+    }
+    public ChatRoom(String id, User otherUser, int unreadCount,Message lastMessage) {
         this.id = id;
         this.otherUser = otherUser;
         this.unreadCount = unreadCount;
+        this.lastMessage = lastMessage;
     }
 
     public String getId() {

@@ -176,7 +176,6 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         }
     }
 
-
     private void addNewMessage(Message message) {
         messageArrayList.add(message);
         mAdapter.notifyDataSetChanged();
@@ -292,9 +291,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             messageArrayList.clear();
                             messageArrayList.addAll(temp);
 
+                            //id to fetch more chat history messages from appServer
                             olderShownMsgId = Integer.toString(lastMessageId);
                             if(lastMessageId == 0){
+                                //hide load More button
                                 mAdapter.setLoadEarlierMsgs(false);
+                                mAdapter.notifyItemChanged(0);
                             }
 
                             mAdapter.notifyDataSetChanged();
