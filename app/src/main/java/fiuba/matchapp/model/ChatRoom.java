@@ -50,6 +50,15 @@ public class ChatRoom implements Serializable {
         return true;
     }
 
+    public boolean hasOlderMessages(){
+        if(this.hasMessages()){
+            if( Integer.parseInt(this.getLastMessage().getId()) > 0){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int getUnreadCount() {
         return unreadCount;
     }

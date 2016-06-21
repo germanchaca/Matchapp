@@ -25,7 +25,6 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static String TAG = ChatRoomThreadAdapter.class.getSimpleName();
     private final LoadEarlierMessages mLoadEarlierMessages;
 
-    private String userId;
     private int MORE = 200;
     private int SELF = 100;
     private int OTHER = 300;
@@ -33,11 +32,12 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private Context mContext;
     private ArrayList<Message> messageArrayList;
-    private boolean isLoadEarlierMsgs = true;
 
-    public void setLoadEarlierMsgs(boolean isLoadEarlierMsgs) {
-        this.isLoadEarlierMsgs = isLoadEarlierMsgs;
+    public void setLoadEarlierMsgs(boolean loadEarlierMsgs) {
+        isLoadEarlierMsgs = loadEarlierMsgs;
     }
+
+    private boolean isLoadEarlierMsgs = true;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView message, timestamp;
@@ -57,10 +57,9 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    public ChatRoomThreadAdapter(Context mContext, ArrayList<Message> messageArrayList, String userId) {
+    public ChatRoomThreadAdapter(Context mContext, ArrayList<Message> messageArrayList) {
         this.mContext = mContext;
         this.messageArrayList = messageArrayList;
-        this.userId = userId;
         mLoadEarlierMessages = (LoadEarlierMessages) mContext;
 
         Calendar calendar = Calendar.getInstance();
@@ -89,7 +88,6 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return new ViewHolder(itemView);
     }
 
-
     @Override
     public int getItemViewType(int position) {
 
@@ -97,7 +95,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return MORE;
         }else {
             Message message = messageArrayList.get(position-1);
-            if (TextUtils.equals(message.getOwnerUserMail(),userId)){
+            if (message.isMine()){
                 return SELF;
             }
             return OTHER;
@@ -126,9 +124,6 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((ViewHolder) holder).message.setText(message.getMessage());
 
             String timestamp = DateHelper.getTimeStamp(message.getTimestamp(), mContext);
-
-        /*if (message.getOwnerUserMail() != null)
-            timestamp = message.getUser().getName() + ", " + timestamp;*/
 
             ((ViewHolder) holder).timestamp.setText(timestamp);
         }

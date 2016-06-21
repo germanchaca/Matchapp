@@ -31,6 +31,7 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.ChatRoomThreadAdapter;
 import fiuba.matchapp.adapter.LoadEarlierMessages;
 import fiuba.matchapp.model.ChatRoom;
+import fiuba.matchapp.model.MyMessage;
 import fiuba.matchapp.model.ReceivedMessage;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
@@ -47,24 +48,23 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
     private String TAG = ChatRoomActivity.class.getSimpleName();
 
+    private ChatRoom chatRoom;
+
     private RecyclerView recyclerView;
     private ChatRoomThreadAdapter mAdapter;
     private ArrayList<Message> messageArrayList;
+
     private EditText inputMessage;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private ImageButton btnSend;
     private CircularImageView circleProfileImg;
     private TextView titleChat;
-    private String selfUserId;
-    private ChatRoom chatRoom;
     private LockedProgressDialog progressDialog;
     private RelativeLayout containerChatRoom;
     private RelativeLayout contentRetry;
     private ImageView retryImage;
     private TextView subtitleRetry;
-    private User userMatched;
-    private boolean hasChatRoomId = false;
-    private String lastMsgId;
+    private String olderShownMsgId;
 
     @Override
     protected void onStop() {
@@ -75,50 +75,15 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initViews();
+
 
         Intent intent = getIntent();
         if(intent.hasExtra("chatroom")){
             this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
-            this.userMatched = chatRoom.getUser();
-            Log.d(TAG, "Conversacion con " + chatRoom.getUser().getEmail());
-            hasChatRoomId = true;
-            if(this.chatRoom.getLastMessage() != null){
-                this.lastMsgId = this.chatRoom.getLastMessage().getId();
-            }
-
+            Log.d(TAG, "Conversacion con " + chatRoom.getOtherUser().getEmail());
+        }else{
+            finish();
         }
-        if(intent.hasExtra("user")){
-            this.userMatched = intent.getParcelableExtra("user");
-            Log.d(TAG, "Conversacion con " + userMatched.getEmail());
-
-        }
-
-        selfUserId = MyApplication.getInstance().getPrefManager().getUser().getEmail();
-
-
-        titleChat.setText(this.userMatched.getAlias());
-        if(!TextUtils.isEmpty(this.userMatched.getPhotoProfile())){
-            circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.userMatched.getPhotoProfile()));
-        }
-
-
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        messageArrayList = new ArrayList<>();
-        mAdapter = new ChatRoomThreadAdapter(this, messageArrayList, selfUserId);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        //layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
-
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter.setLoadEarlierMsgs(true);
-        recyclerView.setAdapter(mAdapter);
-
-
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -129,6 +94,11 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                 }
             }
         };
+        initViews();
+
+        messageArrayList = new ArrayList<>();
+        mAdapter = new ChatRoomThreadAdapter(this, messageArrayList);
+        recyclerView.setAdapter(mAdapter);
 
 
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -141,23 +111,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         progressDialog = new LockedProgressDialog(ChatRoomActivity.this, R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
-        if (hasChatRoomId){
-            messageArrayList.clear();
-            mAdapter.notifyDataSetChanged();
 
-            if(chatRoom.getLastMessage() != null){
-                fetchChatThread(this.chatRoom.getLastMessage().getId());
-            }
+        if(chatRoom.hasMessages()){
+            fetchChatThread(this.chatRoom.getLastMessage().getId());
         }
 
-    }
 
-    private void loadMore() {
-        if (hasChatRoomId) {
-            if((this.chatRoom.getLastMessage() != null)&& (Integer.parseInt(this.lastMsgId) > 0 )){
-                fetchChatThread(this.lastMsgId);
-            }
-        }
     }
 
     private void initViews() {
@@ -167,6 +126,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);//muestra el volver al home
         circleProfileImg = (CircularImageView) findViewById(R.id.profile_img_toolbar);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         inputMessage = (EditText) findViewById(R.id.message);
         btnSend = (ImageButton) findViewById(R.id.btn_send);
@@ -183,6 +148,11 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         });
         subtitleRetry = (TextView) findViewById(R.id.subtitleRetry);
         subtitleRetry.setText(getResources().getString(R.string.fetching_chat_history));
+
+        titleChat.setText(this.chatRoom.getOtherUser().getAlias());
+        if(!TextUtils.isEmpty(this.chatRoom.getOtherUser().getPhotoProfile())){
+            circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.chatRoom.getOtherUser().getPhotoProfile()));
+        }
 
     }
 
@@ -252,14 +222,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if (TextUtils.isEmpty(message)) {
             return;
         }
-        String userId;
-        if(userMatched == null){
-            userId = chatRoom.getUser().getEmail();
-        }else{
-            userId = userMatched.getEmail();
-        }
 
-        PostNewMessageOkHttp request = new PostNewMessageOkHttp(userId,message) {
+        PostNewMessageOkHttp request = new PostNewMessageOkHttp(chatRoom.getOtherUser().getEmail(),message) {
             @Override
             protected void onPostChatNewMessageRequestConnectionError() {
 
@@ -276,15 +240,10 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             }
         };
         request.makeRequest();
-        Message sentMessage = new Message();
-        sentMessage.setOwnerUserMail(MyApplication.getInstance().getPrefManager().getUser().getEmail());
-        sentMessage.setTimestamp(Long.toString(System.currentTimeMillis() / 1000));
-        sentMessage.setMessage(message);
-        sentMessage.setStatus(Message.STATUS_UNSENT);
+        String timestamp = Long.toString(System.currentTimeMillis() / 1000);
+        MyMessage sentMessage = new MyMessage(message,timestamp);
         addNewMessage(sentMessage);
-
         this.inputMessage.setText("");
-
 
     }
 
@@ -333,7 +292,10 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             messageArrayList.clear();
                             messageArrayList.addAll(temp);
 
-                            lastMsgId = Integer.toString(lastMessageId);
+                            olderShownMsgId = Integer.toString(lastMessageId);
+                            if(lastMessageId == 0){
+                                mAdapter.setLoadEarlierMsgs(false);
+                            }
 
                             mAdapter.notifyDataSetChanged();
                             if (mAdapter.getItemCount() > 1) {
@@ -349,6 +311,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
     @Override
     public void onLoadMore() {
-        loadMore();
+        if (chatRoom.hasOlderMessages()) {
+            fetchChatThread(olderShownMsgId);
+        }
     }
 }
