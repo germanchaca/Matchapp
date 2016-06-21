@@ -282,7 +282,6 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             protected void onSuccess(final List<Message> messages, final int lastMessageId) {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        progressDialog.hide();
                         recyclerView.setVisibility(View.VISIBLE);
                         if(messages.size() > 0) {
                             ArrayList<Message> temp = new ArrayList<>();
@@ -299,6 +298,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                                 mAdapter.notifyItemChanged(0);
                             }
 
+                            progressDialog.hide();
                             mAdapter.notifyDataSetChanged();
                             if (mAdapter.getItemCount() > 1) {
                                 recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);

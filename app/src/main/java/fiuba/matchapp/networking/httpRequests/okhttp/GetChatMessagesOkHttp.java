@@ -6,6 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -132,7 +135,17 @@ public abstract class GetChatMessagesOkHttp {
         int olderMessage = jsonResponse.getInt("LastMessageId");
 
         List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse);
+        Collections.sort(messages, new MessagesComparator());
 
         onSuccess(messages,olderMessage);
+    }
+
+    public class MessagesComparator implements Comparator<Message>
+    {
+        public int compare(Message left, Message right) {
+            Long timestamp1 = Long.parseLong(left.getTimestamp());
+            Long timestamp2 = Long.parseLong(right.getTimestamp());
+            return (timestamp1.compareTo(timestamp2));
+        }
     }
 }
