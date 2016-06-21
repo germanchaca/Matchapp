@@ -17,8 +17,10 @@ import com.pkmmte.view.CircularImageView;
 
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.ChatRoom;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.utils.ImageBase64;
+import fiuba.matchapp.utils.NewMatchNotificationHandler;
 
 /**
  * Created by german on 5/23/2016.
@@ -33,34 +35,36 @@ public class NewMatchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_new_match);
 
         Intent intent = getIntent();
 
-        userMatched = intent.getParcelableExtra("new_match_user");
-        //chatRoomId = intent.getStringExtra("chat_room_id");
+        userMatched = NewMatchNotificationHandler.getUserMatched(intent);
+        chatRoomId = NewMatchNotificationHandler.getChatRoomId(intent);
 
-        //setear la foto en base 64 guardada
+        initMyProfilePhoto();
+        initOtherUserProfilePhoto();
+
+        initButtonStartChatConversation();
+        initButtonLater();
+        initSubtitleTextView(userMatched);
+
+    }
+
+    private void initOtherUserProfilePhoto() {
+        CircularImageView profile_img_right = (CircularImageView) findViewById(R.id.profile_img_right);
+        if(!TextUtils.isEmpty(userMatched.getPhotoProfile())){
+            profile_img_right.setImageBitmap(ImageBase64.Base64ToBitmap(userMatched.getPhotoProfile()));
+        }
+    }
+
+    private void initMyProfilePhoto() {
         User user = MyApplication.getInstance().getPrefManager().getUser();
-
-        setContentView(R.layout.activity_new_match);
-
         CircularImageView profile_img_left = (CircularImageView) findViewById(R.id.profile_img_left);
 
         if(!TextUtils.isEmpty(user.getPhotoProfile())){
             profile_img_left.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
         }
-
-        CircularImageView profile_img_right = (CircularImageView) findViewById(R.id.profile_img_right);
-        if(!TextUtils.isEmpty(userMatched.getPhotoProfile())){
-            profile_img_right.setImageBitmap(ImageBase64.Base64ToBitmap(userMatched.getPhotoProfile()));
-        }
-
-        initButtonStartChatConversation();
-
-        initButtonLater();
-
-        initSubtitleTextView(userMatched);
-
     }
 
     private void initButtonStartChatConversation() {
@@ -75,8 +79,9 @@ public class NewMatchActivity extends AppCompatActivity {
 
     private void startChatting() {
         Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
-        //intent.putExtra("chat_room_id", chatRoomId);
-        intent.putExtra("user", (Parcelable) userMatched);
+
+        ChatRoom chatRoom = new ChatRoom(chatRoomId,userMatched );
+        intent.putExtra("chatroom",chatRoom );
         startActivity(intent);
         finish();
     }
