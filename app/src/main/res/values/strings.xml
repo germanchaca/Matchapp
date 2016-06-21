@@ -71,7 +71,7 @@
 
     <!-- Activity ChatRoom -->
     <string name="send">Enviar</string>
-    <string name="enter_message">Escribir mensaje</string>
+    <string name="enter_message">Escribir mensaje...</string>
 
     <!-- Activity profile -->
     <string name="probile_name">Nombre</string>
