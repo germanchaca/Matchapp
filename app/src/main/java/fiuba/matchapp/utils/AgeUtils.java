@@ -26,9 +26,9 @@ public class AgeUtils {
     public static int getAgeFromBirthDay(String birthdate){
 
         String[] parts = birthdate.split(Pattern.quote("/"));
-        int year = Integer.getInteger(parts[2]);
-        int month = Integer.getInteger(parts[1]);
-        int day = Integer.getInteger(parts[0]);
+        int year = Integer.parseInt(parts[2]);
+        int month = Integer.parseInt(parts[1]);
+        int day = Integer.parseInt(parts[0]);
 
         return getAgeFromBirthDay(year,month,day);
     }
