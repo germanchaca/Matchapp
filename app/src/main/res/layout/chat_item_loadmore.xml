@@ -7,7 +7,7 @@
     style="?selectableItemBackground"
     android:id="@+id/containerLoadMore"
     android:background="@color/traslusentBackground"
-    android:padding="8dp"
+    android:padding="16dp"
     android:layout_marginBottom="@dimen/activity_vertical_margin"
     >
 
@@ -15,10 +15,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-
         android:textIsSelectable="true"
         android:text="@string/load_more"
-        android:textSize="14dp"
+        android:textSize="16dp"
         android:textStyle="bold"
         android:textColor="@color/white"
         />

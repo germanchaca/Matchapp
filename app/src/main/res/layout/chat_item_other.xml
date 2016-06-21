@@ -7,6 +7,7 @@
     android:paddingRight="16dp"
     android:paddingTop="5dp">
 
+
     <TextView
         android:id="@+id/message"
         android:layout_width="wrap_content"
@@ -15,6 +16,10 @@
         android:layout_marginLeft="10dp"
         android:background="@drawable/bg_bubble_white"
         android:textIsSelectable="true"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/white"
+        android:layout_marginBottom="2dp"
+        android:padding="8dp"
         android:textSize="16dp"/>
 
     <TextView
@@ -24,8 +29,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/message"
         android:layout_marginLeft="10dp"
-        android:paddingTop="2dp"
-        android:paddingStart="2dp"
+        android:paddingStart="4dp"
         android:textSize="12dp"/>
 
 
