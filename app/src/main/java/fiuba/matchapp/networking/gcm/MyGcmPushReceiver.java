@@ -83,10 +83,14 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
 
     private void processNewMatchReceived(Map<String, String> data, String notificationBody, String notificationTitle, String notifitacionTimestamp) {
         String userId = data.get("user_id");
+        String chatRoomId = data.get("chat_room_id");
+
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
             Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
             pushNotification.putExtra("type", Config.PUSH_TYPE_NEW_MATCH);
             pushNotification.putExtra("user_id", userId);
+            pushNotification.putExtra("chat_room_id", chatRoomId);
+
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
             Log.d(TAG,"New match received from user_id: " + userId );
@@ -96,20 +100,27 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
             resultIntent.putExtra("type", Config.PUSH_TYPE_NEW_MATCH);
             resultIntent.putExtra("user_id", userId);
+            resultIntent.putExtra("chat_room_id", chatRoomId);
+
             showNotificationMessage(getApplicationContext(), notificationTitle, notificationBody, notifitacionTimestamp, resultIntent);
         }
     }
 
     private void processChatNewMessageNotification(Map<String, String> data, String notificationBody, String notificationTitle, String notifitacionTimestamp) {
-        String userId = data.get("user_id");
         String chatMessage = data.get("message");
+        String chatRoomId = data.get("chat_room_id");
+        String message_id = data.get("message_id");
+        String created_at = data.get("created_at");
 
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
             Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
 
             pushNotification.putExtra("type", Config.PUSH_TYPE_NEW_MESSAGE);
-            pushNotification.putExtra("user_id", userId);
             pushNotification.putExtra("message", chatMessage);
+            pushNotification.putExtra("chat_room_id", chatRoomId);
+            pushNotification.putExtra("created_at", created_at);
+            pushNotification.putExtra("message_id", message_id);
+
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
@@ -120,8 +131,10 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
 
             resultIntent.putExtra("type", Config.PUSH_TYPE_NEW_MESSAGE);
-            resultIntent.putExtra("user_id", userId);
             resultIntent.putExtra("message", chatMessage);
+            resultIntent.putExtra("chat_room_id", chatRoomId);
+            resultIntent.putExtra("created_at", created_at);
+            resultIntent.putExtra("message_id", message_id);
 
             showNotificationMessage(getApplicationContext(), notificationTitle, notificationBody, notifitacionTimestamp, resultIntent);
         }

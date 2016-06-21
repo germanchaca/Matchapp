@@ -49,18 +49,6 @@ public class fragmentPlayMatching extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        MyApplication.getInstance().cancelAllPendingAppServerRequests();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        MyApplication.getInstance().cancelAllPendingAppServerRequests();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_connect, container, false);
 

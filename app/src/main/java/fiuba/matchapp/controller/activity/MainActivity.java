@@ -179,6 +179,8 @@ public class MainActivity extends GetLocationActivity {
     }
 
     public void replaceFragment(Fragment fragment) {
+        MyApplication.getInstance().cancelAllPendingAppServerRequests();
+
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

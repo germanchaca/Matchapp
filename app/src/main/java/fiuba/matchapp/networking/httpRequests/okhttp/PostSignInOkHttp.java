@@ -2,6 +2,8 @@ package fiuba.matchapp.networking.httpRequests.okhttp;
 
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,6 +50,8 @@ public abstract class PostSignInOkHttp {
             userJson.put("email", this.email);
 
             userJson.put("password", this.password);
+
+            userJson.put("gcm_registration_id",FirebaseInstanceId.getInstance().getToken());
 
             paramsJson.put("user",userJson);
 

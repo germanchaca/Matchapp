@@ -3,6 +3,7 @@ package fiuba.matchapp.controller.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -34,6 +35,7 @@ import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
 import fiuba.matchapp.model.User;
+import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetChatMessagesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostNewMessageOkHttp;
 import fiuba.matchapp.utils.ImageBase64;
@@ -119,6 +121,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    Log.d(TAG,"LLEGA");
                     // new push message is received
                     handlePushNotification(intent);
                 }
@@ -137,6 +140,9 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         progressDialog.setMessage(getResources().getString(R.string.fetching_chat_history));
         if (hasChatRoomId){
+            messageArrayList.clear();
+            mAdapter.notifyDataSetChanged();
+
             if(chatRoom.getLastMessage() != null){
                 fetchChatThread(this.chatRoom.getLastMessage().getId());
             }
@@ -186,7 +192,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if (intent.hasExtra("type")) {
             String type = intent.getStringExtra("type");
             if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
-
+                Log.d(TAG, "entra handler new masseage");
                 if (intent.hasExtra("chat_room_id")) {
                     String chat_room_id = intent.getStringExtra("chat_room_id");
                     if (intent.hasExtra("message_id")) {
@@ -195,7 +201,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             String messageBody = intent.getStringExtra("message");
                             if (intent.hasExtra("created_at")) {
                                 String timestamp = intent.getStringExtra("created_at");
-
+                                //TODO checkear que el chatRoomId sea el de esta conver
                                 Message message = new Message(message_id,messageBody,timestamp,Message.STATUS_UNREAD,"0");
                                 addNewMessage(message);
                             }
@@ -218,8 +224,14 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     @Override
     protected void onResume() {
         super.onResume();
+        // by doing this, the activity will be notified each time a new message arrives
+        registerNotificationBroadcastReceiver();
+        NotificationUtils.clearNotifications();
     }
-
+    private void registerNotificationBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
