@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +67,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private String olderShownMsgId;
     private RelativeLayout contentNoMessages;
     private TextView subtitleNoMessages;
+    private TextView subtitleChat;
 
     @Override
     protected void onStop() {
@@ -80,7 +82,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         Intent intent = getIntent();
         if(intent.hasExtra("chatroom")){
-            this.chatRoom = (ChatRoom) intent.getSerializableExtra("chatroom");
+            this.chatRoom = intent.getParcelableExtra("chatroom");
             Log.d(TAG, "Conversacion con " + chatRoom.getOtherUser().getEmail());
         }else{
             finish();
@@ -128,9 +130,20 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         setContentView(R.layout.activity_chat_room);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         titleChat = (TextView) findViewById(R.id.title_chat);
+        subtitleChat = (TextView) findViewById(R.id.subtitle_chat);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);//muestra el volver al home
         circleProfileImg = (CircularImageView) findViewById(R.id.profile_img_toolbar);
+
+        circleProfileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ChatRoomActivity.this, ProfileActivity.class);
+
+                i.putExtra("user", (Parcelable) chatRoom.getOtherUser());
+                v.getContext().startActivity(i);
+            }
+        });
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -162,7 +175,11 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             subtitleNoMessages.setText(getResources().getString(R.string.no_messages_yet));
         }
 
-        titleChat.setText(this.chatRoom.getOtherUser().getAlias());
+        String titleChatString = this.chatRoom.getOtherUser().getAlias() + ", " + Integer.toString(this.chatRoom.getOtherUser().getAge());
+        titleChat.setText(titleChatString);
+
+        subtitleChat.setText(this.chatRoom.getOtherUser().getAddress());
+
         if(!TextUtils.isEmpty(this.chatRoom.getOtherUser().getPhotoProfile())){
             circleProfileImg.setImageBitmap(ImageBase64.Base64ToBitmap(this.chatRoom.getOtherUser().getPhotoProfile()));
         }

@@ -1,13 +1,35 @@
 package fiuba.matchapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
-public class ChatRoom implements Serializable {
+public class ChatRoom implements Serializable,Parcelable {
     String id;
     Message lastMessage;
     int unreadCount;
     User otherUser;
 
+
+    protected ChatRoom(Parcel in) {
+        id = in.readString();
+        lastMessage = (Message) in.readSerializable();
+        unreadCount = in.readInt();
+        otherUser = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<ChatRoom> CREATOR = new Creator<ChatRoom>() {
+        @Override
+        public ChatRoom createFromParcel(Parcel in) {
+            return new ChatRoom(in);
+        }
+
+        @Override
+        public ChatRoom[] newArray(int size) {
+            return new ChatRoom[size];
+        }
+    };
 
     public User getOtherUser() {
         return otherUser;
@@ -69,5 +91,18 @@ public class ChatRoom implements Serializable {
 
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeSerializable(lastMessage);
+        dest.writeInt(unreadCount);
+        dest.writeParcelable(otherUser, flags);
     }
 }

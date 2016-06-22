@@ -81,7 +81,7 @@ public class NewMatchActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
 
         ChatRoom chatRoom = new ChatRoom(chatRoomId,userMatched );
-        intent.putExtra("chatroom",chatRoom );
+        intent.putExtra("chatroom", (Parcelable) chatRoom);
         startActivity(intent);
         finish();
     }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.utils.AdressUtils;
 
 public class User implements Serializable, Parcelable {
     String id, name, alias, email, birthday, genre, photoProfile;
@@ -136,6 +137,17 @@ public class User implements Serializable, Parcelable {
 
     public void setPhotoProfile(String photoProfile) {
         this.photoProfile = photoProfile;
+    }
+
+    public String getAddress(){
+        try {
+            if (this.getLatitude() != 0 && this.getLongitude() != 0){
+                return AdressUtils.getParsedAddress(this.getLatitude(),this.getLongitude());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override

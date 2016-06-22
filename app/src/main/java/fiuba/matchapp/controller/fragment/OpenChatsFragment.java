@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,7 +83,7 @@ public class OpenChatsFragment extends Fragment {
             public void onClick(View view, int position) {
                 ChatRoom chatRoom = chatRoomArrayList.get(position);
                 Intent intent = new Intent(context, ChatRoomActivity.class);
-                intent.putExtra("chatroom", chatRoom);
+                intent.putExtra("chatroom", (Parcelable) chatRoom);
                 startActivity(intent);
             }
 
