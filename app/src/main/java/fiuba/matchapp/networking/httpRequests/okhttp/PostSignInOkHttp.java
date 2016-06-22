@@ -130,6 +130,8 @@ public abstract class PostSignInOkHttp {
             @Override
             protected void onGetInterestsSuccess(List<Interest> interests) {
                 MyApplication.getInstance().getPrefManager().storeInterests(InterestsUtils.getStringListMap(interests));
+                MyApplication.getInstance().getPrefManager().setFirstTimeVisited();
+
                 onSignInSuccess();
             }
 

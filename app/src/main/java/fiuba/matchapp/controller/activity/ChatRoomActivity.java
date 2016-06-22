@@ -117,6 +117,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if(chatRoom.hasMessages()){
             fetchChatThread(this.chatRoom.getLastMessage().getId());
         }else {
+            mAdapter.setLoadEarlierMsgs(false);
+            mAdapter.notifyItemChanged(0);
             showContentNoMessages();
         }
 
@@ -297,6 +299,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private void fetchChatThread(String messageId) {
 
         progressDialog.show();
+
         showMessages();
 
 

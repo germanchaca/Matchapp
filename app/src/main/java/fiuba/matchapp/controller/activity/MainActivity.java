@@ -16,8 +16,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -62,21 +64,19 @@ public class MainActivity extends GetLocationActivity {
 
         boolean isFirstTimeVisited = MyApplication.getInstance().getPrefManager().isFirstTimeVisited();
 
-        if (isFirstTimeVisited){
-            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getResources().getString(R.string.connection_problem));
-            builder.setPositiveButton(getResources().getString(R.string.connection_problem_candidates), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    initCardstack();
-                }
-            });
-            builder.setNegativeButton(getResources().getString(R.string.connection_problem_candidates_later), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    showRetryButtonEnabled();
-                }
-            });
+        if (!isFirstTimeVisited){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            builder.show();*/
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.first_time_dialog, null);
+            builder.setView(dialogView);
+
+            builder.setPositiveButton(getResources().getString(R.string.first_time_ok), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    MyApplication.getInstance().getPrefManager().setFirstTimeVisited();
+                }
+            });
+            builder.show();
         }
     }
 

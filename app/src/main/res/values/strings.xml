@@ -147,4 +147,6 @@
     <string name="no_messages_yet">No seas tímido y comienza la conversación</string>
     <string name="no_messages_yet_woman">No seas tímida y comienza la conversación</string>
     <string name="load_more">CARGAR MENSAJES ANTERIORES</string>
+    <string name="first_time">¡Felicitaciones! Ya estás listo para utilizar MatchApp</string>
+    <string name="first_time_ok">Cerrar</string>
 </resources>
