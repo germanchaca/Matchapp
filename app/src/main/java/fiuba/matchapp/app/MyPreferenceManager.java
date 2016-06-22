@@ -54,6 +54,8 @@ public class MyPreferenceManager {
 
     private static final String KEY_INTERESTS = "interests";
 
+    private static final String KEY_FIRST_TIME_IN_APP = "first_app";
+    private static final String KEY_FIRST_TIME_IN_APP_PLAY_MATCHING = "first_app_play_matching";
 
     // Constructor
     public MyPreferenceManager(Context context) {
@@ -72,6 +74,21 @@ public class MyPreferenceManager {
         editor.putString(KEY_APP_SERVER_PASS, pass);
         editor.commit();
         Log.d(TAG, "Password guardado en shared preferences. " + pass);
+    }
+
+    public void setFirstTimeVisited (){
+        editor.putBoolean(KEY_FIRST_TIME_IN_APP,true);
+        editor.commit();
+    }
+    public boolean isFirstTimeVisited (){
+        return pref.getBoolean(KEY_FIRST_TIME_IN_APP,false);
+    }
+    public void setFirstTimeVisitedPlayMatch (){
+        editor.putBoolean(KEY_FIRST_TIME_IN_APP_PLAY_MATCHING,true);
+        editor.commit();
+    }
+    public boolean isFirstTimeVisitedPlayMatch (){
+        return pref.getBoolean(KEY_FIRST_TIME_IN_APP_PLAY_MATCHING,false);
     }
 
     public String getAppServerToken (){

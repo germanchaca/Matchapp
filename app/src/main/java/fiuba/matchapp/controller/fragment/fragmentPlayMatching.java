@@ -58,7 +58,7 @@ public class fragmentPlayMatching extends Fragment {
     }
 
     public void good2(View view){
-        mGoodView.setImage(R.drawable.ic_favorite_border_black_24dp);
+        mGoodView.setImage(R.drawable.ic_favorite_border_checked);
         mGoodView.show(view);
     }
 
