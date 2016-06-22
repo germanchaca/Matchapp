@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.wx.goodview.GoodView;
+
 import java.util.List;
 
 import fiuba.cardstack.SwipeDeck;
@@ -41,11 +43,23 @@ public class fragmentPlayMatching extends Fragment {
     private RelativeLayout containerRetry;
     private ImageView retryImage;
     private RelativeLayout containerNoMoreCandidates;
+    private GoodView mGoodView;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mGoodView = new GoodView(getActivity());
+    }
+
+    public void good(View view){
+        mGoodView.setImage(R.drawable.ic_clear_24dp_checked);
+        mGoodView.show(view);
+    }
+
+    public void good2(View view){
+        mGoodView.setImage(R.drawable.ic_favorite_border_black_24dp);
+        mGoodView.show(view);
     }
 
     @Override
@@ -192,6 +206,7 @@ public class fragmentPlayMatching extends Fragment {
                         }
                     });
                 }
+                mGoodView.reset();
             }
 
             @Override
@@ -232,6 +247,7 @@ public class fragmentPlayMatching extends Fragment {
                 };
                 request.makeRequest();
 
+                mGoodView.reset();
 
             }
 
@@ -273,6 +289,7 @@ public class fragmentPlayMatching extends Fragment {
         btnSwipeLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                good(v);
                 cardStack.swipeTopCardLeft(180);
             }
         });
@@ -282,6 +299,7 @@ public class fragmentPlayMatching extends Fragment {
         btnSwipeRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                good2(v);
                 cardStack.swipeTopCardRight(180);
             }
         });
