@@ -157,7 +157,7 @@ public class FbSignupActivity extends GetLocationActivity {
         user.setEmail(_emailText.getText().toString());
         user.setName(_nameText.getText().toString());
         user.setAlias(_nameText.getText().toString());
-        user.setAge(AgeUtils.getAgeFromBirthDay(dateFragment.birthYear, dateFragment.birthMonth, dateFragment.birthDay));
+        user.setAge(AgeUtils.getAgeFromBirthDay(_dateText.getText().toString()));
         //user.setAge(AgeUtils.getAgeFromBirthDay(_dateText.getText().toString()));
         //UserInterest i = new UserInterest();
         //i.setDescription("Los Redondos");

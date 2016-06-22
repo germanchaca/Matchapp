@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -107,12 +108,26 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
 
         if(getArguments() != null){
             if(getArguments().containsKey("fbProfileUrl")){
-                progressDialog.show();
                 String profilePhotoUrl = getArguments().getString("fbProfileUrl");
-                Bitmap bitmap = ImageBase64.getBitmapFromURL(profilePhotoUrl);
-                String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
-                dataPasser.onProfilePhotoDataPass(encodedImage);
-                userImage.setImageBitmap(bitmap);
+                Picasso.with(getContext())
+                        .load(profilePhotoUrl)
+                        .fit()
+                        .centerCrop()
+                        .into(userImage, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable)userImage.getDrawable()).getBitmap();
+
+                        String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+                        dataPasser.onProfilePhotoDataPass(encodedImage);
+                        userImage.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onError() {
+                    }
+                });
+
             }
         }
 

@@ -59,6 +59,9 @@
             android:name=".controller.activity.SignupActivity"
             android:theme="@style/AppTheme.Dark"/>
         <activity
+            android:name=".controller.activity.FbSignupActivity"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity
             android:name=".controller.activity.ChatRoomActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

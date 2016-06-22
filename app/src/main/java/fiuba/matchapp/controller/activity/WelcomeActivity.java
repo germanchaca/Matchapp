@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 import com.facebook.GraphRequest;
@@ -13,6 +14,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.google.repacked.apache.commons.codec.binary.Base64;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.crypto.Mac;
@@ -21,11 +23,15 @@ import javax.crypto.spec.SecretKeySpec;
 import fiuba.matchapp.R;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.FacebookLoginActivity;
+import fiuba.matchapp.networking.httpRequests.okhttp.PostSignInOkHttp;
 import fiuba.matchapp.utils.FacebookUtils;
+import fiuba.matchapp.utils.MD5;
+import fiuba.matchapp.view.LockedProgressDialog;
 
 
 public class WelcomeActivity extends FacebookLoginActivity {
     private static final String TAG = "WelcomeActivity";
+    private LockedProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,10 @@ public class WelcomeActivity extends FacebookLoginActivity {
         Button loginButton = (Button) findViewById(R.id.btn_login);
         Button signUpButton = (Button) findViewById(R.id.btn_signup);
         Button loginWithFacebook = (Button) findViewById(R.id.btn_fb_login);
+        progressDialog = new LockedProgressDialog(this,
+                R.style.AppTheme_Dark_Dialog);
+
+        progressDialog.setMessage(getResources().getString(R.string.running_auth));
 
         loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -92,12 +102,49 @@ public class WelcomeActivity extends FacebookLoginActivity {
                     loginResult.getAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
-                        public void onCompleted(JSONObject object,
+                        public void onCompleted(final JSONObject object,
                                                 GraphResponse response) {
 
-                            Intent i = new Intent(WelcomeActivity.this, SignupActivity.class);
-                            FacebookUtils.fillIntentWithUserDataFromFaceebookResponse(object, i,facebook_id,first_name,full_name,profile_image);
-                            startActivity(i);
+                            try {
+                                if (object.has("email")){
+                                    String email = object.getString("email");
+
+                                    progressDialog.show();
+                                    PostSignInOkHttp request = new PostSignInOkHttp(email, MD5.getHashedPassword(facebook_id)) {
+                                        @Override
+                                        protected void onSignInFailedUserConnectionError() {
+                                            runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    onLoginFailed(getResources().getString(R.string.internet_problem));
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        protected void onSignInFailedUserNotCorrect() {
+                                            runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    launchFbSignUpActivity(object, facebook_id, first_name, full_name, profile_image);
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        protected void onSignInSuccess() {
+                                            runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    progressDialog.dismiss();
+                                                    launchMainActivity();
+                                                }
+                                            });
+                                        }
+                                    };
+                                    request.makeRequest();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     });
             Bundle parameters = new Bundle();
@@ -108,7 +155,20 @@ public class WelcomeActivity extends FacebookLoginActivity {
             request.executeAsync();
         }
     }
-
+    public void onLoginFailed(String errorMessage) {
+        progressDialog.dismiss();
+        Toast.makeText(getBaseContext(), errorMessage , Toast.LENGTH_LONG).show();
+    }
+    private void launchMainActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    private void launchFbSignUpActivity(JSONObject object, String facebook_id, String first_name, String full_name, String profile_image) {
+        Intent i = new Intent(WelcomeActivity.this, FbSignupActivity.class);
+        FacebookUtils.fillIntentWithUserDataFromFaceebookResponse(object, i,facebook_id,first_name,full_name,profile_image);
+        startActivity(i);
+    }
 
 
 }

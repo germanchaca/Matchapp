@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             protected void onSignInFailedUserConnectionError() {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
+                        onLoginFailed(getResources().getString(R.string.internet_problem));
                     }
                 });
             }
@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             protected void onSignInFailedUserNotCorrect() {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                onLoginFailed(getResources().getString(R.string.internet_problem));
+                onLoginFailed(getResources().getString(R.string.error_invalid_credentials));
                     }
                 });
             }
