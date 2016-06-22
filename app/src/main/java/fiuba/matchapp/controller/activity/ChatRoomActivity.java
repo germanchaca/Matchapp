@@ -63,7 +63,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private RelativeLayout containerChatRoom;
     private RelativeLayout contentRetry;
     private ImageView retryImage;
-    private String olderShownMsgId;
+    private int olderShownMsgId;
     private RelativeLayout contentNoMessages;
     private TextView subtitleNoMessages;
     private TextView subtitleChat;
@@ -335,7 +335,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             messageArrayList.addAll(temp);
 
                             //id to fetch more chat history messages from appServer
-                            olderShownMsgId = Integer.toString(lastMessageId);
+                            olderShownMsgId = lastMessageId - 1 ;
 
                             if(lastMessageId <= 0){
                                 //hide load More button
@@ -362,7 +362,10 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     @Override
     public void onLoadMore() {
         if (chatRoom.hasOlderMessages()) {
-            fetchChatThread(olderShownMsgId);
+            if(olderShownMsgId > 0){
+                Log.d(TAG, "olderShown: " + olderShownMsgId);
+                fetchChatThread(Integer.toString(olderShownMsgId));
+            }
         }
     }
 

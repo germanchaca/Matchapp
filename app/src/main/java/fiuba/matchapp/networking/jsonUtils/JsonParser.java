@@ -75,9 +75,9 @@ public class JsonParser {
             JSONArray msgs = response.getJSONArray("messages");
             for(int i = 0; i < msgs.length(); i++) {
                 try {
-                    Log.d("JsonParser", response.toString());
-                    JSONObject messajeJsonObj = msgs.getJSONObject(i);
 
+                    JSONObject messajeJsonObj = msgs.getJSONObject(i);
+                    Log.d("JsonParser", messajeJsonObj.toString());
                     Message message = getMessageFromJSONresponse(messajeJsonObj,"0",MyApplication.getInstance().getPrefManager().getUser().getEmail());
 
                     if (message != null) {

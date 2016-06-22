@@ -43,7 +43,17 @@ public class FinishingSignUpActivity extends AppIntro2 implements UploadProfileP
 
         addInterestsSlides();
 
-        addSlide(new UploadProfilePhotoFragment());
+        if (getIntent().hasExtra("fbProfileUrl")) {
+            String photoProfile = getIntent().getStringExtra("fbProfileUrl");
+            Bundle bundle = new Bundle();
+            bundle.putString("fbProfileUrl", photoProfile );
+            UploadProfilePhotoFragment frag = new UploadProfilePhotoFragment();
+            frag.setArguments(bundle);
+            addSlide(frag);
+        }else {
+            addSlide(new UploadProfilePhotoFragment());
+        }
+
         setFadeAnimation();
     }
 

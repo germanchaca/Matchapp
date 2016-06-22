@@ -40,16 +40,16 @@ public class FacebookUtils {
         return user;
     }
 
-    public static String getFbId(Bundle extras){
-        if(extras.containsKey("fbId")){
-           return  extras.getString("fbId");
+    public static String getFbId(Intent extras){
+        if(extras.hasExtra("fbId")){
+           return  extras.getStringExtra("fbId");
         }else{
             return "";
         }
     }
-    public static String getProfilePhotoUri(Bundle extras){
-        if(extras.containsKey("profile_image")){
-            return  extras.getString("profile_image");
+    public static String getProfilePhotoUri(Intent extras){
+        if(extras.hasExtra("profile_image")){
+            return  extras.getStringExtra("profile_image");
         }else{
             return "";
         }

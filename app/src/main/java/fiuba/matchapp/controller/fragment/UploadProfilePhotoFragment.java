@@ -73,6 +73,8 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Nullable
@@ -102,6 +104,17 @@ public class UploadProfilePhotoFragment extends Fragment implements ImageChooser
         progressDialog = new LockedProgressDialog(getContext(), R.style.AppTheme_Dark_Dialog);
 
         progressDialog.setMessage(getResources().getString(R.string.refresh_account_details));
+
+        if(getArguments() != null){
+            if(getArguments().containsKey("fbProfileUrl")){
+                progressDialog.show();
+                String profilePhotoUrl = getArguments().getString("fbProfileUrl");
+                Bitmap bitmap = ImageBase64.getBitmapFromURL(profilePhotoUrl);
+                String encodedImage = ImageBase64.getEncoded64ImageStringFromBitmap(bitmap);
+                dataPasser.onProfilePhotoDataPass(encodedImage);
+                userImage.setImageBitmap(bitmap);
+            }
+        }
 
         return view;
     }
