@@ -76,6 +76,8 @@ public class fragmentPlayMatching extends Fragment {
         builder.setMessage(getResources().getString(R.string.connection_problem));
         builder.setPositiveButton(getResources().getString(R.string.connection_problem_candidates), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                container.setVisibility(View.GONE);
+                cardStack.setVisibility(View.GONE);
                 initCardstack();
             }
         });
@@ -96,6 +98,7 @@ public class fragmentPlayMatching extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         cardStack.setVisibility(View.VISIBLE);
+                        container.setVisibility(View.VISIBLE);
 
                         if(candidates.size() == 0){
                             stopAnimation();
