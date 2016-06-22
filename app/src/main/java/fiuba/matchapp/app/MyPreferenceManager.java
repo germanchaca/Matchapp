@@ -10,6 +10,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
@@ -50,6 +52,8 @@ public class MyPreferenceManager {
     private static final String KEY_APP_SERVER_TOKEN = "token" ;
     private static final String KEY_APP_SERVER_PASS = "pass" ;
 
+    private static final String KEY_INTERESTS = "interests";
+
 
     // Constructor
     public MyPreferenceManager(Context context) {
@@ -78,6 +82,23 @@ public class MyPreferenceManager {
         String pass = pref.getString(KEY_APP_SERVER_PASS,null);
         return pass;
     }
+
+    public void storeInterests(Map<String, List<Interest>> interests){
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, List<Interest>>>() {}.getType();
+
+        editor.putString(KEY_INTERESTS, gson.toJson(interests,type));
+        editor.commit();
+    }
+
+    public Map<String, List<Interest>> getMapAvailableInterests(){
+        Gson gson = new Gson();
+        String json = pref.getString(KEY_INTERESTS, null);
+        Type type = new TypeToken<Map<String, List<Interest>>>() {}.getType();
+        Map<String, List<Interest>> interests = gson.fromJson(json, type);
+        return interests;
+    }
+
     public void storeUser(User user) {
         editor.putString(KEY_USER_ID, user.getId());
         editor.putString(KEY_USER_NAME, user.getName());

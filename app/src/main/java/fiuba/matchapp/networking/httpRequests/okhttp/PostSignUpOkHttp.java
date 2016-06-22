@@ -20,6 +20,7 @@ import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import fiuba.matchapp.networking.jsonUtils.JsonUtils;
+import fiuba.matchapp.utils.InterestsUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -171,6 +172,7 @@ public abstract class PostSignUpOkHttp {
 
             @Override
             protected void onGetInterestsSuccess(List<Interest> interests) {
+                MyApplication.getInstance().getPrefManager().storeInterests(InterestsUtils.getStringListMap(interests));
                 onSignupSuccess(interests);
             }
 

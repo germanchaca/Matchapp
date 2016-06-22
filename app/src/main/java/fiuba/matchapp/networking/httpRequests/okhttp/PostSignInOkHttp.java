@@ -8,13 +8,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
+import fiuba.matchapp.utils.InterestsUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -118,7 +121,25 @@ public abstract class PostSignInOkHttp {
         MyApplication.getInstance().getPrefManager().storeUserPass(this.password);
         MyApplication.getInstance().getPrefManager().storeAppServerToken(appServerToken);
 
-        onSignInSuccess();
+        GetInterestsOkHttp interestsRequest = new GetInterestsOkHttp() {
+            @Override
+            protected void onAppServerConnectionError() {
+
+            }
+
+            @Override
+            protected void onGetInterestsSuccess(List<Interest> interests) {
+                MyApplication.getInstance().getPrefManager().storeInterests(InterestsUtils.getStringListMap(interests));
+                onSignInSuccess();
+            }
+
+            @Override
+            protected void logout() {
+
+            }
+        };
+        interestsRequest.makeRequest();
+
 
     }
 

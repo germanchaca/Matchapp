@@ -58,7 +58,31 @@ public class InterestEditActivity extends AppCompatActivity {
             progressDialog.setMessage(getResources().getString(R.string.searching_for_interests));
             progressDialog.show();
 
-            GetInterestsOkHttp request = new GetInterestsOkHttp() {
+            Map<String, List<Interest>> mapInterestsByCategory = MyApplication.getInstance().getPrefManager().getMapAvailableInterests();
+            for (Map.Entry<String, List<Interest>> entry : mapInterestsByCategory.entrySet())
+            {
+                if(TextUtils.equals(entry.getKey(), category)){
+                    //intereses ya seleccionados por el usuario
+                    mapUserInterestsByCategory = InterestsUtils.getStringUserInterestsListMap(MyApplication.getInstance().getPrefManager().getUser().getInterests());
+                    for (Map.Entry<String, List<UserInterest>> entryUser : mapUserInterestsByCategory.entrySet())
+                    {
+                        progressDialog.dismiss();
+                        if (TextUtils.equals(entryUser.getKey(),category)){
+                            //tengo en entryUser.getValue() la lista de intereses ya seleccionados por el usuario
+                            fragment = InterestsRecyclerViewFragment.newInstance(entry.getKey(), (ArrayList<Interest>) entry.getValue(),entryUser.getValue());
+
+                            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.contentFragment, fragment);
+                            ft.commit();
+
+                            Log.d(TAG,"Lanza fragment");
+                        }
+                    }
+                }
+            }
+
+            /*GetInterestsOkHttp request = new GetInterestsOkHttp() {
                 @Override
                 protected void onAppServerConnectionError() {
                     runOnUiThread(new Runnable() {
@@ -112,7 +136,7 @@ public class InterestEditActivity extends AppCompatActivity {
                 }
             };
             request.makeRequest();
-
+*/
 
         }
 

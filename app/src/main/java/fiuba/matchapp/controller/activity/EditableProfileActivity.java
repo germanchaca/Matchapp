@@ -51,6 +51,7 @@ import fiuba.matchapp.R;
 import fiuba.matchapp.adapter.InterestsKeysArrayAdapter;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.controller.baseActivity.GetLocationActivity;
+import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.InterestCategory;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
@@ -211,6 +212,7 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         adapterUserInterestsList = new ArrayList<>();
 
         fillUserCategoryInterestsList();
+
         adapter = new InterestsKeysArrayAdapter(this, adapterUserInterestsList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -760,10 +762,13 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
 
     private void fillUserCategoryInterestsList() {
         Map<String, List<UserInterest>> interestsMap = InterestsUtils.getStringUserInterestsListMap(this.user.getInterests());
-        for (Map.Entry<String, List<UserInterest>> entry : interestsMap.entrySet())
+
+        Map<String, List<Interest>> availableMap = MyApplication.getInstance().getPrefManager().getMapAvailableInterests();
+
+        for (Map.Entry<String, List<Interest>> entry : availableMap.entrySet())
         {
             Log.d(TAG, "UserInterestCategory: " + entry.getKey());
-            InterestCategory interestCategory = new InterestCategory(entry.getKey(), entry.getValue().size());
+            InterestCategory interestCategory = new InterestCategory(entry.getKey(), interestsMap.get(entry.getKey()).size());
             adapterUserInterestsList.add(interestCategory);
         }
     }
