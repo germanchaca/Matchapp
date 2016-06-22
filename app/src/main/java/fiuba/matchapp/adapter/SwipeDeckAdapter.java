@@ -70,7 +70,7 @@ public class SwipeDeckAdapter extends BaseAdapter {
             imageView.setImageBitmap(ImageBase64.Base64ToBitmap(user.getPhotoProfile()));
         }
 
-        textView.setText(user.getName() + ", " + user.getAge());
+        textView.setText(user.getAlias() + ", " + user.getAge());
         try {
             subtitleView.setText(AdressUtils.getParsedAddress(user.getLatitude(),user.getLongitude()));
         } catch (IOException e) {
