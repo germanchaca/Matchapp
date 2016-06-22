@@ -111,7 +111,7 @@ public class SignupActivity extends GetLocationActivity {
 
         _emailText.setText(userFromFacebookData.getEmail());
         _nameText.setText(userFromFacebookData.getName());
-        _sex_input.setText(userFromFacebookData.getGenre());
+        //_sex_input.setText(userFromFacebookData.getGenre());
     }
 
     public void showDatePickerDialog(View v) {

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.facebook.GraphResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,21 +61,22 @@ public class FacebookUtils {
         return "http://graph.facebook.com/" + fbId + "/picture?type=large";
     }
 
-    public static void fillIntentWithUserDataFromFaceebookResponse(JSONObject object, Intent i, String facebookId, String firstName, String full_name, String profile_image) {
+    public static void fillIntentWithUserDataFromFaceebookResponse(JSONObject object,  Intent i, String facebookId, String firstName, String full_name, String profile_image) {
         try {
+            Log.d("FacebookUtils", object.toString() );
 
             String email = object.getString("email");
-            String gender = object.getString("gender");
+            //String gender = object.getString("gender");
             String birthday = object.getString("birthday");//"1/1/1995 format"
             int age = AgeUtils.getAgeFromBirthDay(birthday);
 
-            String[] sexos = MyApplication.getInstance().getResources().getStringArray(R.array.sex_array);
-            if (gender.contentEquals("male")) {
+            //String[] sexos = MyApplication.getInstance().getResources().getStringArray(R.array.sex_array);
+           /* if (gender.contentEquals("male")) {
                 gender = sexos[0];
             } else {
                 gender = sexos[1];
             }
-            Log.d("FacebookUtils","FBGraphCallSuccess: " + email + " " + gender + " " + birthday + " " + age);
+            */Log.d("FacebookUtils","FBGraphCallSuccess: " + email  + " " + age +facebookId + full_name + firstName + profile_image);
 
             i.putExtra("fbId", facebookId);
             i.putExtra("name", full_name);
@@ -81,7 +84,7 @@ public class FacebookUtils {
             i.putExtra("profile_image",profile_image);
 
             i.putExtra("email", email);
-            i.putExtra("gender", gender);
+            //i.putExtra("gender", gender);
             i.putExtra("age", age);
 
         } catch (JSONException e) {

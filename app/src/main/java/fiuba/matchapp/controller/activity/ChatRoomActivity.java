@@ -115,6 +115,10 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         if(chatRoom.hasMessages()){
             fetchChatThread(this.chatRoom.getLastMessage().getId());
+        }else {
+            contentRetry.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            contentNoMessages.setVisibility(View.VISIBLE);
         }
 
 
@@ -138,7 +142,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         btnSend = (ImageButton) findViewById(R.id.btn_send);
         containerChatRoom = (RelativeLayout) findViewById(R.id.containerChatRoom);
 
-        contentRetry = (RelativeLayout) findViewById(R.id.contentNoMessages);
+        contentRetry = (RelativeLayout) findViewById(R.id.contentRetry);
         contentRetry.setVisibility(View.GONE);
 
         contentNoMessages = (RelativeLayout) findViewById(R.id.contentNoMessages);
@@ -152,7 +156,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             }
         });
         subtitleNoMessages = (TextView) findViewById(R.id.subtitleNoMessages);
-        if(TextUtils.equals(chatRoom.getOtherUser().getGenre(),"Mujer")){
+        if(TextUtils.equals(MyApplication.getInstance().getPrefManager().getUser().getGenre(),"Mujer")){
             subtitleNoMessages.setText(getResources().getString(R.string.no_messages_yet_woman));
         }else {
             subtitleNoMessages.setText(getResources().getString(R.string.no_messages_yet));
@@ -306,6 +310,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
                             if(lastMessageId <= 0){
                                 //hide load More button
+                                Log.d(TAG,"LastMsgId: " + lastMessageId);
                                 mAdapter.setLoadEarlierMsgs(false);
                                 mAdapter.notifyItemChanged(0);
                             }

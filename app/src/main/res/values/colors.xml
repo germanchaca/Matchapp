@@ -43,10 +43,31 @@
   <color name="intro_icon">@color/white</color>
 
   <color name="traslusentBackground">#44000000</color>
+  <color name="trasparentBackground">#11000000</color>
   <color name="deckButtonsColor">#ff21272b</color>
   <color name="trasparent">#00ffffff</color>
 
   <color name="primaryTaslucent">#cc00838f</color>
+
+  <color name="quantum_bluegrey100">#ffcfd8dc</color>
+  <color name="quantum_bluegrey200">#ffb0bec5</color>
+  <color name="quantum_bluegrey300">#ff90a4ae</color>
+  <color name="quantum_bluegrey400">#ff78909c</color>
+  <color name="quantum_bluegrey50">#ffeceff1</color>
+  <color name="quantum_bluegrey500">#aa607d8b</color>
+  <color name="quantum_bluegrey600">#ff546e7a</color>
+  <color name="quantum_bluegrey700">#ff455a64</color>
+  <color name="quantum_bluegrey800">#ff37474f</color>
+  <color name="quantum_bluegrey900">#ff263238</color>
+  <color name="quantum_bluegrey950">#ff21272b</color>
+
+  <color name="material_grey_100">#fff5f5f5</color>
+  <color name="material_grey_300">#ffe0e0e0</color>
+  <color name="material_grey_50">#fffafafa</color>
+  <color name="material_grey_600">#ff757575</color>
+  <color name="material_grey_800">#ff424242</color>
+  <color name="material_grey_850">#ff303030</color>
+  <color name="material_grey_900">#ff212121</color>
 
 
   <color name="normalWindowBackgrpund">#f5f5f5</color>
