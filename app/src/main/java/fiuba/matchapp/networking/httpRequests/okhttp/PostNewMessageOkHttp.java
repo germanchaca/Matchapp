@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
+import fiuba.matchapp.model.MyMessage;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonMetadataUtils;
 import okhttp3.Call;
@@ -27,13 +28,13 @@ public abstract class PostNewMessageOkHttp {
     private static final String TAG = "PostNewMessageOkHttp" ;
     private final OkHttpClient client;
     private final String userId;
-    private final String msg;
+    private final MyMessage msg;
 
-    protected abstract void onPostChatNewMessageRequestConnectionError();
-    protected abstract void onPostChatNewMessageRequestSuccess();
+    protected abstract void onPostChatNewMessageRequestConnectionError(int positionInAdapter);
+    protected abstract void onPostChatNewMessageRequestSuccess(int positionInAdapter);
     protected abstract void logout();
 
-    public PostNewMessageOkHttp(String userId, String msg){
+    public PostNewMessageOkHttp(String userId, MyMessage msg){
         //client = MyApplication.getInstance().getAppServerClient();
         client = new OkHttpClient.Builder()
                 .connectTimeout(200, TimeUnit.SECONDS)
@@ -49,7 +50,7 @@ public abstract class PostNewMessageOkHttp {
         try {
 
             paramsJson.put("To", this.userId);
-            paramsJson.put("message", this.msg);
+            paramsJson.put("message", this.msg.getMessage());
 
             JSONObject metadataJson = JsonMetadataUtils.getMetadata(1);
             paramsJson.put("metadata", metadataJson);
@@ -66,7 +67,7 @@ public abstract class PostNewMessageOkHttp {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "Unexpected code ");
-                onPostChatNewMessageRequestConnectionError();
+                onPostChatNewMessageRequestConnectionError(msg.getPositionInAdapter());
             }
 
             @Override
@@ -74,7 +75,7 @@ public abstract class PostNewMessageOkHttp {
                 if (response.isSuccessful()) {
                     String responseStr = response.body().string();
                     Log.d(TAG, "Success, response: " + responseStr + "code: " + response.code());
-                    onPostChatNewMessageRequestSuccess();
+                    onPostChatNewMessageRequestSuccess(msg.getPositionInAdapter());
                     // Do what you want to do with the response.
                 } else {
                     // Request not successful
@@ -83,7 +84,7 @@ public abstract class PostNewMessageOkHttp {
                         Log.e(TAG, "Error 401");
                         onErrorNoAuthRequest();
                     }else {
-                        onPostChatNewMessageRequestConnectionError();
+                        onPostChatNewMessageRequestConnectionError(msg.getPositionInAdapter());
                     }
                 }
             }
@@ -108,7 +109,7 @@ public abstract class PostNewMessageOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenConnectionError() {
-                onPostChatNewMessageRequestConnectionError();
+                onPostChatNewMessageRequestConnectionError(msg.getPositionInAdapter());
             }
 
             @Override

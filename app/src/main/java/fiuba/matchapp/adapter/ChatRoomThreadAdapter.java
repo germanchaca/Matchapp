@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import java.util.Calendar;
 import fiuba.matchapp.R;
 import fiuba.matchapp.model.DateHelper;
 import fiuba.matchapp.model.Message;
+import fiuba.matchapp.model.MyMessage;
 
 /**
  * Created by german on 4/8/2016.
@@ -48,6 +50,20 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             timestamp = (TextView) itemView.findViewById(R.id.timestamp);
         }
     }
+
+    public class SelfViewHolder extends RecyclerView.ViewHolder {
+        TextView message, timestamp;
+        ImageView sentBadge, errorBadge;
+
+        public SelfViewHolder(View view) {
+            super(view);
+            message = (TextView) itemView.findViewById(R.id.message);
+            timestamp = (TextView) itemView.findViewById(R.id.timestamp);
+            sentBadge = (ImageView) itemView.findViewById(R.id.sentBadge);
+            errorBadge = (ImageView) itemView.findViewById(R.id.errorBadge);
+        }
+    }
+
     public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout btnLoadMore;
 
@@ -78,14 +94,15 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             // mi mensaje
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chat_item_self, parent, false);
+
+            return new SelfViewHolder(itemView);
         } else {
             // mensaje de otros
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chat_item_other, parent, false);
+            return new ViewHolder(itemView);
         }
 
-
-        return new ViewHolder(itemView);
     }
 
     @Override
@@ -104,8 +121,8 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-
-        if(getItemViewType(position) == MORE) {
+        int type = getItemViewType(position);
+        if(type== MORE) {
             if (isLoadEarlierMsgs) {
                 ((LoadMoreViewHolder) holder).btnLoadMore.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -118,7 +135,26 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }else {
                 ((LoadMoreViewHolder) holder).btnLoadMore.setVisibility(View.GONE);
             }
-        }else {
+        }else if(type== SELF) {
+            MyMessage message = (MyMessage) messageArrayList.get(position-1);
+
+            ((SelfViewHolder) holder).message.setText(message.getMessage());
+
+            String timestamp = DateHelper.getTimeStamp(message.getTimestamp(), mContext);
+
+            if( message.isSent()){
+                ((SelfViewHolder) holder).sentBadge.setVisibility(View.VISIBLE);
+            }else {
+                ((SelfViewHolder) holder).sentBadge.setVisibility(View.GONE);
+            }
+            if( message.hasError()){
+                ((SelfViewHolder) holder).errorBadge.setVisibility(View.VISIBLE);
+            }else {
+                ((SelfViewHolder) holder).errorBadge.setVisibility(View.GONE);
+            }
+
+            ((SelfViewHolder) holder).timestamp.setText(timestamp);
+        }else{
             Message message = messageArrayList.get(position-1);
 
             ((ViewHolder) holder).message.setText(message.getMessage());

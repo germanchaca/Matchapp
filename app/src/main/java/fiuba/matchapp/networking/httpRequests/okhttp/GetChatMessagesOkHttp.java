@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
+import fiuba.matchapp.model.MyMessage;
 import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 import fiuba.matchapp.networking.jsonUtils.JsonParser;
 import okhttp3.Call;
@@ -136,6 +137,13 @@ public abstract class GetChatMessagesOkHttp {
 
         List<Message> messages = JsonParser.getMessagesFromJSONResponse(jsonResponse);
         Collections.sort(messages, new MessagesComparator());
+
+        /*for (int i = 0; i < messages.size(); i++){
+            Message msg = messages.get(i);
+            if (msg.isMine()){
+                ((MyMessage)msg).setPositionInAdapter(i);
+            }
+        }*/
 
         onSuccess(messages,olderMessage);
     }

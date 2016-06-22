@@ -37,7 +37,6 @@ import fiuba.matchapp.model.ReceivedMessage;
 import fiuba.matchapp.networking.gcm.Config;
 import fiuba.matchapp.app.MyApplication;
 import fiuba.matchapp.model.Message;
-import fiuba.matchapp.model.User;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetChatMessagesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostNewMessageOkHttp;
@@ -247,20 +246,36 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
      */
     private void sendMessage() {
         final String message = this.inputMessage.getText().toString().trim();
+        String timestamp = Long.toString(System.currentTimeMillis() / 1000);
+        MyMessage sentMessage = new MyMessage(message,timestamp);
+        sentMessage.setPositionInAdapter(messageArrayList.size());
 
         if (TextUtils.isEmpty(message)) {
             return;
         }
         showMessages();
-        PostNewMessageOkHttp request = new PostNewMessageOkHttp(chatRoom.getOtherUser().getEmail(),message) {
+        PostNewMessageOkHttp request = new PostNewMessageOkHttp(chatRoom.getOtherUser().getEmail(),sentMessage) {
             @Override
-            protected void onPostChatNewMessageRequestConnectionError() {
+            protected void onPostChatNewMessageRequestConnectionError(final int positionInAdapter) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        MyMessage message = (MyMessage) messageArrayList.get(positionInAdapter);
+                        message.setStatusError();
+                        mAdapter.notifyItemChanged(positionInAdapter+1);
 
+                    }
+                });
             }
 
             @Override
-            protected void onPostChatNewMessageRequestSuccess() {
-
+            protected void onPostChatNewMessageRequestSuccess(final int positionInAdapter) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        MyMessage message = (MyMessage) messageArrayList.get(positionInAdapter);
+                        message.setStatusSent();
+                        mAdapter.notifyItemChanged(positionInAdapter+1);
+                    }
+                });
             }
 
             @Override
@@ -269,8 +284,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             }
         };
         request.makeRequest();
-        String timestamp = Long.toString(System.currentTimeMillis() / 1000);
-        MyMessage sentMessage = new MyMessage(message,timestamp);
+
         addNewMessage(sentMessage);
         this.inputMessage.setText("");
 
