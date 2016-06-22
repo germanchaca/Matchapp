@@ -33,22 +33,43 @@
                 android:orientation="horizontal" >
                 <com.pkmmte.view.CircularImageView
                     android:id="@+id/profile_img_toolbar"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
 
                     android:layout_gravity="left|center_vertical"
                     android:scaleType="centerCrop"
                     android:src="@drawable/user_dummy_thumbnail_male"
                     />
-                <TextView
-                    android:id="@+id/title_chat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:textSize="20dp"
-                    android:text=""
-                    android:textColor="@color/white"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="2dp"
+                    >
+                    <TextView
+                        android:id="@+id/title_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif"
+                        android:textSize="18dp"
+                        android:text="Cami, 16"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:id="@+id/subtitle_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif"
+                        android:layout_below="@id/title_chat"
+                        android:textSize="14dp"
+                        android:text="Buenos Aires"
+                        android:textColor="@color/white"/>
+                </RelativeLayout>
+
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
