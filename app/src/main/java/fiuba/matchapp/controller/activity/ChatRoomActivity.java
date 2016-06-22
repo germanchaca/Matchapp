@@ -200,6 +200,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                 ReceivedMessage message = NewMessageNotificationHandler.getMessage(intent);
 
                 if ((TextUtils.equals(chat_room_id,chatRoom.getId()) && (message != null) )){
+                    showMessages();
                     addNewMessage(message);
                 }
 

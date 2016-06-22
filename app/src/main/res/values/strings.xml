@@ -149,4 +149,6 @@
     <string name="load_more">CARGAR MENSAJES ANTERIORES</string>
     <string name="first_time">¡Felicitaciones! Ya estás listo para utilizar MatchApp</string>
     <string name="first_time_ok">Cerrar</string>
+    <string name="hint_baseurl">Ingrese la dirección del servidor</string>
+    <string name="btn_commit_base_url_changes">Cambiar dirección del appServer</string>
 </resources>

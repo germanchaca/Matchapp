@@ -54,7 +54,7 @@ public class MyMessage extends  Message implements Serializable {
     }
 
     public boolean isSent(){
-        return (TextUtils.equals(this.status,STATUS_SENT));
+        return (TextUtils.equals(this.status,STATUS_SENT) || TextUtils.equals(this.status,STATUS_READ)  );
     }
     public boolean isUnSent(){
         return (TextUtils.equals(this.status,STATUS_UNSENT));

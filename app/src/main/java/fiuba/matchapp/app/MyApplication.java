@@ -61,7 +61,10 @@ public class MyApplication extends Application {
 
 
     public void logout() {
+        String baseUrl = pref.getBaseUrl();
         pref.clear();
+        pref.storeBaseUrl(baseUrl);
+
         Intent intent = new Intent(this, WelcomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

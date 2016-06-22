@@ -16,6 +16,7 @@ import java.util.Map;
 import fiuba.matchapp.model.Interest;
 import fiuba.matchapp.model.User;
 import fiuba.matchapp.model.UserInterest;
+import fiuba.matchapp.networking.httpRequests.RestAPIContract;
 
 /**
  * Created by german on 4/21/2016.
@@ -56,6 +57,7 @@ public class MyPreferenceManager {
 
     private static final String KEY_FIRST_TIME_IN_APP = "first_app";
     private static final String KEY_FIRST_TIME_IN_APP_PLAY_MATCHING = "first_app_play_matching";
+    private static final String KEY_IP = "ip";
 
     // Constructor
     public MyPreferenceManager(Context context) {
@@ -98,6 +100,19 @@ public class MyPreferenceManager {
     public String getUserCredentials(){
         String pass = pref.getString(KEY_APP_SERVER_PASS,null);
         return pass;
+    }
+
+    public String getBaseUrl(){
+        String baseUrl = pref.getString(KEY_IP, null);
+        Log.d(TAG, "BaseUrl de shared preferences. " + baseUrl);
+
+        return baseUrl;
+    }
+
+    public void storeBaseUrl(String baseUrl){
+        editor.putString(KEY_IP, baseUrl);
+        editor.commit();
+        Log.d(TAG, "BaseUrl guardado en shared preferences. " + baseUrl);
     }
 
     public void storeInterests(Map<String, List<Interest>> interests){
