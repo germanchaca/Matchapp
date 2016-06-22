@@ -1,10 +1,12 @@
 package fiuba.matchapp.controller.activity;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -58,6 +60,24 @@ public class MainActivity extends GetLocationActivity {
         //super.locationServiceConnect();
         Log.d(TAG, FirebaseInstanceId.getInstance().getToken());
 
+        boolean isFirstTimeVisited = MyApplication.getInstance().getPrefManager().isFirstTimeVisited();
+
+        if (isFirstTimeVisited){
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.connection_problem));
+            builder.setPositiveButton(getResources().getString(R.string.connection_problem_candidates), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    initCardstack();
+                }
+            });
+            builder.setNegativeButton(getResources().getString(R.string.connection_problem_candidates_later), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    showRetryButtonEnabled();
+                }
+            });
+
+            builder.show();*/
+        }
     }
 
     private void initViews() {

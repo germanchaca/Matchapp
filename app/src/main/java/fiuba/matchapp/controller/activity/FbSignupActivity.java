@@ -122,6 +122,8 @@ public class FbSignupActivity extends GetLocationActivity {
         String birthDay = FacebookUtils.getBirthDay(extras);
 
         _emailText.setText(userFromFacebookData.getEmail());
+        _emailText.setVisibility(View.GONE);
+
         _nameText.setText(userFromFacebookData.getName());
 
         if(!TextUtils.equals(birthDay,"")){
