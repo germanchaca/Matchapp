@@ -22,6 +22,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 /**
  * Created by german on 4/26/2016.
  */
@@ -92,4 +95,6 @@ public abstract class FacebookLoginActivity extends AppCompatActivity {
 
         return "SHA-1 generation: epic failed";
     }
+
+
 }

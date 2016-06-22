@@ -32,7 +32,7 @@
   <color name="details_icon">@color/primary</color>
 
   <color name="bg_bubble_self">@color/primary</color>
-  <color name="bg_bubble_other">#e0e0e0</color>
+  <color name="bg_bubble_other">@color/accent</color>
 
   <color name="list_divider">#dedede</color>
   <color name="rippleColor">#993498db</color>

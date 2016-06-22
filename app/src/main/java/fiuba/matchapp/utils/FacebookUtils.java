@@ -28,17 +28,15 @@ public class FacebookUtils {
             user.setAlias(extras.getStringExtra("alias"));
         }
         if(extras.hasExtra("gender")) {
-            user.setEmail(extras.getStringExtra("gender"));
+            user.setGenre(extras.getStringExtra("gender"));
         }
         if(extras.hasExtra("email")){
-            user.setGenre(extras.getStringExtra("email"));
+            user.setEmail(extras.getStringExtra("email"));
         }
         if(extras.hasExtra("age")){
             user.setAge(extras.getIntExtra("age",0));
         }
 
-
-        //String userBirthday = extras.getString("userBirthday");
         return user;
     }
 
@@ -52,6 +50,14 @@ public class FacebookUtils {
     public static String getProfilePhotoUri(Bundle extras){
         if(extras.containsKey("profile_image")){
             return  extras.getString("profile_image");
+        }else{
+            return "";
+        }
+    }
+
+    public static String getBirthDay(Intent extras){
+        if(extras.hasExtra("birthday")){
+            return  extras.getStringExtra("birthday");
         }else{
             return "";
         }
@@ -81,7 +87,7 @@ public class FacebookUtils {
             i.putExtra("fbId", facebookId);
             i.putExtra("name", full_name);
             i.putExtra("alias", firstName);
-
+            i.putExtra("birthday" , birthday);
             i.putExtra("profile_image",profile_image);
 
             i.putExtra("email", email);

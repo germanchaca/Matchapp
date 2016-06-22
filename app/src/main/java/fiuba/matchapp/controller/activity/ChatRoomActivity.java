@@ -116,13 +116,13 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if(chatRoom.hasMessages()){
             fetchChatThread(this.chatRoom.getLastMessage().getId());
         }else {
-            contentRetry.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            contentNoMessages.setVisibility(View.VISIBLE);
+            showContentNoMessages();
         }
 
 
     }
+
+
 
     private void initViews() {
         setContentView(R.layout.activity_chat_room);
@@ -234,7 +234,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if (TextUtils.isEmpty(message)) {
             return;
         }
-
+        showMessages();
         PostNewMessageOkHttp request = new PostNewMessageOkHttp(chatRoom.getOtherUser().getEmail(),message) {
             @Override
             protected void onPostChatNewMessageRequestConnectionError() {
@@ -266,8 +266,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private void fetchChatThread(String messageId) {
 
         progressDialog.show();
-        contentRetry.setVisibility(View.GONE);
-        contentNoMessages.setVisibility(View.GONE);
+        showMessages();
 
 
         GetChatMessagesOkHttp request = new GetChatMessagesOkHttp(chatRoom.getId(),messageId) {
@@ -286,8 +285,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                 runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.hide();
-                        contentRetry.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+                        showRetryView();
                         Snackbar.make(containerChatRoom,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();
                     }
                 });
@@ -321,9 +319,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                                 recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
                             }
                         }else {
-                            contentRetry.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.GONE);
-                            contentNoMessages.setVisibility(View.VISIBLE);
+                            showContentNoMessages();
                         }
                     }
                 });
@@ -337,5 +333,21 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if (chatRoom.hasOlderMessages()) {
             fetchChatThread(olderShownMsgId);
         }
+    }
+
+    private void showMessages() {
+        contentRetry.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        contentNoMessages.setVisibility(View.GONE);
+    }
+    private void showContentNoMessages() {
+        contentRetry.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        contentNoMessages.setVisibility(View.VISIBLE);
+    }
+    private void showRetryView() {
+        contentRetry.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        contentNoMessages.setVisibility(View.GONE);
     }
 }

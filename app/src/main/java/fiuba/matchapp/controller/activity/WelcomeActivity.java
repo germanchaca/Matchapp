@@ -32,6 +32,7 @@ public class WelcomeActivity extends FacebookLoginActivity {
         super.onCreate(savedInstanceState);
 
         MyApplication.getInstance().getPrefManager().clear();
+        Log.d(TAG,super.printHashKey(getApplicationContext()));
 
         setContentView(R.layout.activity_welcome);
 
@@ -101,6 +102,7 @@ public class WelcomeActivity extends FacebookLoginActivity {
                     });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "email,birthday");
+
 
             request.setParameters(parameters);
             request.executeAsync();
