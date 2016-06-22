@@ -7,7 +7,7 @@ public class RestAPIContract {
 
     // localhost url -
     //public static final String BASE_URL = "http://192.168.1.107:8080";
-    public static final String BASE_URL = "http://192.168.0.17:8080";
+    public static final String BASE_URL = "http://192.168.1.111:8080";
 
     private static final String GET_USER = BASE_URL + "/users/_ID_/";
     private static final String DELETE_USER = BASE_URL + "/users/_ID_/";

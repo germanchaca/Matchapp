@@ -10,7 +10,6 @@ In ripple animation tag we have set some properties -->
     >
      <ImageView
                 android:id="@+id/retryImage"
-
                 android:layout_width="84dp"
                 android:layout_height="84dp"
                 android:layout_centerInParent="true"

@@ -63,8 +63,9 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private RelativeLayout containerChatRoom;
     private RelativeLayout contentRetry;
     private ImageView retryImage;
-    private TextView subtitleRetry;
     private String olderShownMsgId;
+    private RelativeLayout contentNoMessages;
+    private TextView subtitleNoMessages;
 
     @Override
     protected void onStop() {
@@ -137,8 +138,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         btnSend = (ImageButton) findViewById(R.id.btn_send);
         containerChatRoom = (RelativeLayout) findViewById(R.id.containerChatRoom);
 
-        contentRetry = (RelativeLayout) findViewById(R.id.contentRetry);
+        contentRetry = (RelativeLayout) findViewById(R.id.contentNoMessages);
         contentRetry.setVisibility(View.GONE);
+
+        contentNoMessages = (RelativeLayout) findViewById(R.id.contentNoMessages);
+        contentNoMessages.setVisibility(View.GONE);
+
         retryImage = (ImageView) findViewById(R.id.retryImage);
         retryImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,8 +151,12 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                 fetchChatThread( chatRoom.getLastMessage().getId());
             }
         });
-        subtitleRetry = (TextView) findViewById(R.id.subtitleRetry);
-        subtitleRetry.setText(getResources().getString(R.string.fetching_chat_history));
+        subtitleNoMessages = (TextView) findViewById(R.id.subtitleNoMessages);
+        if(TextUtils.equals(chatRoom.getOtherUser().getGenre(),"Mujer")){
+            subtitleNoMessages.setText(getResources().getString(R.string.no_messages_yet_woman));
+        }else {
+            subtitleNoMessages.setText(getResources().getString(R.string.no_messages_yet));
+        }
 
         titleChat.setText(this.chatRoom.getOtherUser().getAlias());
         if(!TextUtils.isEmpty(this.chatRoom.getOtherUser().getPhotoProfile())){
@@ -254,6 +263,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
         progressDialog.show();
         contentRetry.setVisibility(View.GONE);
+        contentNoMessages.setVisibility(View.GONE);
+
 
         GetChatMessagesOkHttp request = new GetChatMessagesOkHttp(chatRoom.getId(),messageId) {
             @Override
@@ -292,7 +303,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
                             //id to fetch more chat history messages from appServer
                             olderShownMsgId = Integer.toString(lastMessageId);
-                            if(lastMessageId == 0){
+
+                            if(lastMessageId <= 0){
                                 //hide load More button
                                 mAdapter.setLoadEarlierMsgs(false);
                                 mAdapter.notifyItemChanged(0);
@@ -303,6 +315,10 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             if (mAdapter.getItemCount() > 1) {
                                 recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
                             }
+                        }else {
+                            contentRetry.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.GONE);
+                            contentNoMessages.setVisibility(View.VISIBLE);
                         }
                     }
                 });

@@ -61,10 +61,10 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatRoom chatRoom = chatRoomArrayList.get(position);
-        holder.name.setText(chatRoom.getName());
-        if(chatRoom.getLastMessage() != null){
+        holder.name.setText(chatRoom.getOtherUser().getAlias());
+        if(chatRoom.hasMessages()){
             holder.message.setText(chatRoom.getLastMessage().getMessage());
-            holder.timestamp.setText(DateHelper.getTimeStamp(chatRoom.getTimestamp(), mContext));
+            holder.timestamp.setText(DateHelper.getTimeStamp(chatRoom.getLastMessage().getTimestamp(), mContext));
             holder.message.setVisibility(View.VISIBLE);
             holder.timestamp.setVisibility(View.VISIBLE);
         }else {
@@ -81,8 +81,8 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
         }
 
 
-        if (!TextUtils.isEmpty(chatRoom.getUser().getPhotoProfile())){
-            holder.circleImageProfile.setImageBitmap(ImageBase64.Base64ToBitmap(chatRoom.getUser().getPhotoProfile()));
+        if (!TextUtils.isEmpty(chatRoom.getOtherUser().getPhotoProfile())){
+            holder.circleImageProfile.setImageBitmap(ImageBase64.Base64ToBitmap(chatRoom.getOtherUser().getPhotoProfile()));
         }
     }
 
