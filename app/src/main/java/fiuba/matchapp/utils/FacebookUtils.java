@@ -18,23 +18,23 @@ import fiuba.matchapp.model.User;
  */
 public class FacebookUtils {
 
-    public static User getUserFromFacebookData(Bundle extras){
+    public static User getUserFromFacebookData(Intent extras){
         User user = new User();
 
-        if(extras.containsKey("name")) {
-            user.setName(extras.getString("name"));
+        if(extras.hasExtra("name")) {
+            user.setName(extras.getStringExtra("name"));
         }
-        if(extras.containsKey("alias")) {
-            user.setAlias(extras.getString("alias"));
+        if(extras.hasExtra("alias")) {
+            user.setAlias(extras.getStringExtra("alias"));
         }
-        if(extras.containsKey("gender")) {
-            user.setEmail(extras.getString("gender"));
+        if(extras.hasExtra("gender")) {
+            user.setEmail(extras.getStringExtra("gender"));
         }
-        if(extras.containsKey("email")){
-            user.setGenre(extras.getString("email"));
+        if(extras.hasExtra("email")){
+            user.setGenre(extras.getStringExtra("email"));
         }
-        if(extras.containsKey("age")){
-            user.setAge(extras.getInt("age"));
+        if(extras.hasExtra("age")){
+            user.setAge(extras.getIntExtra("age",0));
         }
 
 
@@ -81,6 +81,7 @@ public class FacebookUtils {
             i.putExtra("fbId", facebookId);
             i.putExtra("name", full_name);
             i.putExtra("alias", firstName);
+
             i.putExtra("profile_image",profile_image);
 
             i.putExtra("email", email);

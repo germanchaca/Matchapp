@@ -54,7 +54,7 @@ public class SignupActivity extends GetLocationActivity {
         initViews();
         //launchFinishingSignUpActivity();
 
-        Bundle extras = getIntent().getExtras();
+        Intent extras = getIntent();
         if (extras != null) {
             initSignUpFromFacebookData(extras);
         }
@@ -105,7 +105,7 @@ public class SignupActivity extends GetLocationActivity {
     }
 
 
-    public void initSignUpFromFacebookData(Bundle extras) {
+    public void initSignUpFromFacebookData(Intent extras) {
         //String fbId = FacebookUtils.getFbId(extras);
         User userFromFacebookData = FacebookUtils.getUserFromFacebookData(extras);
 
