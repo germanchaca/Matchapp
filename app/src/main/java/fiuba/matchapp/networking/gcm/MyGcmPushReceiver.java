@@ -56,9 +56,16 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage message) {
 
-        String notificationBody = message.getNotification().getBody();
-        String notificationTitle = message.getNotification().getTitle();
-        String notifitacionTimestamp = Long.toString(message.getSentTime());
+        RemoteMessage.Notification notification = message.getNotification();
+        String notificationBody = "";
+        String notificationTitle = "";
+        String notifitacionTimestamp = "";
+
+        if(notification != null){
+            notificationBody = message.getNotification().getBody();
+            notificationTitle = message.getNotification().getTitle();
+            notifitacionTimestamp = Long.toString(message.getSentTime());
+        }
 
         Map<String, String> data = message.getData();
 
