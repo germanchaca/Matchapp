@@ -11,13 +11,27 @@ public class ChatRoom implements Serializable,Parcelable {
     int unreadCount;
     User otherUser;
 
+    public String getOlderShownMsgId() {
+        return olderShownMsgId;
+    }
+
+    public void setOlderShownMsgId(String olderShownMsgId) {
+        this.olderShownMsgId = olderShownMsgId;
+    }
+
+    String  olderShownMsgId;
+
 
     protected ChatRoom(Parcel in) {
         id = in.readString();
         lastMessage = (Message) in.readSerializable();
         unreadCount = in.readInt();
         otherUser = in.readParcelable(User.class.getClassLoader());
+        olderShownMsgId = in.readString();
     }
+
+
+
 
     public static final Creator<ChatRoom> CREATOR = new Creator<ChatRoom>() {
         @Override
@@ -51,6 +65,11 @@ public class ChatRoom implements Serializable,Parcelable {
         this.otherUser = otherUser;
         this.unreadCount = unreadCount;
         this.lastMessage = lastMessage;
+        if(lastMessage != null){
+            this.olderShownMsgId = lastMessage.getId();
+        }else {
+            this.olderShownMsgId = "0";
+        }
     }
 
     public String getId() {
@@ -104,5 +123,6 @@ public class ChatRoom implements Serializable,Parcelable {
         dest.writeSerializable(lastMessage);
         dest.writeInt(unreadCount);
         dest.writeParcelable(otherUser, flags);
+        dest.writeString(olderShownMsgId);
     }
 }
