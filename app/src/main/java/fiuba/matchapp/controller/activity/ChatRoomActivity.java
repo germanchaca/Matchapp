@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,11 +72,13 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     private TextView subtitleNoMessages;
     private TextView subtitleChat;
 
+
     @Override
     protected void onStop() {
         super.onStop();
         MyApplication.getInstance().cancelAllPendingAppServerRequests();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,11 +127,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             mAdapter.notifyItemChanged(0);
             showContentNoMessages();
         }
-
-
     }
-
-
 
     private void initViews() {
         setContentView(R.layout.activity_chat_room);
@@ -225,9 +224,13 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             }else if( type == Config.PUSH_TYPE_NEW_READ_MESSAGE){
                 String chat_room_id = NewMessageNotificationHandler.getChatRoomId(intent);
                 String message_id = NewMessageNotificationHandler.getMessageId(intent);
-                if((TextUtils.equals(chat_room_id,chatRoom.getId())) && (TextUtils.equals(message_id,""))){
+                Log.d(TAG,"hay visto");
+                if((TextUtils.equals(chat_room_id,chatRoom.getId())) && (!TextUtils.equals(message_id,""))){
+                    Log.d(TAG,"hay visto y entra");
 
                     for (Message message: messageArrayList){
+                        Log.d(TAG,"hay visto y notifica");
+
                         if(message.isMine() && TextUtils.equals(message.getId(), message_id)){
                             ((MyMessage) message).setStatusRead();
                             mAdapter.notifyDataSetChanged();
@@ -252,7 +255,23 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         // by doing this, the activity will be notified each time a new message arrives
         registerNotificationBroadcastReceiver();
         NotificationUtils.clearNotifications();
+
+        if(chatRoom.hasMessages()){
+            fetchChatThread(this.chatRoom.getLastMessage().getId());
+        }else {
+            mAdapter.setLoadEarlierMsgs(false);
+            mAdapter.notifyItemChanged(0);
+            showContentNoMessages();
+        }
+        Log.d(TAG, "onResume");
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG,"onStart");
+    }
+
     private void registerNotificationBroadcastReceiver() {
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION));

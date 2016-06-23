@@ -112,6 +112,7 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             resultIntent.putExtra("user_id", userId);
             resultIntent.putExtra("chat_room_id", chatRoomId);
 
+
             showNotificationMessage(getApplicationContext(), notificationTitle, notificationBody, notifitacionTimestamp, resultIntent);
         }
     }
@@ -145,7 +146,6 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             resultIntent.putExtra("chat_room_id", chatRoomId);
             resultIntent.putExtra("created_at", created_at);
             resultIntent.putExtra("message_id", message_id);
-
             showNotificationMessage(getApplicationContext(), notificationTitle, notificationBody, notifitacionTimestamp, resultIntent);
         }
         return;
