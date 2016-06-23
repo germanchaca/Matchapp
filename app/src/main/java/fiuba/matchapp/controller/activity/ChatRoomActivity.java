@@ -369,7 +369,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                             messageArrayList.addAll(temp);
 
                             //id to fetch more chat history messages from appServer
-                            olderShownMsgId = lastMessageId - 1 ;
+                            chatRoom.setOlderShownMsgId( Integer.toString(lastMessageId-1) );
 
                             if(lastMessageId <= 0){
                                 //hide load More button
@@ -396,10 +396,8 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
     @Override
     public void onLoadMore() {
         if (chatRoom.hasOlderMessages()) {
-            if(olderShownMsgId > 0){
-                Log.d(TAG, "olderShown: " + olderShownMsgId);
-                fetchChatThread(Integer.toString(olderShownMsgId));
-            }
+            Log.d(TAG, "olderShown: " + olderShownMsgId);
+            fetchChatThread(Integer.toString(olderShownMsgId));
         }
     }
 

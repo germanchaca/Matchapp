@@ -96,10 +96,8 @@ public class ChatRoom implements Serializable,Parcelable {
     }
 
     public boolean hasOlderMessages(){
-        if(this.hasMessages()){
-            if( Integer.parseInt(this.getLastMessage().getId()) > 0){
-                return true;
-            }
+        if( Integer.parseInt(this.getOlderShownMsgId()) > 0){
+            return true;
         }
         return false;
     }
