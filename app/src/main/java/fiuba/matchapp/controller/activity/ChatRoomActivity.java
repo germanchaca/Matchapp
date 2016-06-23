@@ -251,7 +251,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         final String message = this.inputMessage.getText().toString().trim();
         String timestamp = Long.toString(System.currentTimeMillis() / 1000);
         MyMessage sentMessage = new MyMessage(message,timestamp);
-        sentMessage.setPositionInAdapter(messageArrayList.size());
+        sentMessage.setPositionInAdapter(messageArrayList.size()+1);
 
         if (TextUtils.isEmpty(message)) {
             return;
@@ -264,7 +264,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                     public void run() {
                         MyMessage message = (MyMessage) messageArrayList.get(positionInAdapter);
                         message.setStatusError();
-                        mAdapter.notifyItemChanged(positionInAdapter+1);
+                        mAdapter.notifyItemChanged(positionInAdapter);
 
                     }
                 });
@@ -276,7 +276,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                     public void run() {
                         MyMessage message = (MyMessage) messageArrayList.get(positionInAdapter);
                         message.setStatusSent();
-                        mAdapter.notifyItemChanged(positionInAdapter+1);
+                        mAdapter.notifyItemChanged(positionInAdapter);
                     }
                 });
             }
