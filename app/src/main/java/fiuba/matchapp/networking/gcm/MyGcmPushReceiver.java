@@ -78,6 +78,9 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
             case Config.PUSH_TYPE_NEW_MATCH:
                 processNewMatchReceived(data,notificationBody,notificationTitle,notifitacionTimestamp);
                 break;
+            case Config.PUSH_TYPE_NEW_READ_MESSAGE:
+                processReadMessageNotification(data);
+                break;
         }
     }
 
@@ -140,7 +143,21 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
         }
         return;
     }
+    private void processReadMessageNotification(Map<String, String> data) {
+        String chatRoomId = data.get("chatroom_id");
+        String message_id = data.get("message_id");
 
+        if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
+            Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
+
+            pushNotification.putExtra("type", Config.PUSH_TYPE_NEW_READ_MESSAGE);
+            pushNotification.putExtra("chat_room_id", chatRoomId);
+            pushNotification.putExtra("message_id", message_id);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+
+        }
+        return;
+    }
     private void showNotificationMessage(Context context, String title, String message, String timeStamp, Intent intent) {
         notificationUtils = new NotificationUtils(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

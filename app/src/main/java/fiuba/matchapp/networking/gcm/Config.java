@@ -17,6 +17,7 @@ public class Config {
     // type of push messages
     public static final String PUSH_TYPE_NEW_MATCH = "1";
     public static final String PUSH_TYPE_NEW_MESSAGE = "2";
+    public static final String PUSH_TYPE_NEW_READ_MESSAGE = "3";
 
     // id to handle the notification in the notification try
     public static final int NOTIFICATION_ID = 100;

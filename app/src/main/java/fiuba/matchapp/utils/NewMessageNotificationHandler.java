@@ -19,6 +19,14 @@ public class NewMessageNotificationHandler {
         return "";
     }
 
+    public static String getMessageId(Intent intent) {
+        if (intent.hasExtra("message_id")) {
+            String message_id = intent.getStringExtra("message_id");
+            return message_id;
+        }
+        return "";
+    }
+
     public static ReceivedMessage getMessage(Intent intent){
         if (intent.hasExtra("message_id")) {
             String message_id = intent.getStringExtra("message_id");

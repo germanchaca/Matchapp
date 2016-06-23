@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
@@ -40,6 +42,7 @@ import fiuba.matchapp.model.Message;
 import fiuba.matchapp.networking.gcm.NotificationUtils;
 import fiuba.matchapp.networking.httpRequests.okhttp.GetChatMessagesOkHttp;
 import fiuba.matchapp.networking.httpRequests.okhttp.PostNewMessageOkHttp;
+import fiuba.matchapp.networking.httpRequests.okhttp.PostReadMessageHttp;
 import fiuba.matchapp.utils.ImageBase64;
 import fiuba.matchapp.utils.NewMessageNotificationHandler;
 import fiuba.matchapp.view.LockedProgressDialog;
@@ -195,19 +198,46 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         if (intent.hasExtra("type")) {
             String type = intent.getStringExtra("type");
             if (type == Config.PUSH_TYPE_NEW_MESSAGE) {
-
                 String chat_room_id = NewMessageNotificationHandler.getChatRoomId(intent);
                 ReceivedMessage message = NewMessageNotificationHandler.getMessage(intent);
 
                 if ((TextUtils.equals(chat_room_id,chatRoom.getId()) && (message != null) )){
                     showMessages();
                     addNewMessage(message);
-                }
+                    PostReadMessageHttp request = new PostReadMessageHttp(chat_room_id,message.getId()) {
+                        @Override
+                        protected void onConnectionError() {
 
+                        }
+
+                        @Override
+                        protected void onSuccess() {
+
+                        }
+
+                        @Override
+                        protected void logout() {
+
+                        }
+                    };
+                    request.makeRequest();
+                }
+            }else if( type == Config.PUSH_TYPE_NEW_READ_MESSAGE){
+                String chat_room_id = NewMessageNotificationHandler.getChatRoomId(intent);
+                String message_id = NewMessageNotificationHandler.getMessageId(intent);
+                if((TextUtils.equals(chat_room_id,chatRoom.getId())) && (TextUtils.equals(message_id,""))){
+
+                    for (Message message: messageArrayList){
+                        if(message.isMine() && TextUtils.equals(message.getId(), message_id)){
+                            ((MyMessage) message).setStatusRead();
+                            mAdapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
-
     private void addNewMessage(Message message) {
         messageArrayList.add(message);
         mAdapter.notifyDataSetChanged();
@@ -251,7 +281,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
         final String message = this.inputMessage.getText().toString().trim();
         String timestamp = Long.toString(System.currentTimeMillis() / 1000);
         MyMessage sentMessage = new MyMessage(message,timestamp);
-        sentMessage.setPositionInAdapter(messageArrayList.size()+1);
+        sentMessage.setPositionInAdapter(messageArrayList.size());
 
         if (TextUtils.isEmpty(message)) {
             return;
@@ -264,7 +294,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                     public void run() {
                         MyMessage message = (MyMessage) messageArrayList.get(positionInAdapter);
                         message.setStatusError();
-                        mAdapter.notifyItemChanged(positionInAdapter);
+                        mAdapter.notifyItemChanged(positionInAdapter+1);
 
                     }
                 });
@@ -276,7 +306,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                     public void run() {
                         MyMessage message = (MyMessage) messageArrayList.get(positionInAdapter);
                         message.setStatusSent();
-                        mAdapter.notifyItemChanged(positionInAdapter);
+                        mAdapter.notifyItemChanged(positionInAdapter+1);
                     }
                 });
             }
