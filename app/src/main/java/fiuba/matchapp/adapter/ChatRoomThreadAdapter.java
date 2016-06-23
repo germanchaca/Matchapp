@@ -52,6 +52,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public class SelfViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView readBadge;
         TextView message, timestamp;
         ImageView sentBadge, errorBadge;
 
@@ -61,6 +62,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             timestamp = (TextView) itemView.findViewById(R.id.timestamp);
             sentBadge = (ImageView) itemView.findViewById(R.id.sentBadge);
             errorBadge = (ImageView) itemView.findViewById(R.id.errorBadge);
+            readBadge = (ImageView) itemView.findViewById(R.id.readBadge);
         }
     }
 
@@ -146,11 +148,17 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((SelfViewHolder) holder).sentBadge.setVisibility(View.VISIBLE);
             }else {
                 ((SelfViewHolder) holder).sentBadge.setVisibility(View.GONE);
+
             }
             if( message.hasError()){
                 ((SelfViewHolder) holder).errorBadge.setVisibility(View.VISIBLE);
             }else {
                 ((SelfViewHolder) holder).errorBadge.setVisibility(View.GONE);
+            }
+            if( message.wasRead()){
+                ((SelfViewHolder) holder).readBadge.setVisibility(View.VISIBLE);
+            }else {
+                ((SelfViewHolder) holder).readBadge.setVisibility(View.GONE);
             }
 
             ((SelfViewHolder) holder).timestamp.setText(timestamp);
