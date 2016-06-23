@@ -71,6 +71,7 @@ public class RestAPIContract {
 
     //Post de match
     public static final String POST_MATCH = BASE_URL() + "/match/";
+    public static final String POST_READ_MESSAGE = BASE_URL() + "/chat/read/";
 
     //Obtener candidatos a match
     public static final String GET_MATCH = BASE_URL() + "/match/";
