@@ -126,6 +126,7 @@ public class OpenChatsFragment extends Fragment {
                 cr.setUnreadCount(cr.getUnreadCount() + 1);
                 chatRoomArrayList.remove(index);
                 chatRoomArrayList.add(index, cr);
+                containerNoChatRooms.setVisibility(View.GONE);
                 break;
             }
         }
