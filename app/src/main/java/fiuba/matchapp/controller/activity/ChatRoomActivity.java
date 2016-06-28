@@ -203,7 +203,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
                 if ((TextUtils.equals(chat_room_id,chatRoom.getId()) && (message != null) )){
                     showMessages();
                     addNewMessage(message);
-                    PostReadMessageHttp request = new PostReadMessageHttp(chat_room_id,message.getId()) {
+                    /*PostReadMessageHttp request = new PostReadMessageHttp(chat_room_id,message.getId()) {
                         @Override
                         protected void onConnectionError() {
 
@@ -219,7 +219,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
                         }
                     };
-                    request.makeRequest();
+                    request.makeRequest();*/
                 }
             }else if( type == Config.PUSH_TYPE_NEW_READ_MESSAGE){
                 String chat_room_id = NewMessageNotificationHandler.getChatRoomId(intent);
