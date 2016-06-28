@@ -22,7 +22,8 @@ public class AdressUtils {
         geocoder = new Geocoder(MyApplication.getInstance().getApplicationContext(), Locale.getDefault());
 
         addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-        String country = addresses.get(0).getCountryName();
+        if(addresses.size() == 0) return "";
+        String country = addresses.get(0).getCountryName();//FALLA por null
         String city = addresses.get(0).getLocality();
         parsedAddress = city + ", " + country;
 

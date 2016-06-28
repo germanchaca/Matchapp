@@ -768,8 +768,12 @@ public class EditableProfileActivity extends GetLocationActivity implements Imag
         for (Map.Entry<String, List<Interest>> entry : availableMap.entrySet())
         {
             Log.d(TAG, "UserInterestCategory: " + entry.getKey());
-            InterestCategory interestCategory = new InterestCategory(entry.getKey(), interestsMap.get(entry.getKey()).size());
-            adapterUserInterestsList.add(interestCategory);
+
+            List<UserInterest> categoryInterest =  interestsMap.get(entry.getKey());
+            if(categoryInterest != null){
+                InterestCategory interestCategory = new InterestCategory(entry.getKey(), categoryInterest.size());
+                adapterUserInterestsList.add(interestCategory);
+            }
         }
     }
 
