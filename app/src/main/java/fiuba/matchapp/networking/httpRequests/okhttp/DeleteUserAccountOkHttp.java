@@ -89,7 +89,7 @@ public abstract class DeleteUserAccountOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRefreshRequest();
+                makeRequest();
             }
         };
         request.makeRefreshRequest();

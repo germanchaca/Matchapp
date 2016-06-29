@@ -101,7 +101,7 @@ public abstract class GetChatRoomsOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRefreshRequest();
+                makeRequest();
             }
         };
         request.makeRefreshRequest();

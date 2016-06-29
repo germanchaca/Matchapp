@@ -83,7 +83,7 @@ public abstract class DeleteSingOutOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRefreshRequest();
+                makeRequest();
             }
         };
         request.makeRefreshRequest();

@@ -11,7 +11,7 @@ public class RestAPIContract {
 
     // localhost url -
     //public static final String BASE_URL = "http://192.168.1.107:8080";
-    public static final String BASE_URL_DEFAULT = "http://192.168.1.111:8080";
+    public static final String BASE_URL_DEFAULT = "http://10.1.151.14:8080";
 
     public static final String BASE_URL(){
         String baseUrl = MyApplication.getInstance().getPrefManager().getBaseUrl();

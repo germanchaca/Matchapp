@@ -114,7 +114,7 @@ public abstract class PostNewMessageOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRefreshRequest();
+                makeRequest();
             }
         };
         request.makeRefreshRequest();

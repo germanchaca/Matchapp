@@ -86,6 +86,7 @@ public class MyGcmPushReceiver extends FirebaseMessagingService {
                 processNewMatchReceived(data,notificationBody,notificationTitle,notifitacionTimestamp);
                 break;
             case Config.PUSH_TYPE_NEW_READ_MESSAGE:
+                Log.d(TAG,"hay visto");
                 processReadMessageNotification(data);
                 break;
         }

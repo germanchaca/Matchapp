@@ -158,6 +158,7 @@ public class OpenChatsFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         progressDialog.dismiss();
+                        MyApplication.getInstance().logout();
                         recyclerView.setVisibility(View.GONE);
                         contentRetry.setVisibility(View.VISIBLE);
                         Snackbar.make(containerChats,getResources().getString(R.string.internet_problem) , Snackbar.LENGTH_LONG).show();

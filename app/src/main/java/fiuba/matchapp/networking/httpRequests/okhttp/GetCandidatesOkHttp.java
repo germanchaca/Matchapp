@@ -106,7 +106,7 @@ public abstract class GetCandidatesOkHttp {
 
             @Override
             protected void onRefreshAppServerTokenSuccess() {
-                makeRefreshRequest();
+                makeRequest();
             }
         };
         request.makeRefreshRequest();
