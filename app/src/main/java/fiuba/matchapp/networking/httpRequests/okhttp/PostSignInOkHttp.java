@@ -148,6 +148,7 @@ public abstract class PostSignInOkHttp {
 
     Call post(String url, String json, Callback callback) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
+        Log.d(TAG,json.toString());
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)

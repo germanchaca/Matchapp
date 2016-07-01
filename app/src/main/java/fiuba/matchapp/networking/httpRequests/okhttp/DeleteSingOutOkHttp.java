@@ -43,10 +43,14 @@ public abstract class DeleteSingOutOkHttp {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String responseStr = response.body().string();
-                    Log.d(TAG, "Success, response: " + responseStr + "code: " + response.code());
-                    onSuccess();
-                    // Do what you want to do with the response.
+                    try {
+                        String responseStr = response.body().string();
+                        Log.d(TAG, "Success, response: " + responseStr + "code: " + response.code());
+                        onSuccess();
+                    } catch (IOException e) {
+                        Log.d(TAG, "Error ");
+                        onSuccess();
+                    }
                 } else {
                     // Request not successful
                     Log.e(TAG, "Unexpected code " + response.code());

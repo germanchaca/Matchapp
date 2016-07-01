@@ -306,7 +306,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
             return;
         }
         showMessages();
-       /* PostNewMessageOkHttp request = new PostNewMessageOkHttp(chatRoom.getOtherUser().getEmail(),sentMessage) {
+        PostNewMessageOkHttp request = new PostNewMessageOkHttp(chatRoom.getOtherUser().getEmail(),sentMessage) {
             @Override
             protected void onPostChatNewMessageRequestConnectionError(final int positionInAdapter) {
                 runOnUiThread(new Runnable() {
@@ -335,7 +335,7 @@ public class ChatRoomActivity extends AppCompatActivity implements LoadEarlierMe
 
             }
         };
-        request.makeRequest();*/
+        request.makeRequest();
 
         addNewMessage(sentMessage);
         this.inputMessage.setText("");
